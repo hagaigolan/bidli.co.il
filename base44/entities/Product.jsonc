@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "name": "Product",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "\u05d7\u05d3\u05e9",
+        "\u05de\u05e6\u05d1 \u05de\u05e2\u05d5\u05dc\u05d4",
+        "\u05de\u05e6\u05d1 \u05d8\u05d5\u05d1",
+        "\u05de\u05e6\u05d1 \u05d1\u05d9\u05e0\u05d5\u05e0\u05d9"
+      ]
+    },
+    "starting_price": {
+      "type": "number"
+    },
+    "current_price": {
+      "type": "number"
+    },
+    "highest_bidder": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "ends_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "ended",
+        "sold"
+      ],
+      "default": "active"
+    },
+    "bid_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "starting_price",
+    "ends_at"
+  ]
+}

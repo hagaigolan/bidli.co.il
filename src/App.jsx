@@ -10,6 +10,9 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Layout from './components/Layout';
 import Category from './pages/Category';
+import UploadProduct from './pages/UploadProduct';
+import Auctions from './pages/Auctions';
+import AuctionDetail from './pages/AuctionDetail';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -39,6 +42,9 @@ const AuthenticatedApp = () => {
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/category/:name" element={<Category />} />
+        <Route path="/upload-product" element={<UploadProduct />} />
+        <Route path="/auctions" element={<Auctions />} />
+        <Route path="/auction/:id" element={<AuctionDetail />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

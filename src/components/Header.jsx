@@ -73,6 +73,7 @@ export default function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>דף הבית</Link>
               <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">מכרזים</a>
+              <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">מכרזים</Link>
               <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">חנויות</a>
               <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">רכבים</a>
             </nav>
@@ -85,9 +86,9 @@ export default function Header() {
               <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
                 <User className="h-4 w-4" />
               </Button>
-              <button className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
-                הירשם
-              </button>
+              <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
+                + פרסם מכרז
+              </Link>
 
               {/* Mobile menu */}
               <Sheet open={open} onOpenChange={setOpen}>

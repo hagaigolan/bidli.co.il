@@ -2,6 +2,7 @@
 module.exports = {
   darkMode: ['class'],
   content: [
+    './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
     './components/**/*.{js,jsx,ts,tsx}',
     './pages/**/*.{js,jsx,ts,tsx}',
@@ -10,22 +11,14 @@ module.exports = {
     container: {
       center: true,
       padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
+      screens: { '2xl': '1400px' },
     },
     extend: {
-
       fontFamily: {
-
-        heading: ['"Helvetica Neue"', 'sans-serif'],
-
-
-        body: ['"Helvetica Neue"', 'sans-serif'],
-        sans: ['"Helvetica Neue"', 'sans-serif'],
-
+        heading: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
-
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -60,6 +53,18 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        neon: {
+          pink: '#f700ff',
+          cyan: '#00f7ff',
+          purple: '#9d00ff',
+          blue: '#0088ff',
+        },
+      },
+      boxShadow: {
+        'neon-pink': '0 0 8px #f700ff88, 0 0 24px #f700ff44',
+        'neon-cyan': '0 0 8px #00f7ff88, 0 0 24px #00f7ff44',
+        'neon-purple': '0 0 8px #9d00ff88, 0 0 24px #9d00ff44',
+        'neon-pink-lg': '0 0 20px #f700ffaa, 0 0 48px #f700ff55',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -67,14 +72,8 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
+        'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },
+        'accordion-up': { from: { height: 'var(--radix-accordion-content-height)' }, to: { height: '0' } },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',

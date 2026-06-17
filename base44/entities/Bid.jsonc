@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "name": "Bid",
+  "properties": {
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "product_image_url": {
+      "type": "string"
+    },
+    "product_ends_at": {
+      "type": "string"
+    },
+    "bidder_name": {
+      "type": "string"
+    },
+    "bidder_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "is_winning": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "outbid",
+        "won",
+        "lost"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "product_id",
+    "amount"
+  ]
+}

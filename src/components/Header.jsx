@@ -83,9 +83,11 @@ export default function Header() {
               <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
-                <User className="h-4 w-4" />
-              </Button>
+              <Link to="/profile">
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
               <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
                 + פרסם מכרז
               </Link>

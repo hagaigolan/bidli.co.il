@@ -92,12 +92,25 @@ export default function AuctionDetail() {
     setBidError("");
     try {
       const newPrice = parseFloat(bidAmount);
+      const name = bidderName || "אנונימי";
+      // save to localStorage for profile page
+      if (bidderName) localStorage.setItem("bidder_name", bidderName);
       await base44.entities.Product.update(product.id, {
         current_price: newPrice,
-        highest_bidder: bidderName || "אנונימי",
+        highest_bidder: name,
         bid_count: (product.bid_count || 0) + 1,
       });
-      setProduct(p => ({ ...p, current_price: newPrice, highest_bidder: bidderName || "אנונימי", bid_count: (p.bid_count || 0) + 1 }));
+      // save bid to history
+      await base44.entities.Bid.create({
+        product_id: product.id,
+        product_title: product.title,
+        product_image_url: product.image_url || "",
+        product_ends_at: product.ends_at,
+        bidder_name: name,
+        amount: newPrice,
+        status: "active",
+      });
+      setProduct(p => ({ ...p, current_price: newPrice, highest_bidder: name, bid_count: (p.bid_count || 0) + 1 }));
       setBidAmount("");
       setBidSuccess(true);
       setTimeout(() => setBidSuccess(false), 3000);

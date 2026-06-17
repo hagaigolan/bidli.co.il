@@ -13,6 +13,7 @@ import Category from './pages/Category';
 import UploadProduct from './pages/UploadProduct';
 import Auctions from './pages/Auctions';
 import AuctionDetail from './pages/AuctionDetail';
+import Profile from './pages/Profile';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
         <Route path="/upload-product" element={<UploadProduct />} />
         <Route path="/auctions" element={<Auctions />} />
         <Route path="/auction/:id" element={<AuctionDetail />} />
+        <Route path="/profile" element={<Profile />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

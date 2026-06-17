@@ -16,30 +16,30 @@ export default function Header() {
   }, []);
 
   const categoryLinks = [
-    { label: "Art", href: "#" },
-    { label: "Judaica", href: "#" },
-    { label: "Collectibles", href: "#" },
-    { label: "Numismatics", href: "#" },
-    { label: "Jewelry", href: "#" },
-    { label: "Home Design", href: "#" },
-    { label: "Fashion", href: "#" },
+    { label: "אמנות", href: "#" },
+    { label: "יודאיקה", href: "#" },
+    { label: "אספנות", href: "#" },
+    { label: "נומיסמטיקה", href: "#" },
+    { label: "תכשיטים", href: "#" },
+    { label: "עיצוב הבית", href: "#" },
+    { label: "אופנה", href: "#" },
   ];
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 bg-white ${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
+    <header className={`sticky top-0 z-50 transition-all duration-300 bg-white ${scrolled ? "shadow-lg shadow-black/5" : ""}`} dir="rtl">
       {/* Top micro-bar */}
       <div className="border-b border-gray-100 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
           <div className="hidden sm:flex items-center gap-4">
-            <span>🇮🇱 Israel</span>
-            {["Coins portal","Stamps portal","Books portal","Jewelry portal"].map(p => (
+            <span>🇮🇱 ישראל</span>
+            {["פורטל מטבעות","פורטל בולים","פורטל ספרים","פורטל תכשיטים"].map(p => (
               <a key={p} href="#" className="hover:text-[#f700ff] transition-colors">{p}</a>
             ))}
           </div>
-          <div className="flex items-center gap-3 ml-auto">
-            <a href="#" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">Login</a>
+          <div className="flex items-center gap-3 mr-auto">
+            <a href="#" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה</a>
             <span className="text-gray-300">|</span>
-            <a href="#" className="font-medium text-[#9d00ff] hover:opacity-80 transition-opacity">Registration</a>
+            <a href="#" className="font-medium text-[#9d00ff] hover:opacity-80 transition-opacity">הרשמה</a>
           </div>
         </div>
       </div>
@@ -54,27 +54,27 @@ export default function Header() {
                 <Gavel className="h-4 w-4 text-white" />
               </div>
               <span className="font-extrabold text-xl tracking-tight text-gray-900">
-                bid<span className="neon-text-pink">spirit</span>
+                bid-<span className="neon-text-pink">it</span>
               </span>
             </Link>
 
             {/* Search bar */}
             <div className="hidden sm:flex flex-1 max-w-lg mx-6">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
-                  placeholder="Search auctions, lots, houses..."
-                  className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f700ff44] focus:border-[#f700ff88] transition-all"
+                  placeholder="חפש מכרזים, פריטים, בתי מכרזים..."
+                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f700ff44] focus:border-[#f700ff88] transition-all text-right"
                 />
               </div>
             </div>
 
             {/* Nav links */}
             <nav className="hidden lg:flex items-center gap-1">
-              <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>Home</Link>
-              <Link to="/Auctions" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/Auctions" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>Auctions</Link>
-              <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">Shops</a>
-              <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">Cars</a>
+              <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>דף הבית</Link>
+              <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">מכרזים</a>
+              <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">חנויות</a>
+              <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">רכבים</a>
             </nav>
 
             {/* Actions */}
@@ -86,7 +86,7 @@ export default function Header() {
                 <User className="h-4 w-4" />
               </Button>
               <button className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
-                Register
+                הירשם
               </button>
 
               {/* Mobile menu */}
@@ -97,12 +97,12 @@ export default function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 bg-white">
-                  <div className="mt-6 flex flex-col gap-1">
-                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">Home</Link>
-                    <Link to="/Auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">The Auctions</Link>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">Shops</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">Cars</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">Real estate</a>
+                  <div className="mt-6 flex flex-col gap-1" dir="rtl">
+                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">דף הבית</Link>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">מכרזים</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">חנויות</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">רכבים</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">נדל"ן</a>
                     <div className="border-t border-gray-100 my-2" />
                     {categoryLinks.map(l => (
                       <a key={l.label} href={l.href} className="px-3 py-2 text-sm text-gray-600 hover:text-[#9d00ff] hover:bg-purple-50 rounded-xl">{l.label}</a>
@@ -126,9 +126,9 @@ export default function Header() {
               </a>
             );
           })}
-          <div className="ml-auto flex-shrink-0">
+          <div className="mr-auto flex-shrink-0">
             <a href="#" className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 px-3 py-1">
-              English <ChevronDown className="h-3 w-3" />
+              עברית <ChevronDown className="h-3 w-3" />
             </a>
           </div>
         </div>

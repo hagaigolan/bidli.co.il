@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, ChevronDown, Search, User, Bell, Gavel } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,13 @@ export default function Header() {
   }, []);
 
   const categoryLinks = [
-    { label: "אמנות", href: "#" },
-    { label: "יודאיקה", href: "#" },
-    { label: "אספנות", href: "#" },
-    { label: "נומיסמטיקה", href: "#" },
-    { label: "תכשיטים", href: "#" },
-    { label: "עיצוב הבית", href: "#" },
-    { label: "אופנה", href: "#" },
+    { label: "אמנות" },
+    { label: "יודאיקה" },
+    { label: "אספנות" },
+    { label: "נומיסמטיקה" },
+    { label: "תכשיטים" },
+    { label: "עיצוב הבית" },
+    { label: "אופנה" },
   ];
 
   return (
@@ -105,7 +105,7 @@ export default function Header() {
                     <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">נדל"ן</a>
                     <div className="border-t border-gray-100 my-2" />
                     {categoryLinks.map(l => (
-                      <a key={l.label} href={l.href} className="px-3 py-2 text-sm text-gray-600 hover:text-[#9d00ff] hover:bg-purple-50 rounded-xl">{l.label}</a>
+                      <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-[#9d00ff] hover:bg-purple-50 rounded-xl">{l.label}</Link>
                     ))}
                   </div>
                 </SheetContent>
@@ -121,9 +121,9 @@ export default function Header() {
           {categoryLinks.map((link, i) => {
             const colors = ["#f700ff","#9d00ff","#00f7ff","#0088ff","#f700ff","#9d00ff","#00f7ff"];
             return (
-              <a key={link.label} href={link.href} style={{ color: colors[i % colors.length] }} className="flex-shrink-0 px-3 py-1 text-xs font-semibold rounded-full hover:bg-gray-50 transition-colors whitespace-nowrap">
+              <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`} style={{ color: colors[i % colors.length] }} className="flex-shrink-0 px-3 py-1 text-xs font-semibold rounded-full hover:bg-gray-50 transition-colors whitespace-nowrap">
                 {link.label}
-              </a>
+              </Link>
             );
           })}
           <div className="mr-auto flex-shrink-0">

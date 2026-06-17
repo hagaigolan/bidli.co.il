@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { MapPin, Clock, Store, Search, Zap, TrendingUp, Tag } from "lucide-react";
 
@@ -88,10 +89,10 @@ function HeroSection() {
             {["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית"].map((tag, i) => {
               const colors = ["#f700ff", "#9d00ff", "#00f7ff", "#0088ff", "#f700ff", "#9d00ff"];
               return (
-                <button key={tag} className="px-3 py-1 rounded-full text-xs font-medium border transition-all hover:scale-105"
+                <Link key={tag} to={`/category/${encodeURIComponent(tag)}`} className="px-3 py-1 rounded-full text-xs font-medium border transition-all hover:scale-105"
                   style={{ borderColor: colors[i] + "55", color: colors[i], background: colors[i] + "0f" }}>
                   {tag}
-                </button>
+                </Link>
               );
             })}
           </div>

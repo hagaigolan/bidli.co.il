@@ -162,7 +162,7 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
               <span className="truncate">{auction.location}</span>
             </div>
           )}
-          <a href={auction.view_url || "#"}
+          <a href={auction.id ? `/auction/${auction.id}` : (auction.view_url || "#")}
             className="block w-full text-center text-white text-xs py-2 rounded-xl font-semibold transition-all duration-200 hover:opacity-90 hover:-translate-y-px"
             style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor === "#f700ff" ? "#9d00ff" : "#0088ff"})` }}>
             {buttonLabel}
@@ -242,29 +242,6 @@ function UpcomingAuctionsSection({ products }) {
   );
 }
 
-const additionalAuctions = [
-  { name: "מכרזי ישראליאנה", auction_number: "63", date: "ש', 20 יוני", time: "13:30", location: "ראשון לציון", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/1a50b6818_res_cloudinary_com_portal_AuctionHouse_6183a1b7fd6bc548d1ae628a_mainPageLogo_c7f9e8a2.png", part: "", view_url: "#" },
-  { name: "NeverLand אספנות", auction_number: "50", date: "א', 21 יוני", time: "10:00", description: "מכירת יובל ה-50", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/190157253_bidspirit-images_global_ssl_fastly_net_290_v9_f8371104.jpg", part: "", view_url: "#" },
-  { name: "הגלריה הישראלית החדשה", auction_number: "12", date: "ב', 22 יוני", time: "14:00", location: "חיפה", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/e2dee3eee_bidspirit-images_global_ssl_fastly_net_258_v1_ae22b09c.jpg", part: "", view_url: "#" },
-  { name: "המגיש", auction_number: "134", date: "ג', 23 יוני", time: "10:00", location: "גדרה", description: "יודאיקה, תכשיטים, פורצלן", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/21e55b8c6_bidspirit-images_global_ssl_fastly_net_531_v1_08846bc6.jpg", part: "", view_url: "#" },
-  { name: "טדי אמנות ואנטיקות", auction_number: "89", date: "ד', 24 יוני", time: "10:00", location: "גני תקווה", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/556a17a25_bidspirit-images_global_ssl_fastly_net_659_v6_0fe14d8b.jpg", part: "", view_url: "#" },
-  { name: "היסטוריה למכירה", auction_number: "159", date: "ה', 25 יוני", time: "12:00", location: "גבעתיים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/366bdae20_bidspirit-images_global_ssl_fastly_net_544_v2_c054d76a.jpg", part: "", view_url: "#" },
-];
-
-function AdditionalAuctionsSection() {
-  return (
-    <section className="py-10" style={{ background: "linear-gradient(180deg, #fafafa, #fff)" }} dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="מכרזים נוספים" color="#9d00ff" icon={TrendingUp} />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {additionalAuctions.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} accentColor="#9d00ff" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 const buyNowAuctions = [
   { name: "גל קולקציה", auction_number: "56", date: "17 יוני 2026", location: "גבעת שמואל", description: "נומיסמטיקה, עטים, שעונים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/e3ea4ef3b_bidspirit-images_global_ssl_fastly_net_298_v4_e97ddb55.jpg", part: "", view_url: "#" },
@@ -446,7 +423,6 @@ export default function Home() {
       <HeroSection />
       <FeaturedBanner />
       <UpcomingAuctionsSection products={products} />
-      <AdditionalAuctionsSection />
       <BuyNowSection />
       <ShopsSection shops={shops} />
       <PastResultsSection />

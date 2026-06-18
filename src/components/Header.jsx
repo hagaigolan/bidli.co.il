@@ -37,9 +37,9 @@ export default function Header() {
             ))}
           </div>
           <div className="flex items-center gap-3 mr-auto">
-            <Link to="/Login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה</Link>
+            <a href="/Login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה</a>
             <span className="text-gray-300">|</span>
-            <Link to="/Register" className="font-medium text-[#9d00ff] hover:opacity-80 transition-opacity">הרשמה</Link>
+            <a href="/Register" className="font-medium text-[#9d00ff] hover:opacity-80 transition-opacity">הרשמה</a>
           </div>
         </div>
       </div>

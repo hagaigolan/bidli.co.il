@@ -207,30 +207,34 @@ function FeaturedBanner() {
   );
 }
 
-function UpcomingAuctionsSection({ auctions }) {
-  const staticFallback = [
-    { name: "הזדמנות", auction_number: "50", date: "ה', 18 יוני", time: "11:30", location: "תל אביב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/81cfa745d_bidspirit-images_global_ssl_fastly_net_691_v3_04fbf0dd.jpg", part: "", view_url: "#" },
-    { name: "בן-עמי אנדרס", auction_number: "302", date: "ה', 18 יוני", time: "12:00", location: "הרצליה", description: "מכרז מיוחד מעיזבונות", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/38e8a2990_bidspirit-images_global_ssl_fastly_net_200_v1_61d7997a.jpg", part: "", view_url: "#" },
-    { name: "נועם אלון", auction_number: "18", date: "ה', 18 יוני", time: "12:00", location: "חולון", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/7d1a4006a_bidspirit-images_global_ssl_fastly_net_268_v3_0a739447.jpg", part: "", view_url: "#" },
-    { name: "גלריה רות", auction_number: "43", date: "ה', 18 יוני", time: "12:00", location: "אשדוד", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/cc35671d9_bidspirit-images_global_ssl_fastly_net_301_v15_2af99078.jpg", part: "", view_url: "#" },
-    { name: "ארט קולקט", auction_number: "108", date: "ש', 20 יוני", time: "13:30", location: "חולון", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/fa73eb325_bidspirit-images_global_ssl_fastly_net_549_v1_8dd42122.jpg", part: "1", view_url: "#" },
-    { name: "מורשת", auction_number: "92", date: "א', 21 יוני", time: "12:00", location: "בני ברק", description: "מכרז קיץ", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/c0f11c82e_bidspirit-images_global_ssl_fastly_net_254_v9_b7c0a814.jpg", part: "", view_url: "#" },
-    { name: "קדם", auction_number: "062", date: "ג', 23 יוני", time: "10:00", location: "ירושלים", description: "יודאיקה | מכתבים | תצלומים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/5c66d08c2_bidspirit-images_global_ssl_fastly_net_588_v6_e95ac575.jpg", part: "1", view_url: "#" },
-    { name: "גלריה 74", auction_number: "0147", date: "ה', 25 יוני", time: "11:30", location: "תל אביב", description: "תכשיטים, אמנות ואנטיקות", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/62869b32d_bidspirit-images_global_ssl_fastly_net_283_v1_38b76886.jpg", part: "", view_url: "#" },
-    { name: "טירוש", auction_number: "205", date: "א', 28 יוני", time: "12:00", location: "הרצליה", description: "אמנות ישראלית ובינלאומית", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/6d650aab9_bidspirit-images_global_ssl_fastly_net_456_v2_24d94d97.jpg", part: "1", view_url: "#" },
-    { name: "אלמה", auction_number: "162", date: "א', 28 יוני", time: "11:00", location: "תל אביב", description: "תכשיטים, אבני חן ושעונים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/91da9d921_bidspirit-images_global_ssl_fastly_net_650_v2_5659f930.jpg", part: "", view_url: "#" },
-    { name: "מכרזי מלך דוד", auction_number: "207", date: "ה', 25 יוני", time: "11:00", location: "ירושלים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/55ef5d452_bidspirit-images_global_ssl_fastly_net_1022_v2_510636c9.jpeg", part: "", view_url: "#" },
-    { name: "סיגלרי", auction_number: "84", date: "א', 21 יוני", time: "12:30", location: "ראש פינה", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/3968e3931_bidspirit-images_global_ssl_fastly_net_344_v2_16293109.jpg", part: "", view_url: "#" },
-  ];
-  const items = auctions.length > 0 ? auctions : staticFallback;
+function UpcomingAuctionsSection({ products }) {
+  if (products.length === 0) return null;
 
   return (
     <section className="bg-white py-10" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeader title="מכרזים קרובים" color="#f700ff" icon={Zap} />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {items.slice(0, 12).map((auction, index) => (
-            <AuctionCard key={auction.id || index} auction={auction} index={index} accentColor="#f700ff" />
+          {products.map((product, index) => (
+            <AnimatedElement key={product.id} delay={index * 50}>
+              <a href={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+                <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
+                  {product.image_url
+                    ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
+                </div>
+                <div className="p-3" dir="rtl">
+                  <h3 className="font-bold text-gray-900 text-xs leading-snug mb-1.5 line-clamp-1">{product.title}</h3>
+                  {product.location && (
+                    <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
+                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{product.location}</span>
+                    </div>
+                  )}
+                  <p className="font-black text-sm text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
+                </div>
+              </a>
+            </AnimatedElement>
           ))}
         </div>
       </div>
@@ -426,13 +430,13 @@ function FutureAuctionsSection() {
 }
 
 export default function Home() {
-  const [auctions, setAuctions] = useState([]);
+  const [products, setProducts] = useState([]);
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
-      AuctionEntity.list("-created_date", 50).then(setAuctions).catch(() => {}),
+      base44.entities.Product.list("-created_date", 50).then(setProducts).catch(() => {}),
       ShopEntity.list("-created_date", 10).then(setShops).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
@@ -441,7 +445,7 @@ export default function Home() {
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection />
       <FeaturedBanner />
-      <UpcomingAuctionsSection auctions={auctions} />
+      <UpcomingAuctionsSection products={products} />
       <AdditionalAuctionsSection />
       <BuyNowSection />
       <ShopsSection shops={shops} />

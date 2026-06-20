@@ -246,21 +246,14 @@ function UpcomingAuctionsSection({ products }) {
 
 
 function ShopsSection({ shops }) {
-  const staticFallback = [
-    { name: "פסארל", description: "תכשיטים, כסף, אמנות, יודאיקה, אספנות ועוד...", location: "נתניה", shop_url: "#" },
-    { name: "המגיש", description: "חנות מכרזי המגיש", location: "גדרה", shop_url: "#" },
-    { name: "טירוש", description: "בית מכרזים טירוש — חנות קנייה ישירה", location: "הרצליה", shop_url: "#" },
-    { name: "אימפריה מכרזים", description: "ישראליאנה נדירה מאוסף פרטי", location: "רמת גן", shop_url: "#" },
-    { name: "היסטוריה למכירה", description: "פריטים היסטוריים ומזכרות", location: "גבעתיים", shop_url: "#" },
-  ];
-  const items = shops.length > 0 ? shops : staticFallback;
+  if (shops.length === 0) return null;
 
   return (
     <section className="py-10" style={{ background: "linear-gradient(180deg, #fafafa, #fff)" }} dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeader title="רכישה ישירה — חנויות" color="#9d00ff" icon={Store} />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {items.map((shop, index) => (
+          {shops.map((shop, index) => (
             <AnimatedElement key={shop.id || index} delay={index * 70}>
               <div className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col gap-3 group hover:border-transparent transition-all duration-300 card-neon-cyan h-full"
                 style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.05)" }}>

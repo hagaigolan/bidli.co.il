@@ -1,5 +1,7 @@
-import { useParams } from "react-router-dom";
-import { Tag, Search, Filter, ArrowRight } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { Search, Filter, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 
 const CATEGORIES = {
   "אמנות": {
@@ -46,19 +48,19 @@ const CATEGORIES = {
   },
 };
 
-const SAMPLE_ITEMS = [
-  { title: "פריט נדיר מהמאה ה-19", price: "₪2,500", image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-  { title: "אוסף פרטי מיוחד", price: "₪1,800", image: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-  { title: "עבודה מקורית חתומה", price: "₪5,200", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-  { title: "פריט אספנות נדיר", price: "₪900", image: "https://images.unsplash.com/photo-1601925228008-f1b1d2e5e2f3?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-  { title: "מהדורה מוגבלת", price: "₪3,400", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-  { title: "אוצר מאוסף פרטי", price: "₪7,100", image: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=300&fit=crop", status: "פתוח להצעות" },
-];
-
 export default function Category() {
   const { name } = useParams();
   const decodedName = decodeURIComponent(name);
   const cat = CATEGORIES[decodedName];
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    base44.entities.Product.filter({ category: decodedName, status: "active" }, "-created_date", 50)
+      .then(setItems)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [decodedName]);
 
   if (!cat) {
     return (
@@ -128,42 +130,44 @@ export default function Category() {
 
       {/* Items grid */}
       <div className="max-w-5xl mx-auto px-4 py-10">
-        <p className="text-sm text-gray-400 mb-6">{SAMPLE_ITEMS.length} פריטים נמצאו</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {SAMPLE_ITEMS.map((item, i) => (
-            <div key={i} className="bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
-              <div className="aspect-[4/3] overflow-hidden bg-gray-50">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="p-3">
-                <div className="inline-block text-xs px-2 py-0.5 rounded-full mb-2 font-medium"
-                  style={{ background: cat.color + "15", color: cat.color }}>
-                  {item.status}
-                </div>
-                <h3 className="font-semibold text-gray-800 text-xs mb-2 line-clamp-2">{item.title}</h3>
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-gray-900">{item.price}</span>
-                  <button className="text-white text-xs px-3 py-1.5 rounded-xl font-semibold transition-all hover:opacity-90"
-                    style={{ background: `linear-gradient(135deg, ${cat.color}, ${cat.color === "#f700ff" ? "#9d00ff" : cat.color === "#9d00ff" ? "#f700ff" : "#0088ff"})` }}>
-                    הצע
-                  </button>
-                </div>
-              </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center p-8 rounded-2xl border border-dashed border-gray-200">
+            <div className="text-4xl mb-3">{cat.icon}</div>
+            <h3 className="font-bold text-gray-700 mb-1">אין פריטים פעילים כרגע</h3>
+            <p className="text-sm text-gray-400">הירשם לקבלת עדכונים כשמכרזים חדשים יתווספו לקטגוריה זו</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-gray-400 mb-6">{items.length} פריטים נמצאו</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {items.map((item) => (
+                <Link key={item.id} to={`/auction/${item.id}`} className="bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300"
+                  style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
+                  <div className="aspect-[4/3] overflow-hidden bg-gray-50">
+                    {item.image_url
+                      ? <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      : <div className="w-full h-full flex items-center justify-center text-4xl">{cat.icon}</div>
+                    }
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-gray-800 text-xs mb-2 line-clamp-2">{item.title}</h3>
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-gray-900">₪{item.current_price?.toLocaleString() || item.starting_price?.toLocaleString()}</span>
+                      <span className="text-white text-xs px-3 py-1.5 rounded-xl font-semibold"
+                        style={{ background: `linear-gradient(135deg, ${cat.color}, #9d00ff)` }}>
+                        הצע
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Empty state CTA */}
-        <div className="mt-12 text-center p-8 rounded-2xl border border-dashed border-gray-200">
-          <div className="text-4xl mb-3">{cat.icon}</div>
-          <h3 className="font-bold text-gray-700 mb-1">מכרזים פעילים בקרוב</h3>
-          <p className="text-sm text-gray-400">הירשם לקבלת עדכונים כשמכרזים חדשים יתווספו לקטגוריה זו</p>
-          <button className="mt-4 text-white text-sm px-6 py-2.5 rounded-xl font-semibold"
-            style={{ background: `linear-gradient(135deg, ${cat.color}, #9d00ff)` }}>
-            הירשם לעדכונים
-          </button>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -83,7 +83,7 @@ export default function Footer() {
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
                 <Link to="/terms?tab=terms" className="text-xs text-white/40 hover:text-white transition-colors">תנאי שימוש</Link>
-                <Link to="/terms?tab=privacy" className="text-xs text-white/40 hover:text-white transition-colors">מדיניות פרטיות</Link>
+                <span className="text-xs text-white/40">מדיניות פרטיות</span>
               </nav>
               <div className="border-t border-white/10 pt-4">
                 <p className="text-xs text-white/40 mb-1">יש לך משהו למכור?</p>

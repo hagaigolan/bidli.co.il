@@ -231,7 +231,10 @@ function Section({ section }) {
 
 export default function TermsAndPrivacy() {
   const navigate = useNavigate();
-  const [activeDoc, setActiveDoc] = useState("terms");
+  const [activeDoc, setActiveDoc] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("tab") === "privacy" ? "privacy" : "terms";
+  });
 
   const termsSections = sections.slice(0, 7);
   const privacySections = sections.slice(4, 6); // data + escrow are shared

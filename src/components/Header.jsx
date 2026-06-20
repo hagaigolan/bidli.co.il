@@ -16,22 +16,22 @@ export default function Header() {
   }, []);
 
   const categoryLinks = [
-    { label: "אמנות" },
-    { label: "יודאיקה" },
-    { label: "אספנות" },
-    { label: "נומיסמטיקה" },
-    { label: "תכשיטים" },
-    { label: "עיצוב הבית" },
-    { label: "אופנה" },
-    { label: "רכבים" },
-    { label: 'נדל"ן' },
-    { label: "ספרים" },
-    { label: "בולים" },
-    { label: "מטבעות" },
-    { label: "כלי נגינה" },
-    { label: "יין ואלכוהול" },
-    { label: "שעונים" },
-    { label: "אלקטרוניקה" },
+    { label: "אמנות", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=120&h=120&fit=crop&auto=format" },
+    { label: "יודאיקה", img: "https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=120&h=120&fit=crop&auto=format" },
+    { label: "אספנות", img: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=120&h=120&fit=crop&auto=format" },
+    { label: "נומיסמטיקה", img: "https://images.unsplash.com/photo-1624365169364-0640dd10e180?w=120&h=120&fit=crop&auto=format" },
+    { label: "תכשיטים", img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=120&h=120&fit=crop&auto=format" },
+    { label: "עיצוב הבית", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=120&h=120&fit=crop&auto=format" },
+    { label: "אופנה", img: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&h=120&fit=crop&auto=format" },
+    { label: "רכבים", img: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=120&h=120&fit=crop&auto=format" },
+    { label: 'נדל"ן', img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=120&h=120&fit=crop&auto=format" },
+    { label: "ספרים", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=120&h=120&fit=crop&auto=format" },
+    { label: "בולים", img: "https://images.unsplash.com/photo-1606293926075-69a00dbfde81?w=120&h=120&fit=crop&auto=format" },
+    { label: "מטבעות", img: "https://images.unsplash.com/photo-1618044733300-9472054094ee?w=120&h=120&fit=crop&auto=format" },
+    { label: "כלי נגינה", img: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=120&h=120&fit=crop&auto=format" },
+    { label: "יין ואלכוהול", img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=120&h=120&fit=crop&auto=format" },
+    { label: "שעונים", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&auto=format" },
+    { label: "אלקטרוניקה", img: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=120&h=120&fit=crop&auto=format" },
   ];
 
   return (
@@ -127,20 +127,17 @@ export default function Header() {
 
       {/* Category strip */}
       <div className="hidden sm:block border-b border-gray-100 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide h-10 gap-1">
-          {categoryLinks.map((link, i) => {
-            const colors = ["#f700ff","#9d00ff","#00f7ff","#0088ff","#f700ff","#9d00ff","#00f7ff"];
-            return (
-              <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`} style={{ color: colors[i % colors.length] }} className="flex-shrink-0 px-3 py-1 text-xs font-semibold rounded-full hover:bg-gray-50 transition-colors whitespace-nowrap">
-                {link.label}
-              </Link>
-            );
-          })}
-          <div className="mr-auto flex-shrink-0">
-            <a href="#" className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 px-3 py-1">
-              עברית <ChevronDown className="h-3 w-3" />
-            </a>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-2 gap-4">
+          {categoryLinks.map((link) => (
+            <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
+              className="flex-shrink-0 flex flex-col items-center gap-1 group">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#f700ff66] transition-all duration-200"
+                style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
+                <img src={link.img} alt={link.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <span className="text-xs text-gray-600 group-hover:text-[#f700ff] transition-colors whitespace-nowrap font-medium">{link.label}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </header>

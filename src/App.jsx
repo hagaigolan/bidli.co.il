@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import AdminDispute from './pages/AdminDispute';
 import AdminDashboard from './pages/AdminDashboard';
 import TermsAndPrivacy from './pages/TermsAndPrivacy';
+import Stocks from './pages/Stocks';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/disputes" element={<AdminDispute />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/terms" element={<TermsAndPrivacy />} />
+        <Route path="/stocks" element={<Stocks />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

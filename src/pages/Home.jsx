@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { MapPin, Clock, Store, Search, Zap } from "lucide-react";
+import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -207,6 +207,46 @@ function FeaturedBanner() {
   );
 }
 
+function AuctionCountdown({ endsAt }) {
+  const calc = () => {
+    const diff = new Date(endsAt) - Date.now();
+    if (diff <= 0) return null;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    return { h, m, s, total: diff };
+  };
+  const [left, setLeft] = useState(calc);
+  useEffect(() => {
+    const t = setInterval(() => setLeft(calc()), 1000);
+    return () => clearInterval(t);
+  }, [endsAt]);
+
+  if (!left) return (
+    <div className="flex items-center justify-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-white" style={{ background: "#6b7280" }}>
+      <Clock className="h-3 w-3" /> הסתיים
+    </div>
+  );
+
+  const critical = left.total < 60 * 60 * 1000;       // < 1 hour — red + blink
+  const urgent   = left.total < 3 * 60 * 60 * 1000;   // < 3 hours — orange
+
+  const bg = critical ? "#ef4444" : urgent ? "#f97316" : "#0088ff";
+  const time = left.h > 0
+    ? `${String(left.h).padStart(2,"0")}:${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`
+    : `${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`;
+
+  return (
+    <div
+      className={`flex items-center justify-center gap-1 px-2 py-1 rounded-lg text-xs font-black text-white font-mono ${critical ? "animate-pulse" : ""}`}
+      style={{ background: bg, boxShadow: critical ? `0 0 10px ${bg}88` : "none" }}
+    >
+      {critical ? <Flame className="h-3 w-3 flex-shrink-0" /> : <Clock className="h-3 w-3 flex-shrink-0" />}
+      {time}
+    </div>
+  );
+}
+
 function UpcomingAuctionsSection({ products }) {
   if (products.length === 0) return null;
 
@@ -231,7 +271,10 @@ function UpcomingAuctionsSection({ products }) {
                       <span className="truncate">{product.location}</span>
                     </div>
                   )}
-                  <p className="font-black text-sm text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
+                  <div className="flex items-center justify-between gap-2 mt-1">
+                    <p className="font-black text-sm text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
+                    {product.ends_at && <AuctionCountdown endsAt={product.ends_at} />}
+                  </div>
                 </div>
               </a>
             </AnimatedElement>

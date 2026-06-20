@@ -30,6 +30,18 @@
     "highest_bidder": {
       "type": "string"
     },
+    "highest_bidder_email": {
+      "type": "string"
+    },
+    "second_bidder_name": {
+      "type": "string"
+    },
+    "second_bidder_email": {
+      "type": "string"
+    },
+    "second_bid_amount": {
+      "type": "number"
+    },
     "image_url": {
       "type": "string"
     },
@@ -39,10 +51,19 @@
     "seller_email": {
       "type": "string"
     },
+    "seller_user_id": {
+      "type": "string"
+    },
     "location": {
       "type": "string"
     },
     "ends_at": {
+      "type": "string"
+    },
+    "payment_deadline": {
+      "type": "string"
+    },
+    "second_bidder_deadline": {
       "type": "string"
     },
     "status": {
@@ -50,9 +71,25 @@
       "enum": [
         "active",
         "ended",
-        "sold"
+        "awaiting_payment",
+        "paid",
+        "escrow",
+        "delivered",
+        "released",
+        "disputed",
+        "cancelled"
       ],
       "default": "active"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "frozen",
+        "released",
+        "refunded"
+      ],
+      "default": "unpaid"
     },
     "bid_count": {
       "type": "number",
@@ -68,6 +105,18 @@
     "commission_paid": {
       "type": "boolean",
       "default": false
+    },
+    "escrow_amount": {
+      "type": "number"
+    },
+    "shipped_at": {
+      "type": "string"
+    },
+    "delivered_at": {
+      "type": "string"
+    },
+    "dispute_reason": {
+      "type": "string"
     }
   },
   "required": [

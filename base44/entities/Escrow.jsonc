@@ -1,0 +1,68 @@
+{
+  "type": "object",
+  "name": "Escrow",
+  "properties": {
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "buyer_name": {
+      "type": "string"
+    },
+    "buyer_email": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "commission_amount": {
+      "type": "number"
+    },
+    "seller_payout": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "frozen",
+        "released",
+        "refunded",
+        "disputed"
+      ],
+      "default": "frozen"
+    },
+    "paid_at": {
+      "type": "string"
+    },
+    "release_after": {
+      "type": "string"
+    },
+    "released_at": {
+      "type": "string"
+    },
+    "dispute_reason": {
+      "type": "string"
+    },
+    "dispute_opened_at": {
+      "type": "string"
+    },
+    "resolved_at": {
+      "type": "string"
+    },
+    "resolved_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "amount"
+  ]
+}

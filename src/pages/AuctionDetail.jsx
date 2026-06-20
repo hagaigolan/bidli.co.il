@@ -309,16 +309,36 @@ export default function AuctionDetail() {
       setBidError(`ההצעה חייבת להיות לפחות ₪${minBid}`);
       return;
     }
+    // Anti-shill: block seller from bidding on own auction
+    const myEmail = localStorage.getItem("bidder_email");
+    if (product.seller_email && myEmail && product.seller_email === myEmail) {
+      setBidError("לא ניתן להגיש הצעה על מכרז שפרסמת בעצמך");
+      return;
+    }
+    if (product.seller_name && bidderName && product.seller_name === bidderName && !myEmail) {
+      setBidError("לא ניתן להגיש הצעה על מכרז שפרסמת בעצמך");
+      return;
+    }
     setBidding(true); setBidError("");
     try {
       const newPrice = parseFloat(bidAmount);
       const name = bidderName || "אנונימי";
       if (bidderName) localStorage.setItem("bidder_name", bidderName);
       setMyLastBid(newPrice);
-      await base44.entities.Product.update(product.id, {
-        current_price: newPrice, highest_bidder: name,
+      // Track second bidder for fallback in case winner doesn't pay
+      const updateData = {
+        current_price: newPrice,
+        highest_bidder: name,
+        highest_bidder_email: myEmail || "",
         bid_count: (product.bid_count || 0) + 1,
-      });
+      };
+      // Previous leader becomes second bidder
+      if (product.highest_bidder && product.highest_bidder !== name) {
+        updateData.second_bidder_name = product.highest_bidder;
+        updateData.second_bidder_email = product.highest_bidder_email || "";
+        updateData.second_bid_amount = product.current_price || 0;
+      }
+      await base44.entities.Product.update(product.id, updateData);
       await base44.entities.Bid.create({
         product_id: product.id, product_title: product.title,
         product_image_url: product.image_url || "",

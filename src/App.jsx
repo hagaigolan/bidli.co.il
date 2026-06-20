@@ -14,6 +14,7 @@ import UploadProduct from './pages/UploadProduct';
 import Auctions from './pages/Auctions';
 import AuctionDetail from './pages/AuctionDetail';
 import Profile from './pages/Profile';
+import AdminDispute from './pages/AdminDispute';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/auctions" element={<Auctions />} />
         <Route path="/auction/:id" element={<AuctionDetail />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin/disputes" element={<AdminDispute />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

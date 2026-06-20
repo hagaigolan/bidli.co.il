@@ -38,6 +38,21 @@
         "id"
       ],
       "default": "none"
+    },
+    "trust_score": {
+      "type": "number",
+      "default": 100
+    },
+    "strikes": {
+      "type": "number",
+      "default": 0
+    },
+    "is_banned": {
+      "type": "boolean",
+      "default": false
+    },
+    "ban_reason": {
+      "type": "string"
     }
   },
   "required": [

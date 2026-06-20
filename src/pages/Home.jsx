@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { MapPin, Clock, Store, Search, Zap, TrendingUp, Tag } from "lucide-react";
+import { MapPin, Clock, Store, Search, Zap } from "lucide-react";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -243,29 +243,7 @@ function UpcomingAuctionsSection({ products }) {
 }
 
 
-const buyNowAuctions = [
-  { name: "גל קולקציה", auction_number: "56", date: "17 יוני 2026", location: "גבעת שמואל", description: "נומיסמטיקה, עטים, שעונים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/e3ea4ef3b_bidspirit-images_global_ssl_fastly_net_298_v4_e97ddb55.jpg", part: "", view_url: "#" },
-  { name: "פעם שלישית", auction_number: "180", date: "17 יוני 2026", location: "בנימינה", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/21bda5af8_bidspirit-images_global_ssl_fastly_net_854_v2_51dd077b.jpg", part: "2", view_url: "#" },
-  { name: "אוצרות", auction_number: "22", date: "16 יוני 2026", location: "בני ברק", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/10ad13964_bidspirit-images_global_ssl_fastly_net_264_v1_95696f6f.png", part: "", view_url: "#" },
-  { name: "יוצרים — אמנות ישראלית", auction_number: "31", date: "15 יוני 2026", description: "ציורי מקור ולית'וגרפיות", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/0d980a102_bidspirit-images_global_ssl_fastly_net_578_v4_70c56d47.jpg", part: "", view_url: "#" },
-  { name: "גלריה רון אוחיון", auction_number: "75", date: "14 יוני 2026", location: "תל אביב-יפו", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/8f5c224fa_bidspirit-images_global_ssl_fastly_net_397_v17_57845b84.jpg", part: "", view_url: "#" },
-  { name: "ARTY", auction_number: "67", date: "4 יוני 2026", location: "תל אביב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/cddc3a0c9_bidspirit-images_global_ssl_fastly_net_378_v12_789212fd.jpg", part: "", view_url: "#" },
-];
 
-function BuyNowSection() {
-  return (
-    <section className="bg-white py-10 border-t border-gray-50" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="קנה עכשיו — פריטים שלא נמכרו" color="#00f7ff" icon={Tag} />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {buyNowAuctions.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} buttonLabel="תוצאות" accentColor="#00c4cc" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function ShopsSection({ shops }) {
   const staticFallback = [
@@ -317,94 +295,7 @@ function ShopsSection({ shops }) {
   );
 }
 
-const pastResults = [
-  { name: "מכרזי מידלר", auction_number: "3", date: "16 יוני 2026", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/dced20964_res_cloudinary_com_portal_AuctionHouse_69db407a0128505dcb25e6f4_mainPageLogo_28e971ea.png", part: "", view_url: "#" },
-  { name: "הר ציון אמנות", auction_number: "10", date: "16 יוני 2026", location: "חולון", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/2ca00b277_res_cloudinary_com_portal_AuctionHouse_5f0700b50b6b347c696d824e_mainPageLogo_e7b0e49f.png", part: "", view_url: "#" },
-  { name: "קדמת דנא", auction_number: "42", date: "16 יוני 2026", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/7a043dcd5_bidspirit-images_global_ssl_fastly_net_594_v1_59e23bcd.jpg", part: "2", view_url: "#" },
-  { name: "AGG", auction_number: "99", date: "15 יוני 2026", location: "באר שבע", description: "פוקימון", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/68307bf49_bidspirit-images_global_ssl_fastly_net_354_v1_09d85b4d.jpg", part: "", view_url: "#" },
-  { name: "מצארט", auction_number: "10226", date: "15 יוני 2026", location: "ירושלים", description: "אינטריירים 102", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/a37a7d0ca_bidspirit-images_global_ssl_fastly_net_334_v3_2a200dd9.jpg", part: "", view_url: "#" },
-  { name: "מכרזי מלך דוד", auction_number: "206", date: "15 יוני 2026", location: "ירושלים", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/ccc55c8de_bidspirit-images_global_ssl_fastly_net_1094_v1_8448da00.jpg", part: "2", view_url: "#" },
-];
 
-function PastResultsSection() {
-  return (
-    <section className="bg-white py-10 border-t border-gray-50" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="תוצאות מכרזים קודמים" color="#0088ff" icon={TrendingUp} />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {pastResults.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} buttonLabel="תוצאות" accentColor="#0088ff" />
-          ))}
-        </div>
-        <div className="text-center mt-6">
-          <button className="btn-neon-cyan rounded-xl px-8 py-2.5 text-sm font-bold">כל תוצאות המכרזים</button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const carsAuctions = [
-  { name: "גלעד נרקיס | משרד עורכי דין", date: "ה', 18 יוני", time: "02:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/7d41bb1ee_bidspirit-images_global_ssl_fastly_net_248_v2_452d8d1c.jpg", view_url: "#" },
-  { name: "פינקלשטיין חננאל, משרד עורכי דין", date: "ה', 18 יוני", time: "03:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/3bc6091c6_bidspirit-images_global_ssl_fastly_net_300_v1_ab79cc9c.jpg", view_url: "#" },
-  { name: "שטאובר את צברי משרד עורכי דין", date: "ה', 18 יוני", time: "03:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/8a6388be2_bidspirit-images_global_ssl_fastly_net_241_v1_c08e1856.jpg", view_url: "#" },
-  { name: "שגיב ויפעת עזרא | משרד עורכי דין", date: "ה', 18 יוני", time: "05:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/f3c005374_bidspirit-images_global_ssl_fastly_net_242_v1_cf120317.jpg", view_url: "#" },
-];
-
-const realEstateAuctions = [
-  { name: "עופר אלפסי | משרד עורכי דין", date: "ה', 4 יולי", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/12100237e_res_cloudinary_com_portal_AuctionHouse_5c17a59f9a0ed70fa88751a5_mainPageLogo_c04cc2e2.png", view_url: "#" },
-  { name: "שגיא רוזנק, חברת עורכי דין", date: "א', 21 יולי", time: "05:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/54c498646_res_cloudinary_com_portal_AuctionHouse_665581629ce5c9034dff7ef1_mainPageLogo_848589e8.png", view_url: "#" },
-  { name: "ישראל אדלשטיין | משרד עורכי דין", date: "א', 21 יולי", time: "05:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/1981440ec_res_cloudinary_com_portal_AuctionHouse_5ef1d37d7f85ea0960cdfa16_mainPageLogo_62cd356e.png", view_url: "#" },
-  { name: "ש.כהן ושות' | עורכי דין ונוטריון", date: "א', 30 מרץ", time: "05:00", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/dced20964_res_cloudinary_com_portal_AuctionHouse_69db407a0128505dcb25e6f4_mainPageLogo_28e971ea.png", view_url: "#" },
-];
-
-function SpecialtyAuctionsSection() {
-  return (
-    <section className="py-10" style={{ background: "linear-gradient(180deg, #fafafa, #fff)" }} dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="מכרזי רכבים" color="#f700ff" icon={Zap} />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-          {carsAuctions.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} accentColor="#f700ff" />
-          ))}
-        </div>
-        <SectionHeader title={'מכרזי נדל"ן'} color="#9d00ff" icon={TrendingUp} />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {realEstateAuctions.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} buttonLabel="פרטים נוספים" accentColor="#9d00ff" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const futureAuctions = [
-  { name: "HAMIGOS", auction_number: "52", date: "ד', 24 יוני", time: "13:00", location: "נתניה", description: "קטלוג יהיה זמין בקרוב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/a04d2b89e_bidspirit-images_global_ssl_fastly_net_293_v2_d486dfb1.jpg", view_url: "#" },
-  { name: "גלריה יאיר", auction_number: "87", date: "ש', 27 יוני", time: "13:30", location: "תל אביב-יפו", description: "קטלוג יהיה זמין בקרוב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/ba582297d_res_cloudinary_com_portal_AuctionHouse_53aa67d0e4b032e680e98718_mainPageLogo_a53befe0.png", view_url: "#" },
-  { name: "דוזה אנטיקות", auction_number: "93", date: "ב', 29 יוני", time: "13:00", location: "זכרון יעקב", description: "קטלוג יהיה זמין בקרוב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/43d57ad83_bidspirit-images_global_ssl_fastly_net_343_v1_c33282d3.jpg", view_url: "#" },
-  { name: "מורשת", auction_number: "93", date: "ג', 30 יוני", time: "13:00", location: "בני ברק", description: "מכרז חב\"ד ה-22", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/cf4a56f83_bidspirit-images_global_ssl_fastly_net_258_v1_726fdbcd.jpg", view_url: "#" },
-  { name: "וינרס", auction_number: "155", date: "א', 5 יולי", time: "13:00", location: "ירושלים", description: "קטלוג יהיה זמין בקרוב", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/201615c3f_bidspirit-images_global_ssl_fastly_net_133_v1_824b360b.jpg", view_url: "#" },
-  { name: "תכשיטי יעקב", auction_number: "60", date: "ה', 9 יולי", time: "11:00", location: "חולון", description: "מהדורה מוגבלת — תכשיטים, אמנות, אנטיקות", image_url: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/687f80bb2_bidspirit-images_global_ssl_fastly_net_306_v1_27f6e0ee.jpg", view_url: "#" },
-];
-
-function FutureAuctionsSection() {
-  return (
-    <section className="bg-white py-10 border-t border-gray-50" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="מכרזים עתידיים" color="#00f7ff" icon={Zap} />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {futureAuctions.map((auction, index) => (
-            <AuctionCard key={index} auction={auction} index={index} buttonLabel="פרטים נוספים" accentColor="#00c4cc" />
-          ))}
-        </div>
-        <div className="text-center mt-6">
-          <button className="btn-neon-cyan rounded-xl px-8 py-2.5 text-sm font-bold">כל המכרזים העתידיים</button>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -423,11 +314,7 @@ export default function Home() {
       <HeroSection />
       <FeaturedBanner />
       <UpcomingAuctionsSection products={products} />
-      <BuyNowSection />
       <ShopsSection shops={shops} />
-      <PastResultsSection />
-      <SpecialtyAuctionsSection />
-      <FutureAuctionsSection />
     </div>
   );
 }

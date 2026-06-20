@@ -57,6 +57,17 @@
     "bid_count": {
       "type": "number",
       "default": 0
+    },
+    "commission_rate": {
+      "type": "number",
+      "default": 8
+    },
+    "commission_amount": {
+      "type": "number"
+    },
+    "commission_paid": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

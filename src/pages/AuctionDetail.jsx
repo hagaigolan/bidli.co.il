@@ -82,6 +82,28 @@ export default function AuctionDetail() {
   const ended = product && new Date(product.ends_at) <= new Date();
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
 
+  // Calculate and save commission when auction ends with a winner
+  useEffect(() => {
+    if (!product || !ended || product.commission_amount || !product.highest_bidder) return;
+    const rate = product.commission_rate ?? 8;
+    const finalPrice = product.current_price || 0;
+    const commissionAmount = parseFloat((finalPrice * rate / 100).toFixed(2));
+    // Save commission record and mark on product
+    base44.entities.Commission.create({
+      product_id: product.id,
+      product_title: product.title,
+      seller_name: product.seller_name || "",
+      seller_email: product.seller_email || "",
+      final_sale_price: finalPrice,
+      commission_rate: rate,
+      commission_amount: commissionAmount,
+      status: "pending",
+    });
+    base44.entities.Product.update(product.id, { commission_amount: commissionAmount, status: "sold" });
+    setProduct(p => ({ ...p, commission_amount: commissionAmount, status: "sold" }));
+  }, [ended, product?.id]);
+
+
   const handleBid = async (e) => {
     e.preventDefault();
     if (!bidAmount || parseFloat(bidAmount) < minBid) {
@@ -217,12 +239,32 @@ export default function AuctionDetail() {
                 </button>
               </form>
             ) : (
-              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 text-center">
-                <Award className="h-6 w-6 mx-auto mb-2 text-gray-400" />
-                {product.highest_bidder
-                  ? <><p className="font-bold text-gray-800">הזוכה: {product.highest_bidder}</p>
-                     <p className="text-lg font-black mt-1" style={{ color: "#f700ff" }}>₪{(product.current_price || 0).toLocaleString()}</p></>
-                  : <p className="text-sm text-gray-500">לא הוגשו הצעות</p>}
+              <div className="rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden">
+                <div className="p-4 text-center border-b border-gray-100">
+                  <Award className="h-6 w-6 mx-auto mb-2 text-gray-400" />
+                  {product.highest_bidder
+                    ? <><p className="font-bold text-gray-800">הזוכה: {product.highest_bidder}</p>
+                       <p className="text-lg font-black mt-1" style={{ color: "#f700ff" }}>₪{(product.current_price || 0).toLocaleString()}</p></>
+                    : <p className="text-sm text-gray-500">לא הוגשו הצעות</p>}
+                </div>
+                {product.highest_bidder && (
+                  <div className="p-3 text-xs text-gray-500 space-y-1" dir="rtl">
+                    <div className="flex justify-between">
+                      <span>מחיר מכירה סופי</span>
+                      <span className="font-semibold text-gray-800">₪{(product.current_price || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>עמלת פלטפורמה ({product.commission_rate ?? 8}%)</span>
+                      <span className="font-semibold" style={{ color: "#f700ff" }}>
+                        ₪{(product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 8) / 100)).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t border-gray-200 pt-1 font-semibold text-gray-800">
+                      <span>נטו למוכר</span>
+                      <span>₪{((product.current_price || 0) - (product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 8) / 100))).toFixed(2)}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

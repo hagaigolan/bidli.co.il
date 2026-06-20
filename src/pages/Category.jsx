@@ -7,44 +7,82 @@ const CATEGORIES = {
   "אמנות": {
     icon: "🎨",
     description: "ציורים, פסלים, הדפסים ועבודות אמנות מקוריות מאמנים ישראליים ובינלאומיים.",
-    color: "#f700ff",
     subcategories: ["ציירים ישראלים", "אמנות בינלאומית", "הדפסים ולית'וגרפיה", "פסלים", "צילום אמנותי"],
   },
   "יודאיקה": {
     icon: "✡️",
     description: "חפצי קודש, ספרי תורה, מזוזות, חנוכיות ופריטי הירושה היהודית.",
-    color: "#9d00ff",
     subcategories: ["ספרי תורה", "חנוכיות", "מזוזות", "כסף יודאי", "מסמכים ומכתבים"],
   },
   "אספנות": {
     icon: "🏺",
     description: "פריטים נדירים, מזכרות, צעצועים עתיקים, כרטיסי ספורט וכל מה שאוהבי אספנות מחפשים.",
-    color: "#00f7ff",
     subcategories: ["מזכרות ספורט", "צעצועים עתיקים", "פוסטרים ושלטים", "בובות ופיגורינות", "מיכלים ובקבוקים"],
   },
   "נומיסמטיקה": {
     icon: "🪙",
     description: "מטבעות, שטרות ובולים נדירים מכל תקופות ההיסטוריה.",
-    color: "#0088ff",
     subcategories: ["מטבעות ישראליים", "מטבעות עולמיים", "שטרות", "בולים", "מדליות"],
   },
   "תכשיטים": {
     icon: "💎",
     description: "תכשיטים יוקרתיים, שעונים, אבני חן ותכשיטי וינטג'.",
-    color: "#f700ff",
     subcategories: ["טבעות", "שרשראות", "עגילים", "שעונים", "תכשיטי וינטג'"],
   },
   "עיצוב הבית": {
     icon: "🏠",
     description: "רהיטים, יצירות דקורטיביות, שטיחים וכלי בית עתיקים ומעוצבים.",
-    color: "#9d00ff",
     subcategories: ["רהיטים", "שטיחים", "כלי חרס ופורצלן", "זכוכית", "תאורה"],
   },
   "אופנה": {
     icon: "👗",
     description: "בגדים, תיקים ואביזרי אופנה מעצבים מובילים ופריטי וינטג' נדירים.",
-    color: "#00f7ff",
     subcategories: ["תיקים", "נעליים", "שעונים", "בגדי מעצבים", "תכשיטי אופנה"],
+  },
+  "רכבים": {
+    icon: "🚗",
+    description: "רכבים, אופנועים, כלי רכב קלאסיים וחלקי חילוף.",
+    subcategories: ["רכבים קלאסיים", "אופנועים", "טרקטורונים", "חלקי חילוף", "אביזרים"],
+  },
+  'נדל"ן': {
+    icon: "🏢",
+    description: 'דירות, בתים, קרקעות ונכסים מסחריים למכירה במכרז.',
+    subcategories: ["דירות", "בתים פרטיים", "קרקעות", "נכסים מסחריים", "פנטהאוז"],
+  },
+  "ספרים": {
+    icon: "📚",
+    description: "ספרים נדירים, כתבי יד, ספרי ילדים עתיקים ואוספי ספרים ייחודיים.",
+    subcategories: ["ספרים עתיקים", "כתבי יד", "ספרי ילדים", "מגזינים", "מפות עתיקות"],
+  },
+  "בולים": {
+    icon: "📮",
+    description: "בולים נדירים מישראל ומהעולם, אוספים מיוחדים ובולים היסטוריים.",
+    subcategories: ["בולים ישראליים", "בולים עולמיים", "גיליונות מלאים", "בולים על מעטפות", "בולי שגיאה"],
+  },
+  "מטבעות": {
+    icon: "🪙",
+    description: "מטבעות עתיקים ומודרניים, מדליות ושטרות נדירים מכל העולם.",
+    subcategories: ["מטבעות ישראליים", "מטבעות עולמיים", "מדליות", "שטרות", "ערכות אספנים"],
+  },
+  "כלי נגינה": {
+    icon: "🎸",
+    description: "גיטרות, כינורות, פסנתרים וכלי נגינה נדירים ווינטג'.",
+    subcategories: ["גיטרות", "כינורות", "פסנתרים", "כלי נשיפה", "תופים"],
+  },
+  "יין ואלכוהול": {
+    icon: "🍷",
+    description: "יינות יוקרה, וויסקי נדיר, קוניאק ואספי אלכוהול מיוחדים.",
+    subcategories: ["יין אדום", "יין לבן", "וויסקי", "קוניאק", "בקבוקים נדירים"],
+  },
+  "שעונים": {
+    icon: "⌚",
+    description: "שעוני יוקרה, שעונים עתיקים, שעוני כיס ומותגים מובילים.",
+    subcategories: ["שעוני יוקרה", "שעונים עתיקים", "שעוני כיס", "שעוני ספורט", "שעוני וינטג'"],
+  },
+  "אלקטרוניקה": {
+    icon: "💻",
+    description: "מחשבים, טלפונים, מצלמות וגאדג'טים טכנולוגיים.",
+    subcategories: ["מחשבים", "טלפונים", "מצלמות", "אודיו", "גאדג'טים"],
   },
 };
 
@@ -77,32 +115,29 @@ export default function Category() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <div className="relative overflow-hidden py-14 px-4" style={{ background: `linear-gradient(135deg, ${cat.color}0a, #ffffff)` }}>
-        <div className="absolute inset-0 pointer-events-none opacity-20" style={{
-          backgroundImage: `linear-gradient(${cat.color}15 1px, transparent 1px), linear-gradient(90deg, ${cat.color}15 1px, transparent 1px)`,
-          backgroundSize: "50px 50px"
-        }} />
-        <div className="max-w-5xl mx-auto relative z-10">
-          <a href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
+      <div className="px-4 pt-6 pb-5" style={{ background: "linear-gradient(135deg, #f3e8ff 0%, #fdf4ff 60%, #ffffff 100%)" }}>
+        <div className="max-w-5xl mx-auto">
+          <a href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors">
             <ArrowRight className="h-4 w-4 rotate-180" />
             חזרה לדף הבית
           </a>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
-              style={{ background: `${cat.color}18`, border: `1px solid ${cat.color}44` }}>
-              {cat.icon}
+
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex-1">
+              <h1 className="text-2xl font-black text-gray-900 mb-1">{decodedName}</h1>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-lg">{cat.description}</p>
             </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900">{decodedName}</h1>
-              <p className="text-gray-500 text-sm mt-1 max-w-xl">{cat.description}</p>
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+              style={{ background: "#f3e8ff", border: "1px solid #e9d5ff" }}>
+              {cat.icon}
             </div>
           </div>
 
           {/* Subcategories */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {cat.subcategories.map((sub, i) => (
-              <button key={sub} className="px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105"
-                style={{ borderColor: cat.color + "55", color: cat.color, background: cat.color + "0f" }}>
+          <div className="flex flex-wrap gap-2">
+            {cat.subcategories.map((sub) => (
+              <button key={sub} className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: "#f3e8ff", color: "#7c3aed", border: "1px solid #e9d5ff" }}>
                 {sub}
               </button>
             ))}

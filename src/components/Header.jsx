@@ -23,6 +23,15 @@ export default function Header() {
     { label: "תכשיטים" },
     { label: "עיצוב הבית" },
     { label: "אופנה" },
+    { label: "רכבים" },
+    { label: 'נדל"ן' },
+    { label: "ספרים" },
+    { label: "בולים" },
+    { label: "מטבעות" },
+    { label: "כלי נגינה" },
+    { label: "יין ואלכוהול" },
+    { label: "שעונים" },
+    { label: "אלקטרוניקה" },
   ];
 
   return (

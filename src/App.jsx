@@ -15,6 +15,7 @@ import Auctions from './pages/Auctions';
 import AuctionDetail from './pages/AuctionDetail';
 import Profile from './pages/Profile';
 import AdminDispute from './pages/AdminDispute';
+import TermsAndPrivacy from './pages/TermsAndPrivacy';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/auction/:id" element={<AuctionDetail />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin/disputes" element={<AdminDispute />} />
+        <Route path="/terms" element={<TermsAndPrivacy />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

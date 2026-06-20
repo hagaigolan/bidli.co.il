@@ -79,9 +79,11 @@ export default function Footer() {
             <div>
               <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">חברה</h3>
               <nav className="flex flex-col gap-2 mb-6">
-                {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label","תנאי שימוש","מדיניות פרטיות","מדיניות עוגיות"].map(l => (
+                {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label"].map(l => (
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
+                <Link to="/terms" className="text-xs text-white/40 hover:text-white transition-colors">תנאי שימוש</Link>
+                <Link to="/terms" className="text-xs text-white/40 hover:text-white transition-colors">מדיניות פרטיות</Link>
               </nav>
               <div className="border-t border-white/10 pt-4">
                 <p className="text-xs text-white/40 mb-1">יש לך משהו למכור?</p>
@@ -99,9 +101,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/25">
           <p>© bid-it. כל הזכויות שמורות.</p>
           <div className="flex gap-4">
-            {["תנאי שימוש","מדיניות פרטיות","מדיניות עוגיות"].map(l => (
-              <a key={l} href="#" className="hover:text-white/50 transition-colors">{l}</a>
-            ))}
+            <Link to="/terms" className="hover:text-white/50 transition-colors">תנאי שימוש</Link>
+            <Link to="/terms" className="hover:text-white/50 transition-colors">מדיניות פרטיות</Link>
           </div>
         </div>
       </div>

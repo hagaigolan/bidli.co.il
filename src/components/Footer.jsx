@@ -79,7 +79,7 @@ export default function Footer() {
             <div>
               <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">חברה</h3>
               <nav className="flex flex-col gap-2 mb-6">
-                {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label"].map(l => (
+                {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label","מדיניות הפרטיות ותנאי שימוש"].map(l => (
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
 

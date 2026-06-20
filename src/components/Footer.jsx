@@ -82,7 +82,7 @@ export default function Footer() {
                 {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label"].map(l => (
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
-                <Link to="/terms?tab=terms" className="text-xs text-white/40 hover:text-white transition-colors">תנאי שימוש</Link>
+
 
               </nav>
               <div className="border-t border-white/10 pt-4">

@@ -18,6 +18,8 @@ import AdminDispute from './pages/AdminDispute';
 import AdminDashboard from './pages/AdminDashboard';
 import TermsAndPrivacy from './pages/TermsAndPrivacy';
 import Stocks from './pages/Stocks';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -63,6 +65,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/terms" element={<TermsAndPrivacy />} />
         <Route path="/stocks" element={<Stocks />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:id" element={<ArticleDetail />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowRight, Clock, Calendar, Tag, Share2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { ARTICLES } from "./Articles.jsx";
+import { ARTICLES } from "./ArticlesData.jsx";
 
 export default function ArticleDetail() {
   const { id } = useParams();

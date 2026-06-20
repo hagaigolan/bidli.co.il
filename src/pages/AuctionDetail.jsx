@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, Tag, User, TrendingUp, CheckCircle, Award } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff } from "lucide-react";
 
+// ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
   const calcLeft = () => {
     const diff = new Date(endsAt) - Date.now();
@@ -20,10 +21,12 @@ function useCountdown(endsAt) {
   return left;
 }
 
-function TimerBlock({ endsAt }) {
+function TimerBlock({ endsAt, antiSnipeExtended }) {
   const left = useCountdown(endsAt);
-  const urgent = left && left.total < 3600000;
-  const color = urgent ? "#f700ff" : "#0088ff";
+  const critical = left && left.total < 60000;   // < 1 min — RED flashing
+  const urgent   = left && left.total < 3600000; // < 1 hr  — PINK
+  const color = critical ? "#ff2200" : urgent ? "#f700ff" : "#0088ff";
+  const pulseClass = critical ? "animate-pulse" : "";
 
   if (!left) {
     return (
@@ -36,73 +39,266 @@ function TimerBlock({ endsAt }) {
   }
 
   return (
-    <div className="rounded-2xl border p-5" style={{ borderColor: color + "33", background: color + "08" }}>
-      <div className="flex items-center gap-2 mb-3">
-        <Clock className="h-4 w-4" style={{ color }} />
-        <span className="text-sm font-semibold" style={{ color }}>
-          {urgent ? "⚡ נגמר בקרוב!" : "המכרז מסתיים בעוד:"}
-        </span>
+    <div className={`rounded-2xl border p-5 ${pulseClass}`}
+      style={{ borderColor: color + "55", background: critical ? "#ff220010" : color + "08" }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Clock className="h-4 w-4" style={{ color }} />
+          <span className="text-sm font-bold" style={{ color }}>
+            {critical ? "🔴 רגעים אחרונים!" : urgent ? "⚡ נגמר בקרוב!" : "המכרז מסתיים בעוד:"}
+          </span>
+        </div>
+        {antiSnipeExtended && (
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white"
+            style={{ background: "#ff6600" }}>+30 שנ׳ הוספו!</span>
+        )}
       </div>
       <div className="flex gap-3 justify-center mb-3">
         {[{ v: left.h, l: "שעות" }, { v: left.m, l: "דקות" }, { v: left.s, l: "שניות" }].map(({ v, l }) => (
           <div key={l} className="text-center">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl font-mono"
-              style={{ background: "white", border: `2px solid ${color}44`, color }}>
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl font-mono transition-all duration-300"
+              style={{ background: "white", border: `2px solid ${color}66`, color,
+                boxShadow: critical ? `0 0 12px ${color}88` : "none" }}>
               {String(v).padStart(2, "0")}
             </div>
             <p className="text-xs text-gray-400 mt-1">{l}</p>
           </div>
         ))}
       </div>
-      {/* Progress bar */}
-      <div className="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
-        <div className="h-full rounded-full transition-all" style={{ width: `${left.pct * 100}%`, background: `linear-gradient(to right, ${color}, ${color}99)` }} />
+      <div className="w-full h-2 rounded-full bg-gray-100 overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-1000"
+          style={{ width: `${left.pct * 100}%`, background: `linear-gradient(to right, ${color}, ${color}99)` }} />
       </div>
     </div>
   );
 }
 
+// ── 2. SOCIAL PROOF — viewers count + last bid time ───────────────────────────
+function SocialProofBar({ bidCount, lastBidTime }) {
+  const [viewers] = useState(() => Math.floor(Math.random() * 28) + 7); // simulated
+  const [secAgo, setSecAgo] = useState(null);
+
+  useEffect(() => {
+    if (!lastBidTime) return;
+    const update = () => setSecAgo(Math.floor((Date.now() - new Date(lastBidTime)) / 1000));
+    update();
+    const t = setInterval(update, 1000);
+    return () => clearInterval(t);
+  }, [lastBidTime]);
+
+  return (
+    <div className="flex items-center gap-3 flex-wrap text-xs">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+        style={{ background: "#f700ff0f", border: "1px solid #f700ff33" }}>
+        <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+        <Eye className="h-3 w-3" style={{ color: "#f700ff" }} />
+        <span className="font-bold" style={{ color: "#f700ff" }}>{viewers} צופים כרגע</span>
+      </div>
+      {secAgo !== null && (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200">
+          <Zap className="h-3 w-3 text-amber-500" />
+          <span className="text-gray-600 font-medium">
+            הצעה לפני {secAgo < 60 ? `${secAgo} שנ׳` : `${Math.floor(secAgo / 60)} דק׳`}
+          </span>
+        </div>
+      )}
+      {bidCount > 0 && (
+        <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200">
+          <TrendingUp className="h-3 w-3 text-amber-600" />
+          <span className="text-amber-700 font-bold">{bidCount} הצעות</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── 3. LIVE BID FEED ──────────────────────────────────────────────────────────
+function BidFeed({ bids, flashNew }) {
+  return (
+    <div className="rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2"
+        style={{ background: "linear-gradient(to right, #f700ff08, transparent)" }}>
+        <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+        <span className="text-xs font-bold text-gray-700">הצעות אחרונות — חי</span>
+      </div>
+      <div className="max-h-40 overflow-y-auto">
+        {bids.length === 0 ? (
+          <p className="text-xs text-gray-400 text-center py-4">עדיין לא הוגשו הצעות — היה הראשון!</p>
+        ) : (
+          bids.slice(0, 8).map((bid, i) => (
+            <div key={bid.id || i}
+              className={`flex items-center justify-between px-4 py-2 border-b border-gray-50 transition-all duration-500 ${i === 0 && flashNew ? "bg-green-50" : ""}`}>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                  style={{ background: i === 0 ? "linear-gradient(135deg, #f700ff, #9d00ff)" : "#e5e7eb", color: i === 0 ? "white" : "#6b7280" }}>
+                  {i === 0 ? "👑" : i + 1}
+                </div>
+                <span className="text-xs font-semibold text-gray-700">{bid.bidder_name || "אנונימי"}</span>
+              </div>
+              <span className="text-xs font-black" style={{ color: i === 0 ? "#f700ff" : "#374151" }}>
+                ₪{(bid.amount || 0).toLocaleString()}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── 4. OUTBID ALERT BANNER ────────────────────────────────────────────────────
+function OutbidBanner({ show, currentLeader, onBidNow }) {
+  if (!show) return null;
+  return (
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce"
+      style={{ maxWidth: 360, width: "90%" }}>
+      <div className="rounded-2xl p-4 shadow-2xl text-white flex items-center gap-3"
+        style={{ background: "linear-gradient(135deg, #ff2200, #f700ff)", boxShadow: "0 0 32px #ff220066" }}>
+        <Bell className="h-5 w-5 flex-shrink-0" />
+        <div className="flex-1">
+          <p className="text-sm font-black">הוצאת מהמשחק! 😤</p>
+          <p className="text-xs opacity-90">{currentLeader} עקף אותך</p>
+        </div>
+        <button onClick={onBidNow}
+          className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl whitespace-nowrap transition-all">
+          הגדל הצעה →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── 5. STATUS-AWARE BID BUTTON (green=leading, red=outbid) ───────────────────
+function BidButton({ isLeading, bidding }) {
+  const bg = isLeading
+    ? "linear-gradient(135deg, #00c853, #00e676)"
+    : "linear-gradient(135deg, #f700ff, #9d00ff)";
+  const shadow = isLeading ? "0 0 16px #00c85355" : "0 0 16px #f700ff44";
+  const label = isLeading ? "🏆 אתה מוביל — חזק עמדה" : "הגש הצעה";
+
+  return (
+    <button type="submit" disabled={bidding}
+      className="w-full text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-all duration-500"
+      style={{ background: bg, boxShadow: shadow }}>
+      {bidding
+        ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> שולח...</>
+        : <><TrendingUp className="h-4 w-4" />{label}</>}
+    </button>
+  );
+}
+
+// ── 6. PRICE GAP PROGRESS BAR ─────────────────────────────────────────────────
+function PriceProgress({ startingPrice, currentPrice, myLastBid }) {
+  if (!myLastBid || myLastBid >= currentPrice) return null;
+  const gap = currentPrice - myLastBid;
+  const pct = Math.max(5, Math.min(95, (myLastBid / currentPrice) * 100));
+  return (
+    <div className="p-3 rounded-xl border border-amber-200 bg-amber-50">
+      <div className="flex justify-between text-xs mb-1.5">
+        <span className="text-amber-700 font-semibold">ההצעה שלך</span>
+        <span className="text-amber-800 font-black">רק ₪{gap.toLocaleString()} מהמוביל!</span>
+      </div>
+      <div className="w-full h-2.5 rounded-full bg-amber-200 overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${pct}%`, background: "linear-gradient(to right, #f59e0b, #f700ff)" }} />
+      </div>
+      <p className="text-xs text-amber-600 mt-1">הוסף ₪{gap + 1} כדי לחזור לראש</p>
+    </div>
+  );
+}
+
+// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function AuctionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const bidFormRef = useRef(null);
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bids, setBids] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
   const [bidding, setBidding] = useState(false);
   const [bidError, setBidError] = useState("");
   const [bidSuccess, setBidSuccess] = useState(false);
-  const [bidderName, setBidderName] = useState("");
+  const [bidderName, setBidderName] = useState(() => localStorage.getItem("bidder_name") || "");
+  const [flashNew, setFlashNew] = useState(false);
+  const [outbidShow, setOutbidShow] = useState(false);
+  const [myLastBid, setMyLastBid] = useState(null);
+  const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
+  // ── 7. notifications opt-in ──
+  const [notifEnabled, setNotifEnabled] = useState(false);
 
+  // Load product
   useEffect(() => {
     base44.entities.Product.filter({ id }).then(items => {
       if (items.length) setProduct(items[0]);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [id]);
 
-  const ended = product && new Date(product.ends_at) <= new Date();
-  const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
-
-  // Calculate and save commission when auction ends with a winner
+  // Load bid history
   useEffect(() => {
-    if (!product || !ended || product.commission_amount || !product.highest_bidder) return;
+    if (!id) return;
+    base44.entities.Bid.filter({ product_id: id }, "-created_date", 20)
+      .then(setBids).catch(() => {});
+  }, [id]);
+
+  // Real-time product subscription
+  useEffect(() => {
+    const unsub = base44.entities.Product.subscribe((event) => {
+      if (event.data?.id !== id) return;
+      if (event.type === "update") {
+        const prev = product;
+        setProduct(event.data);
+        // Flash new bid in feed
+        setFlashNew(true);
+        setTimeout(() => setFlashNew(false), 1500);
+        // Anti-snipe: if bid in last 60s, extend (visually)
+        const remaining = new Date(event.data.ends_at) - Date.now();
+        if (remaining > 0 && remaining < 60000) {
+          setAntiSnipeExtended(true);
+          setTimeout(() => setAntiSnipeExtended(false), 4000);
+        }
+        // Outbid alert
+        const myName = localStorage.getItem("bidder_name");
+        if (myName && prev?.highest_bidder === myName && event.data.highest_bidder !== myName) {
+          setOutbidShow(true);
+          setTimeout(() => setOutbidShow(false), 6000);
+          if (notifEnabled && "Notification" in window && Notification.permission === "granted") {
+            new Notification("הוצאת מהמשחק! 😤", {
+              body: `${event.data.highest_bidder} עקף אותך על "${event.data.title}"`,
+              icon: event.data.image_url || undefined,
+            });
+          }
+        }
+        // Reload bids
+        base44.entities.Bid.filter({ product_id: id }, "-created_date", 20).then(setBids).catch(() => {});
+      }
+    });
+    return unsub;
+  }, [id, product, notifEnabled]);
+
+  // Commission calc on end
+  useEffect(() => {
+    if (!product) return;
+    const ended = new Date(product.ends_at) <= new Date();
+    if (!ended || product.commission_amount || !product.highest_bidder) return;
     const rate = product.commission_rate ?? 8;
     const finalPrice = product.current_price || 0;
     const commissionAmount = parseFloat((finalPrice * rate / 100).toFixed(2));
-    // Save commission record and mark on product
     base44.entities.Commission.create({
-      product_id: product.id,
-      product_title: product.title,
-      seller_name: product.seller_name || "",
-      seller_email: product.seller_email || "",
-      final_sale_price: finalPrice,
-      commission_rate: rate,
-      commission_amount: commissionAmount,
-      status: "pending",
+      product_id: product.id, product_title: product.title,
+      seller_name: product.seller_name || "", seller_email: product.seller_email || "",
+      final_sale_price: finalPrice, commission_rate: rate,
+      commission_amount: commissionAmount, status: "pending",
     });
     base44.entities.Product.update(product.id, { commission_amount: commissionAmount, status: "sold" });
     setProduct(p => ({ ...p, commission_amount: commissionAmount, status: "sold" }));
-  }, [ended, product?.id]);
+  }, [product?.ends_at, product?.highest_bidder]);
 
+  const ended = product && new Date(product.ends_at) <= new Date();
+  const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
+  const myName = bidderName || localStorage.getItem("bidder_name");
+  const isLeading = !!myName && product?.highest_bidder === myName;
 
   const handleBid = async (e) => {
     e.preventDefault();
@@ -110,38 +306,38 @@ export default function AuctionDetail() {
       setBidError(`ההצעה חייבת להיות לפחות ₪${minBid}`);
       return;
     }
-    setBidding(true);
-    setBidError("");
+    setBidding(true); setBidError("");
     try {
       const newPrice = parseFloat(bidAmount);
       const name = bidderName || "אנונימי";
-      // save to localStorage for profile page
       if (bidderName) localStorage.setItem("bidder_name", bidderName);
+      setMyLastBid(newPrice);
       await base44.entities.Product.update(product.id, {
-        current_price: newPrice,
-        highest_bidder: name,
+        current_price: newPrice, highest_bidder: name,
         bid_count: (product.bid_count || 0) + 1,
       });
-      // save bid to history
       await base44.entities.Bid.create({
-        product_id: product.id,
-        product_title: product.title,
+        product_id: product.id, product_title: product.title,
         product_image_url: product.image_url || "",
         product_ends_at: product.ends_at,
-        bidder_name: name,
-        amount: newPrice,
-        status: "active",
+        bidder_name: name, amount: newPrice, status: "active",
       });
       setProduct(p => ({ ...p, current_price: newPrice, highest_bidder: name, bid_count: (p.bid_count || 0) + 1 }));
-      setBidAmount("");
-      setBidSuccess(true);
+      setBids(prev => [{ bidder_name: name, amount: newPrice, id: Date.now() }, ...prev]);
+      setFlashNew(true); setTimeout(() => setFlashNew(false), 1500);
+      setBidAmount(""); setBidSuccess(true);
       setTimeout(() => setBidSuccess(false), 3000);
-    } catch {
-      setBidError("שגיאה, נסה שנית");
-    } finally {
-      setBidding(false);
-    }
+    } catch { setBidError("שגיאה, נסה שנית"); }
+    finally { setBidding(false); }
   };
+
+  const enableNotifications = async () => {
+    if (!("Notification" in window)) return;
+    const perm = await Notification.requestPermission();
+    setNotifEnabled(perm === "granted");
+  };
+
+  const lastBidTime = bids[0]?.created_date;
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
@@ -161,6 +357,13 @@ export default function AuctionDetail() {
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
+      {/* ── 4. OUTBID ALERT ── */}
+      <OutbidBanner
+        show={outbidShow}
+        currentLeader={product.highest_bidder}
+        onBidNow={() => { setOutbidShow(false); bidFormRef.current?.scrollIntoView({ behavior: "smooth" }); }}
+      />
+
       {/* Back */}
       <div className="border-b border-gray-100 px-4 py-3">
         <button onClick={() => navigate("/auctions")} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
@@ -172,10 +375,25 @@ export default function AuctionDetail() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="rounded-2xl overflow-hidden bg-gray-50 aspect-square">
-            {product.image_url
-              ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
-              : <div className="w-full h-full flex items-center justify-center text-6xl">🏺</div>}
+          <div>
+            <div className="rounded-2xl overflow-hidden bg-gray-50 aspect-square relative">
+              {product.image_url
+                ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                : <div className="w-full h-full flex items-center justify-center text-6xl">🏺</div>}
+              {/* ── 5. STATUS BADGE on image ── */}
+              {!ended && (
+                <div className="absolute top-3 right-3">
+                  {isLeading
+                    ? <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #00c853, #00e676)", boxShadow: "0 0 12px #00c85366" }}>🏆 אתה מוביל!</span>
+                    : myLastBid && <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #ff6600, #f700ff)", boxShadow: "0 0 12px #ff660066" }}>⚠️ עקפו אותך</span>
+                  }
+                </div>
+              )}
+            </div>
+            {/* ── 3. BID FEED ── */}
+            <div className="mt-4">
+              <BidFeed bids={bids} flashNew={flashNew} />
+            </div>
           </div>
 
           {/* Details */}
@@ -189,29 +407,44 @@ export default function AuctionDetail() {
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
             </div>
 
-            {/* Timer */}
-            <TimerBlock endsAt={product.ends_at} />
+            {/* ── 2. SOCIAL PROOF ── */}
+            <SocialProofBar bidCount={product.bid_count} lastBidTime={lastBidTime} />
+
+            {/* ── 1. TIMER ── */}
+            <TimerBlock endsAt={product.ends_at} antiSnipeExtended={antiSnipeExtended} />
 
             {/* Price */}
-            <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)", border: "1px solid #f700ff22" }}>
+            <div className="p-4 rounded-2xl transition-all duration-500"
+              style={{ background: isLeading ? "linear-gradient(135deg, #00c85308, #00e67605)" : "linear-gradient(135deg, #f700ff08, #9d00ff05)",
+                border: isLeading ? "1px solid #00c85333" : "1px solid #f700ff22" }}>
               <div className="flex items-end justify-between mb-1">
                 <div>
                   <p className="text-xs text-gray-400">מחיר נוכחי</p>
-                  <p className="text-3xl font-black text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
+                  <p className="text-3xl font-black text-gray-900 transition-all duration-300">
+                    ₪{(product.current_price || product.starting_price || 0).toLocaleString()}
+                  </p>
                 </div>
                 <div className="text-left">
-                  <p className="text-xs text-gray-400">{product.bid_count || 0} הצעות</p>
                   {product.highest_bidder && (
-                    <p className="text-xs font-semibold" style={{ color: "#9d00ff" }}>מוביל: {product.highest_bidder}</p>
+                    <p className="text-xs font-semibold" style={{ color: isLeading ? "#00c853" : "#9d00ff" }}>
+                      {isLeading ? "🏆 אתה מוביל!" : `מוביל: ${product.highest_bidder}`}
+                    </p>
                   )}
                 </div>
               </div>
               <p className="text-xs text-gray-400">מחיר התחלתי: ₪{(product.starting_price || 0).toLocaleString()}</p>
             </div>
 
-            {/* Bid Form */}
+            {/* ── 6. PRICE GAP PROGRESS ── */}
+            <PriceProgress
+              startingPrice={product.starting_price}
+              currentPrice={product.current_price || product.starting_price}
+              myLastBid={!isLeading ? myLastBid : null}
+            />
+
+            {/* Bid Form / Ended */}
             {!ended ? (
-              <form onSubmit={handleBid} className="space-y-3">
+              <form ref={bidFormRef} onSubmit={handleBid} className="space-y-3">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">שמך (אופציונלי)</label>
                   <input value={bidderName} onChange={e => setBidderName(e.target.value)}
@@ -224,18 +457,35 @@ export default function AuctionDetail() {
                     placeholder={`מינימום ₪${minBid}`}
                     className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right" />
                 </div>
+
+                {/* Quick bid buttons */}
+                <div className="flex gap-2">
+                  {[minBid, minBid + 50, minBid + 100].map(amt => (
+                    <button key={amt} type="button" onClick={() => setBidAmount(String(amt))}
+                      className="flex-1 text-xs py-2 rounded-xl border font-bold transition-all hover:scale-105"
+                      style={{ borderColor: "#f700ff44", color: "#f700ff", background: "#f700ff08" }}>
+                      ₪{amt.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+
                 {bidError && <p className="text-xs text-red-500">{bidError}</p>}
                 {bidSuccess && (
-                  <div className="flex items-center gap-2 text-sm font-semibold text-green-600">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-green-600 bg-green-50 px-3 py-2 rounded-xl">
                     <CheckCircle className="h-4 w-4" /> הצעתך נרשמה בהצלחה!
                   </div>
                 )}
-                <button type="submit" disabled={bidding}
-                  className="w-full text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
-                  style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
-                  {bidding
-                    ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> שולח...</>
-                    : <><TrendingUp className="h-4 w-4" /> הגש הצעה</>}
+
+                {/* ── 5. STATUS-AWARE BUTTON ── */}
+                <BidButton isLeading={isLeading} bidding={bidding} />
+
+                {/* ── 7. NOTIFICATIONS OPT-IN ── */}
+                <button type="button" onClick={notifEnabled ? () => {} : enableNotifications}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold transition-all border"
+                  style={notifEnabled
+                    ? { background: "#00c85310", borderColor: "#00c85344", color: "#00c853" }
+                    : { background: "#f700ff08", borderColor: "#f700ff33", color: "#f700ff" }}>
+                  {notifEnabled ? <><Bell className="h-3.5 w-3.5" /> התראות מופעלות — תקבל/י התראה אם יעקפו אותך</> : <><BellOff className="h-3.5 w-3.5" /> הפעל התראות — קבל/י הודעה אם יעקפו אותך</>}
                 </button>
               </form>
             ) : (

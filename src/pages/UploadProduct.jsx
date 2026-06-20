@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Upload, ArrowRight, Image, Tag, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
+import { Upload, ArrowRight, Image, DollarSign, CheckCircle } from "lucide-react";
 
 const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית", "אופנה", "רכבים", 'נדל"ן', "אחר"];
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
@@ -17,6 +17,25 @@ export default function UploadProduct() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then((isAuth) => {
+      if (!isAuth) {
+        navigate("/Login");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, []);
+
+  if (!authChecked) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#f700ff] rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 

@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, Tag, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 
 const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית", "אופנה", "רכבים", 'נדל"ן', "אחר"];
-const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני"];
+const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
 
 export default function UploadProduct() {
   const navigate = useNavigate();

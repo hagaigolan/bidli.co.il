@@ -567,12 +567,13 @@ export default function AuctionDetail() {
               <SellerTrustBadge sellerEmail={product.seller_email} sellerName={product.seller_name} />
             )}
 
-            {/* ── RATE SELLER (only after auction ended with winner) ── */}
-            {ended && product.highest_bidder && myName === product.highest_bidder && (
+            {/* ── RATE SELLER (after auction ended, for any participant) ── */}
+            {ended && product.highest_bidder && (
               <button onClick={() => setShowReviewModal(true)}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
                 style={{ borderColor: "#f59e0b66", color: "#b45309", background: "#f59e0b08" }}>
-                <MessageSquare className="h-4 w-4" /> דרג את המוכר — עזור לקהילה
+                <MessageSquare className="h-4 w-4" />
+                {myName === product.highest_bidder ? "דרג את המוכר — עזור לקהילה 🏆" : "דרג את המוכר"}
               </button>
             )}
           </div>

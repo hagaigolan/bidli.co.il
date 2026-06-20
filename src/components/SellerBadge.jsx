@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { ShieldCheck, Star, Award, BadgeCheck } from "lucide-react";
+import { ShieldCheck, Star, Award, BadgeCheck, ChevronDown, ChevronUp } from "lucide-react";
 
 // Renders star rating visually
 export function StarRating({ rating, size = "sm" }) {
@@ -20,11 +20,14 @@ export function StarRating({ rating, size = "sm" }) {
 // The trust badge shown on product/seller listings
 export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
   const [stats, setStats] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [showReviews, setShowReviews] = useState(false);
 
   useEffect(() => {
     if (!sellerEmail) return;
     base44.entities.Review.filter({ seller_email: sellerEmail }, "-created_date", 100)
       .then(reviews => {
+        setReviews(reviews);
         if (!reviews.length) { setStats({ count: 0, avg: 0 }); return; }
         const avg = reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length;
         setStats({ count: reviews.length, avg: parseFloat(avg.toFixed(1)) });
@@ -129,6 +132,37 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
           <ShieldCheck className="h-3 w-3" /> תשלום מוגן
         </span>
       </div>
+
+      {/* Reviews list toggle */}
+      {reviews.length > 0 && (
+        <div>
+          <button onClick={() => setShowReviews(v => !v)}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-800 transition-colors">
+            {showReviews ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            {showReviews ? "הסתר ביקורות" : `הצג ${reviews.length} ביקורות`}
+          </button>
+          {showReviews && (
+            <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
+              {reviews.map((r, i) => (
+                <div key={i} className="p-3 rounded-xl bg-gray-50 border border-gray-100" dir="rtl">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                        style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                        {(r.reviewer_name || "א")[0]}
+                      </div>
+                      <span className="text-xs font-semibold text-gray-700">{r.reviewer_name || "אנונימי"}</span>
+                    </div>
+                    <StarRating rating={r.rating} size="sm" />
+                  </div>
+                  {r.comment && <p className="text-xs text-gray-500 leading-relaxed">{r.comment}</p>}
+                  <p className="text-xs text-gray-300 mt-1">{new Date(r.created_date).toLocaleDateString("he-IL")}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

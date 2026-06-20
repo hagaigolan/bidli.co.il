@@ -1,0 +1,134 @@
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { ShieldCheck, Star, Award, BadgeCheck } from "lucide-react";
+
+// Renders star rating visually
+export function StarRating({ rating, size = "sm" }) {
+  const stars = [1, 2, 3, 4, 5];
+  const sz = size === "sm" ? "h-3 w-3" : "h-4 w-4";
+  return (
+    <div className="flex items-center gap-0.5">
+      {stars.map(s => (
+        <Star key={s} className={sz}
+          fill={s <= Math.round(rating) ? "#f59e0b" : "none"}
+          style={{ color: s <= Math.round(rating) ? "#f59e0b" : "#d1d5db" }} />
+      ))}
+    </div>
+  );
+}
+
+// The trust badge shown on product/seller listings
+export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    if (!sellerEmail) return;
+    base44.entities.Review.filter({ seller_email: sellerEmail }, "-created_date", 100)
+      .then(reviews => {
+        if (!reviews.length) { setStats({ count: 0, avg: 0 }); return; }
+        const avg = reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length;
+        setStats({ count: reviews.length, avg: parseFloat(avg.toFixed(1)) });
+      }).catch(() => {});
+  }, [sellerEmail]);
+
+  if (!stats) return null;
+
+  const isTopSeller = stats.count >= 5 && stats.avg >= 4.5;
+  const isVerified = stats.count >= 1;
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {isTopSeller && (
+          <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
+            style={{ background: "linear-gradient(135deg, #f59e0b22, #f59e0b11)", color: "#b45309", border: "1px solid #f59e0b44" }}>
+            <Award className="h-3 w-3" /> מוכר מומלץ
+          </span>
+        )}
+        {isVerified && (
+          <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
+            style={{ background: "#00c85310", color: "#00a846", border: "1px solid #00c85344" }}>
+            <BadgeCheck className="h-3 w-3" /> מאומת
+          </span>
+        )}
+        {stats.count > 0 && (
+          <span className="flex items-center gap-1 text-xs text-gray-600">
+            <StarRating rating={stats.avg} size="sm" />
+            <span className="font-bold">{stats.avg}</span>
+            <span className="text-gray-400">({stats.count})</span>
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border p-4 space-y-3"
+      style={{ background: "linear-gradient(135deg, #f9fafb, #ffffff)", borderColor: isTopSeller ? "#f59e0b44" : "#e5e7eb" }}>
+      {/* Seller identity */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg"
+          style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
+          {(sellerName || sellerEmail || "?")[0].toUpperCase()}
+        </div>
+        <div>
+          <p className="font-bold text-sm text-gray-900">{sellerName || sellerEmail}</p>
+          <p className="text-xs text-gray-400">מוכר ב-bid-it</p>
+        </div>
+        {isTopSeller && (
+          <div className="mr-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black"
+            style={{ background: "linear-gradient(135deg, #f59e0b, #f97316)", color: "white", boxShadow: "0 0 12px #f59e0b55" }}>
+            <Award className="h-3.5 w-3.5" /> מוכר מומלץ
+          </div>
+        )}
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="p-2 rounded-xl bg-gray-50 border border-gray-100">
+          <p className="text-base font-black text-gray-900">{stats.count}</p>
+          <p className="text-xs text-gray-400">דירוגים</p>
+        </div>
+        <div className="p-2 rounded-xl bg-gray-50 border border-gray-100">
+          <p className="text-base font-black" style={{ color: "#f59e0b" }}>{stats.avg || "–"}</p>
+          <p className="text-xs text-gray-400">ממוצע</p>
+        </div>
+        <div className="p-2 rounded-xl bg-gray-50 border border-gray-100">
+          {isVerified
+            ? <p className="text-base font-black text-green-600 flex items-center justify-center gap-1"><ShieldCheck className="h-4 w-4" /></p>
+            : <p className="text-base font-black text-gray-400">–</p>}
+          <p className="text-xs text-gray-400">אמינות</p>
+        </div>
+      </div>
+
+      {/* Star rating bar */}
+      {stats.count > 0 && (
+        <div className="flex items-center gap-2">
+          <StarRating rating={stats.avg} size="md" />
+          <span className="text-sm font-black text-gray-800">{stats.avg}</span>
+          <span className="text-xs text-gray-400">מתוך {stats.count} עסקאות</span>
+        </div>
+      )}
+
+      {/* Trust signals */}
+      <div className="flex flex-wrap gap-2">
+        {isVerified && (
+          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full font-semibold"
+            style={{ background: "#00c85310", color: "#00a846", border: "1px solid #00c85333" }}>
+            <BadgeCheck className="h-3 w-3" /> מאומת
+          </span>
+        )}
+        {isTopSeller && (
+          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full font-semibold"
+            style={{ background: "#f59e0b10", color: "#b45309", border: "1px solid #f59e0b33" }}>
+            <Award className="h-3 w-3" /> ציון 4.5+
+          </span>
+        )}
+        <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full font-semibold"
+          style={{ background: "#3b82f610", color: "#2563eb", border: "1px solid #3b82f633" }}>
+          <ShieldCheck className="h-3 w-3" /> תשלום מוגן
+        </span>
+      </div>
+    </div>
+  );
+}

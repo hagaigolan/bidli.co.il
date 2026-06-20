@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
+import { SellerTrustBadge } from "@/components/SellerBadge";
+import ReviewModal from "@/components/ReviewModal";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -225,6 +227,7 @@ export default function AuctionDetail() {
   const [outbidShow, setOutbidShow] = useState(false);
   const [myLastBid, setMyLastBid] = useState(null);
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
   // ── 7. notifications opt-in ──
   const [notifEnabled, setNotifEnabled] = useState(false);
 
@@ -538,9 +541,32 @@ export default function AuctionDetail() {
                 <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
               </div>
             )}
+
+            {/* ── SELLER TRUST BADGE ── */}
+            {product.seller_email && (
+              <SellerTrustBadge sellerEmail={product.seller_email} sellerName={product.seller_name} />
+            )}
+
+            {/* ── RATE SELLER (only after auction ended with winner) ── */}
+            {ended && product.highest_bidder && myName === product.highest_bidder && (
+              <button onClick={() => setShowReviewModal(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
+                style={{ borderColor: "#f59e0b66", color: "#b45309", background: "#f59e0b08" }}>
+                <MessageSquare className="h-4 w-4" /> דרג את המוכר — עזור לקהילה
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {showReviewModal && (
+        <ReviewModal
+          product={product}
+          reviewerName={myName}
+          reviewerEmail={localStorage.getItem("bidder_email")}
+          onClose={() => setShowReviewModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -37,9 +37,7 @@ export default function Header() {
             ))}
           </div>
           <div className="flex items-center gap-3 mr-auto">
-            <a href="/Login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה</a>
-            <span className="text-gray-300">|</span>
-            <a href="/Register" className="font-medium text-[#9d00ff] hover:opacity-80 transition-opacity">הרשמה</a>
+            <a href="/Login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה / הרשמה</a>
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
             style={{ background: "#ff6600" }}>+30 שנ׳ הוספו!</span>
         )}
       </div>
-      <div className="flex gap-3 justify-center mb-3">
+      <div className="flex flex-row-reverse gap-3 justify-center mb-3">
         {[{ v: left.h, l: "שעות" }, { v: left.m, l: "דקות" }, { v: left.s, l: "שניות" }].map(({ v, l }) => (
           <div key={l} className="text-center">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl font-mono transition-all duration-300"

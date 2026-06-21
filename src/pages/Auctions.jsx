@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Plus, Clock, MapPin, Tag } from "lucide-react";
 
+const urlParams = new URLSearchParams(window.location.search);
+const ARCHIVE_MODE = urlParams.get("view") === "archive";
+
 function useCountdown(endsAt) {
   const calcLeft = () => {
     const diff = new Date(endsAt) - Date.now();
@@ -92,8 +95,8 @@ export default function Auctions() {
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">כל המכרזים</h1>
-            <p className="text-sm text-gray-400 mt-1">{active.length} מכרזים פעילים</p>
+            <h1 className="text-2xl font-black text-gray-900">{ARCHIVE_MODE ? "ארכיון מכרזים" : "כל המכרזים"}</h1>
+            <p className="text-sm text-gray-400 mt-1">{ARCHIVE_MODE ? `${ended.length} מכרזים שהסתיימו` : `${active.length} מכרזים פעילים`}</p>
           </div>
           <button onClick={() => navigate("/upload-product")}
             className="flex items-center gap-2 text-white text-sm px-5 py-2.5 rounded-xl font-bold flex-shrink-0"
@@ -122,24 +125,41 @@ export default function Auctions() {
           </div>
         ) : (
           <>
-            {active.length > 0 && (
-              <div className="mb-10">
-                <h2 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  מכרזים פעילים ({active.length})
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {active.map(p => <AuctionCard key={p.id} product={p} />)}
+            {ARCHIVE_MODE ? (
+              ended.length > 0 ? (
+                <div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-80">
+                    {ended.map(p => <AuctionCard key={p.id} product={p} />)}
+                  </div>
                 </div>
-              </div>
-            )}
-            {ended.length > 0 && (
-              <div>
-                <h2 className="text-sm font-bold text-gray-400 mb-4">מכרזים שהסתיימו ({ended.length})</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-70">
-                  {ended.map(p => <AuctionCard key={p.id} product={p} />)}
+              ) : (
+                <div className="text-center py-20">
+                  <p className="text-5xl mb-4">📦</p>
+                  <h2 className="text-lg font-bold text-gray-700 mb-2">אין מכרזים שהסתיימו עדיין</h2>
                 </div>
-              </div>
+              )
+            ) : (
+              <>
+                {active.length > 0 && (
+                  <div className="mb-10">
+                    <h2 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                      מכרזים פעילים ({active.length})
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {active.map(p => <AuctionCard key={p.id} product={p} />)}
+                    </div>
+                  </div>
+                )}
+                {ended.length > 0 && (
+                  <div>
+                    <h2 className="text-sm font-bold text-gray-400 mb-4">מכרזים שהסתיימו ({ended.length})</h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-70">
+                      {ended.map(p => <AuctionCard key={p.id} product={p} />)}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </>
         )}

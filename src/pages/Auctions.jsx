@@ -151,14 +151,7 @@ export default function Auctions() {
                     </div>
                   </div>
                 )}
-                {ended.length > 0 && (
-                  <div>
-                    <h2 className="text-sm font-bold text-gray-400 mb-4">מכרזים שהסתיימו ({ended.length})</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-70">
-                      {ended.map(p => <AuctionCard key={p.id} product={p} />)}
-                    </div>
-                  </div>
-                )}
+
               </>
             )}
           </>

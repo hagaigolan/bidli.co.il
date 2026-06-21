@@ -40,7 +40,6 @@ export default function Header() {
       <div className="border-b border-gray-100 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
           <div className="hidden sm:flex items-center gap-4">
-            <span>🇮🇱 ישראל</span>
           </div>
           <div className="flex items-center gap-3 mr-auto">
             <a href="/Login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה / הרשמה</a>

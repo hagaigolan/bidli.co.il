@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
+import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 
@@ -229,7 +230,8 @@ export default function AuctionDetail() {
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   // ── 7. notifications opt-in ──
-  const [notifEnabled, setNotifEnabled] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(() => !!localStorage.getItem("notif_channels"));
+  const [showNotifModal, setShowNotifModal] = useState(false);
 
   // Load product
   useEffect(() => {
@@ -266,11 +268,32 @@ export default function AuctionDetail() {
         if (myName && prev?.highest_bidder === myName && event.data.highest_bidder !== myName) {
           setOutbidShow(true);
           setTimeout(() => setOutbidShow(false), 6000);
-          if (notifEnabled && "Notification" in window && Notification.permission === "granted") {
-            new Notification("הוצאת מהמשחק! 😤", {
-              body: `${event.data.highest_bidder} עקף אותך על "${event.data.title}"`,
-              icon: event.data.image_url || undefined,
-            });
+          // Send email/WhatsApp notifications
+          const notifChannels = localStorage.getItem("notif_channels");
+          if (notifChannels) {
+            const channels = JSON.parse(notifChannels);
+            const notifEmail = localStorage.getItem("notif_email");
+            const notifPhone = localStorage.getItem("notif_phone");
+            const pageUrl = window.location.href;
+            const productTitle = event.data.title;
+            const newPrice = event.data.current_price;
+            const newLeader = event.data.highest_bidder;
+
+            if (channels.email && notifEmail) {
+              base44.integrations.Core.SendEmail({
+                to: notifEmail,
+                subject: `הוצאת מהמשחק! עקפו אותך על "${productTitle}"`,
+                body: `שלום ${myName},\n\n${newLeader} הגיש הצעה גבוהה יותר (₪${(newPrice||0).toLocaleString()}) על הפריט "${productTitle}".\n\nלחץ כאן כדי לחזור ולהגיש הצעה גבוהה יותר:\n${pageUrl}\n\nבהצלחה!\nצוות bid-it`
+              }).catch(() => {});
+            }
+
+            if (channels.whatsapp && notifPhone) {
+              const cleanPhone = notifPhone.replace(/[^0-9]/g, "").replace(/^0/, "972");
+              const msg = encodeURIComponent(`הוצאת מהמשחק! 😤\n${newLeader} הגיש ₪${(newPrice||0).toLocaleString()} על "${productTitle}".\nלחץ להגיש הצעה גבוהה יותר: ${pageUrl}`);
+              // Open WhatsApp link (works on mobile, opens chat on desktop)
+              const waUrl = `https://wa.me/${cleanPhone}?text=${msg}`;
+              window.open(waUrl, "_blank");
+            }
           }
         }
         // Reload bids
@@ -354,10 +377,12 @@ export default function AuctionDetail() {
     finally { setBidding(false); }
   };
 
-  const enableNotifications = async () => {
-    if (!("Notification" in window)) return;
-    const perm = await Notification.requestPermission();
-    setNotifEnabled(perm === "granted");
+  const enableNotifications = () => {
+    setShowNotifModal(true);
+  };
+
+  const handleNotifSave = ({ email, phone, channels }) => {
+    setNotifEnabled(true);
   };
 
   const lastBidTime = bids[0]?.created_date;
@@ -503,12 +528,14 @@ export default function AuctionDetail() {
                 <BidButton isLeading={isLeading} bidding={bidding} />
 
                 {/* ── 7. NOTIFICATIONS OPT-IN ── */}
-                <button type="button" onClick={notifEnabled ? () => {} : enableNotifications}
+                <button type="button" onClick={notifEnabled ? () => setShowNotifModal(true) : enableNotifications}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold transition-all border"
                   style={notifEnabled
                     ? { background: "#00c85310", borderColor: "#00c85344", color: "#00c853" }
                     : { background: "#f700ff08", borderColor: "#f700ff33", color: "#f700ff" }}>
-                  {notifEnabled ? <><Bell className="h-3.5 w-3.5" /> התראות מופעלות — תקבל/י התראה אם יעקפו אותך</> : <><BellOff className="h-3.5 w-3.5" /> הפעל התראות — קבל/י הודעה אם יעקפו אותך</>}
+                  {notifEnabled
+                    ? <><Bell className="h-3.5 w-3.5" /> התראות מופעלות ✓ — לחץ לעדכון פרטים</>
+                    : <><BellOff className="h-3.5 w-3.5" /> הפעל התראות — קבל/י מייל/ווצאפ אם יעקפו אותך</>}
                 </button>
               </form>
             ) : (
@@ -579,6 +606,13 @@ export default function AuctionDetail() {
           </div>
         </div>
       </div>
+
+      {showNotifModal && (
+        <OutbidNotificationModal
+          onClose={() => setShowNotifModal(false)}
+          onSave={handleNotifSave}
+        />
+      )}
 
       {showReviewModal && (
         <ReviewModal

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 
@@ -37,10 +37,17 @@ const carouselImages = [
 
 function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     const t = setInterval(() => setCurrentSlide(p => (p + 1) % carouselImages.length), 4500);
     return () => clearInterval(t);
   }, []);
+
+  const doSearch = () => {
+    const term = searchTerm.trim();
+    navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
+  };
 
   return (
     <section className="relative overflow-hidden bg-white" style={{ minHeight: 480 }} dir="rtl">
@@ -76,11 +83,14 @@ function HeroSection() {
             <div className="relative flex-1">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                 placeholder="חפש פריטים, קטלוגים, בתי מכרזים..."
                 className="w-full pr-10 pl-4 py-3 text-sm bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff33] transition-all text-right"
               />
             </div>
-            <button className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
+            <button type="button" onClick={doSearch} className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
               חיפוש
             </button>
           </div>

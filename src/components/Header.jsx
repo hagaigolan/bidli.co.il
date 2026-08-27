@@ -9,8 +9,15 @@ import UserMenu from "@/components/UserMenu";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
+  const doSearch = () => {
+    const term = searchTerm.trim();
+    navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
+  };
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -71,6 +78,9 @@ export default function Header() {
               <div className="relative w-full">
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                   placeholder="חפש מכרזים, פריטים, בתי מכרזים..."
                   className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f700ff44] focus:border-[#f700ff88] transition-all text-right"
                 />

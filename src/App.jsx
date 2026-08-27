@@ -21,19 +21,23 @@ import Stocks from './pages/Stocks';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 import SellerPayout from './pages/SellerPayout';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 // Add page imports here
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   // Always render auth pages regardless of auth state
-  const isAuthPage = ["/Login", "/Register", "/forgot-password", "/reset-password"].includes(window.location.pathname);
+  const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(window.location.pathname);
 
   if (isAuthPage) {
     return (
       <Routes>
-        <Route path="/Login" element={<Login />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     );
@@ -53,8 +57,10 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/category/:name" element={<Category />} />

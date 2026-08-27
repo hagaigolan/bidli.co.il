@@ -23,7 +23,7 @@ export default function UploadProduct() {
   useEffect(() => {
     base44.auth.isAuthenticated().then((isAuth) => {
       if (!isAuth) {
-        navigate("/Login");
+        navigate("/login");
       } else {
         setAuthChecked(true);
       }

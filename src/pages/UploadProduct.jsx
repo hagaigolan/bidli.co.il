@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle } from "lucide-react";
+import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 
 const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית", "אופנה", "רכבים", 'נדל"ן', "אחר"];
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
@@ -118,6 +119,7 @@ export default function UploadProduct() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+        <SellerFomoBanner />
         {/* Image Upload */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">תמונת המוצר</label>
@@ -225,6 +227,8 @@ export default function UploadProduct() {
             <p className="text-xs text-gray-500 mt-0.5">המכרז יתחיל מיד עם הפרסום ויסתיים בדיוק 24 שעות לאחר מכן. כל המציעים יוכלו לראות את הטיימר בזמן אמת.</p>
           </div>
         </div>
+
+        <SellerFomoBlock />
 
         {error && (
           <div className="px-4 py-3 rounded-xl text-sm text-red-600 bg-red-50 border border-red-100">{error}</div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Plus, Clock, MapPin, Tag } from "lucide-react";
+import { SellerFomoBlock } from "@/components/SellerFomo";
 
 const urlParams = new URLSearchParams(window.location.search);
 const ARCHIVE_MODE = urlParams.get("view") === "archive";
@@ -108,6 +109,8 @@ export default function Auctions() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        <SellerFomoBlock />
+
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />

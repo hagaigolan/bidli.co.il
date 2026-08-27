@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
+import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 
@@ -437,8 +438,10 @@ export default function AuctionDetail() {
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
             </div>
 
-            {/* ── 2. SOCIAL PROOF ── */}
-            <SocialProofBar bidCount={product.bid_count} lastBidTime={lastBidTime} />
+            {/* ── FOMO BANNER ── */}
+            <BuyerFomoBanner />
+            {/* ── LIVE BIDDING PRESSURE ── */}
+            <BuyerLiveBlock bidCount={product.bid_count} lastBidTime={lastBidTime} />
 
             {/* ── 1. TIMER ── */}
             <TimerBlock endsAt={product.ends_at} antiSnipeExtended={antiSnipeExtended} />

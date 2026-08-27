@@ -208,15 +208,10 @@ export default function UploadProduct() {
           </div>
         </div>
 
-        {/* Commission info */}
-        <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #9d00ff08, #f700ff05)", border: "1px solid #9d00ff22" }}>
-          <p className="text-sm font-semibold text-gray-800 mb-2">💰 מדיניות עמלות</p>
-          <div className="space-y-1 text-xs text-gray-500">
-            <div className="flex justify-between"><span>פרסום מכרז</span><span className="font-semibold text-green-600">חינם</span></div>
-            <div className="flex justify-between"><span>עמלת הצלחה (מהמחיר הסופי)</span><span className="font-semibold text-green-600">0% — ללא עמלה</span></div>
-            <div className="flex justify-between"><span>אם לא נמכר</span><span className="font-semibold text-green-600">ללא עמלה</span></div>
-          </div>
-          <p className="text-xs text-gray-400 mt-2">כרגע לא נגבית עמלה — המכירה ללא עלות עבור המוכר</p>
+        {/* Free publishing */}
+        <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #00c85308, #00e67605)", border: "1px solid #00c85322" }}>
+          <p className="text-sm font-semibold text-gray-800 mb-1">✅ פרסום בחינם</p>
+          <p className="text-xs text-gray-500">פרסום המכרז והמכירה ללא עלות עבור המוכר</p>
         </div>
 
         {/* Timer info */}

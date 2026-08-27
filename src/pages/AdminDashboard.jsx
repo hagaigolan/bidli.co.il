@@ -32,7 +32,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     <div className="bg-white border border-gray-100 rounded-xl px-3 py-2 shadow-lg text-xs" dir="rtl">
       <p className="font-bold text-gray-700 mb-1">{label}</p>
       {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color }}>{p.name}: {typeof p.value === "number" && p.name?.includes("עמלה") ? `₪${p.value.toLocaleString()}` : p.value}</p>
+        <p key={i} style={{ color: p.color }}>{p.name}: {p.value}</p>
       ))}
     </div>
   );
@@ -48,7 +48,6 @@ export default function AdminDashboard() {
   const SECRET_PIN = "1234"; // change as needed
 
   const [stats, setStats] = useState({
-    totalCommission: 0,
     activeAuctions: 0,
     endedWithWinner: 0,
     endedNoWinner: 0,
@@ -59,7 +58,7 @@ export default function AdminDashboard() {
     totalUsers: 0,
     frozenEscrow: 0,
   });
-  const [commissionByDay, setCommissionByDay] = useState([]);
+  const [dailyData, setDailyData] = useState([]);
   const [auctionsByCategory, setAuctionsByCategory] = useState([]);
   const [outcomeData, setOutcomeData] = useState([]);
 
@@ -76,9 +75,8 @@ export default function AdminDashboard() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [products, commissions, bids, escrows] = await Promise.all([
+      const [products, bids, escrows] = await Promise.all([
         base44.entities.Product.list("-created_date", 500),
-        base44.entities.Commission.list("-created_date", 500),
         base44.entities.Bid.list("-created_date", 200),
         base44.entities.Escrow.list("-created_date", 200),
       ]);
@@ -93,11 +91,9 @@ export default function AdminDashboard() {
       const disputed = products.filter(p => p.status === "disputed").length;
       const noWinner = products.filter(p => p.status === "ended" && !p.highest_bidder).length;
 
-      const totalCommission = commissions.reduce((s, c) => s + (c.commission_amount || 0), 0);
       const frozenEscrow = escrows.filter(e => e.status === "frozen").reduce((s, e) => s + (e.amount || 0), 0);
 
       setStats({
-        totalCommission,
         activeAuctions: active,
         endedWithWinner: withWinner,
         endedNoWinner: noWinner,
@@ -108,25 +104,20 @@ export default function AdminDashboard() {
         frozenEscrow,
       });
 
-      // Commission by day (last 14 days)
+      // Daily stats (last 14 days)
       const dayMap = {};
       const now = Date.now();
       for (let i = 13; i >= 0; i--) {
         const d = new Date(now - i * 86400000);
         const key = `${d.getDate()}/${d.getMonth() + 1}`;
-        dayMap[key] = { date: key, "עמלה": 0, "מכרזים": 0 };
+        dayMap[key] = { date: key, "מכרזים": 0 };
       }
-      commissions.forEach(c => {
-        const d = new Date(c.created_date);
-        const key = `${d.getDate()}/${d.getMonth() + 1}`;
-        if (dayMap[key]) dayMap[key]["עמלה"] += c.commission_amount || 0;
-      });
       products.forEach(p => {
         const d = new Date(p.created_date);
         const key = `${d.getDate()}/${d.getMonth() + 1}`;
         if (dayMap[key]) dayMap[key]["מכרזים"]++;
       });
-      setCommissionByDay(Object.values(dayMap));
+      setDailyData(Object.values(dayMap));
 
       // By category
       const catMap = {};
@@ -224,7 +215,6 @@ export default function AdminDashboard() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={DollarSign} label="סך עמלות שנצברו" value={`₪${Math.round(stats.totalCommission).toLocaleString()}`} sub="מכל המכרזים" color="#f700ff" />
           <StatCard icon={Gavel} label="מכרזים פעילים" value={stats.activeAuctions} sub={`מתוך ${stats.totalProducts} סה״כ`} color="#0088ff" />
           <StatCard icon={CheckCircle} label="אחוז הצלחה" value={`${successRate}%`} sub={`${stats.endedWithWinner} מכרזים הסתיימו עם זוכה`} color="#00c853" />
           <StatCard icon={ShieldAlert} label="כספים מוקפאים" value={`₪${Math.round(stats.frozenEscrow).toLocaleString()}`} sub="ב-Escrow כרגע" color="#ff6600" />
@@ -235,20 +225,6 @@ export default function AdminDashboard() {
           <StatCard icon={CheckCircle} label="מכרזים עם זוכה" value={stats.endedWithWinner} color="#00c853" />
           <StatCard icon={XCircle} label="בוטלו / ללא זוכה" value={stats.cancelled + stats.endedNoWinner} color="#f700ff" />
           <StatCard icon={ShieldAlert} label="סכסוכים פתוחים" value={stats.disputed} color="#ff6600" />
-        </div>
-
-        {/* Commission over time */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="text-sm font-black text-gray-900 mb-5">עמלות יומיות — 14 ימים אחרונים</h2>
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={commissionByDay}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} />
-              <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="עמלה" stroke="#f700ff" strokeWidth={2.5} dot={{ r: 3, fill: "#f700ff" }} activeDot={{ r: 5 }} />
-            </LineChart>
-          </ResponsiveContainer>
         </div>
 
         {/* Bottom row: pie + bar */}
@@ -311,7 +287,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
           <h2 className="text-sm font-black text-gray-900 mb-5">מכרזים חדשים — 14 ימים אחרונים</h2>
           <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={commissionByDay}>
+            <BarChart data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} />
               <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} allowDecimals={false} />

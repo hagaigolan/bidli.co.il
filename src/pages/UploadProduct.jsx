@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 
-const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית", "אופנה", "רכבים", 'נדל"ן', "אחר"];
+const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "מטבעות", "בולים", "תכשיטים", "שעונים", "עיצוב הבית", "אופנה", "ספרים", "כלי נגינה", "יין ואלכוהול", "אלקטרוניקה", "רכבים", 'נדל"ן', "אחר"];
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
 
 export default function UploadProduct() {

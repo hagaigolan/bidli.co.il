@@ -57,6 +57,15 @@
     "seller_user_id": {
       "type": "string"
     },
+    "seller_payout_method_id": {
+      "type": "string"
+    },
+    "seller_card_last4": {
+      "type": "string"
+    },
+    "seller_card_brand": {
+      "type": "string"
+    },
     "location": {
       "type": "string"
     },

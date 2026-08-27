@@ -20,6 +20,7 @@ import TermsAndPrivacy from './pages/TermsAndPrivacy';
 import Stocks from './pages/Stocks';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
+import SellerPayout from './pages/SellerPayout';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/stocks" element={<Stocks />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
+        <Route path="/seller-payout" element={<SellerPayout />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

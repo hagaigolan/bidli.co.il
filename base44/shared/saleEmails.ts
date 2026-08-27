@@ -3,7 +3,7 @@
 
 const APP_URL = "https://bid-it-now-app.base44.app";
 
-function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml }) {
+function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -22,7 +22,7 @@ function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml }) {
           ${bodyHtml}
         </td></tr>
         <tr><td style="padding:0 32px 28px;">
-          <a href="${APP_URL}/auctions" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#f700ff,#9d00ff);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">צפה במכרז ב-bid-it →</a>
+          <a href="${ctaUrl || APP_URL + "/auctions"}" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#f700ff,#9d00ff);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">${ctaLabel || "צפה במכרז ב-bid-it →"}</a>
         </td></tr>
         <tr><td style="padding:20px 32px 28px;border-top:1px solid #f4f4f5;">
           <p style="margin:0;font-size:12px;color:#a1a1aa;text-align:center;line-height:1.6;">bid-it — פלטפורמת מכרזים לאמנות, יודאיקה ואספנות<br>הודעה זו נשלחה אוטומטית, אין להשיב.</p>
@@ -68,6 +68,7 @@ export function buyerSaleEmail(product, winnerName) {
 
 export function sellerSaleEmail(product, winnerName) {
   const productUrl = `${APP_URL}/auction/${product.id}`;
+  const payoutUrl = `${APP_URL}/seller-payout?email=${encodeURIComponent(product.seller_email || "")}`;
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${winnerName}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הכסף יוחזק באסקרו מאובטח ויועבר אליך לאחר שהקונה יאשר קבלת המוצר.</p>
@@ -85,6 +86,8 @@ export function sellerSaleEmail(product, winnerName) {
     heroEmoji: "💰",
     heroLine: "המכרז הסתיים בהצלחה",
     bodyHtml: body,
+    ctaUrl: payoutUrl,
+    ctaLabel: "הזן כרטיס לקבלת התשלום →",
   });
 }
 

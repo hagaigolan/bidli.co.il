@@ -62,6 +62,7 @@ export default function UploadProduct() {
         image_url = res.file_url;
       }
       const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
       const startingPrice = parseFloat(form.starting_price);
       await base44.entities.Product.create({
         ...form,

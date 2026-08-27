@@ -51,6 +51,9 @@
     "seller_email": {
       "type": "string"
     },
+    "seller_phone": {
+      "type": "string"
+    },
     "seller_user_id": {
       "type": "string"
     },

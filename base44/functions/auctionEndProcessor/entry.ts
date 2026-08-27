@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { buyerSaleEmail, sellerSaleEmail } from '../../shared/saleEmails.ts';
 
 // Called by scheduled automation every 5 minutes
 // Finds auctions that just ended and transitions them to awaiting_payment
@@ -31,13 +32,30 @@ Deno.serve(async (req) => {
         payment_deadline: paymentDeadline,
       });
 
-      // Send email to winner
+      // Send designed email to the winner (buyer)
       if (product.highest_bidder_email) {
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: product.highest_bidder_email,
-          subject: `🏆 זכית במכרז: ${product.title}`,
-          body: `שלום ${product.highest_bidder},\n\nזכית במכרז "${product.title}" במחיר ₪${product.current_price?.toLocaleString()}.\n\nיש לך 24 שעות להשלים את התשלום. לאחר מכן הזכייה תבוטל.\n\nעבור לאזור האישי שלך ב-bid-it להשלמת הרכישה.`,
-        });
+        try {
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: product.highest_bidder_email,
+            subject: `🏆 זכית במכרז: ${product.title}`,
+            body: buyerSaleEmail(product, product.highest_bidder),
+          });
+        } catch (e) {
+          results.push({ id: product.id, action: 'winner_email_failed', error: String(e) });
+        }
+      }
+
+      // Send designed email to the seller — sale notification + need to enter payout card
+      if (product.seller_email) {
+        try {
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: product.seller_email,
+            subject: `💰 המוצר שלך נמכר: ${product.title}`,
+            body: sellerSaleEmail(product, product.highest_bidder),
+          });
+        } catch (e) {
+          results.push({ id: product.id, action: 'seller_email_failed', error: String(e) });
+        }
       }
 
       results.push({ id: product.id, action: 'awaiting_payment', winner: product.highest_bidder });

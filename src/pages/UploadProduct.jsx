@@ -11,7 +11,7 @@ export default function UploadProduct() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "", description: "", category: "", condition: "מצב מעולה",
-    starting_price: "", location: "", seller_name: "", seller_email: "",
+    starting_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -50,6 +50,9 @@ export default function UploadProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.starting_price) { setError("יש למלא כותרת ומחיר התחלתי"); return; }
+    if (!form.seller_name || !form.seller_email || !form.seller_phone) {
+      setError("לצורך פרסום חובה להירשם עם שם, אימייל וטלפון"); return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -93,7 +96,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"" }); setImageFile(null); setImagePreview(null); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"" }); setImageFile(null); setImagePreview(null); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -187,20 +190,28 @@ export default function UploadProduct() {
 
         {/* Seller Info */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-700">פרטי המוכר</h3>
+          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            פרטי המוכר <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#f700ff15", color: "#f700ff" }}>חובה לפרסום</span>
+          </h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">שם</label>
+              <label className="block text-xs text-gray-500 mb-1">שם מלא *</label>
               <input value={form.seller_name} onChange={e => set("seller_name", e.target.value)}
                 placeholder="שם מלא"
                 className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">אימייל</label>
+              <label className="block text-xs text-gray-500 mb-1">אימייל *</label>
               <input type="email" value={form.seller_email} onChange={e => set("seller_email", e.target.value)}
                 placeholder="email@example.com"
                 className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" dir="ltr" />
             </div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">טלפון *</label>
+            <input type="tel" value={form.seller_phone} onChange={e => set("seller_phone", e.target.value)}
+              placeholder="050-1234567"
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" dir="ltr" />
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1">מיקום</label>

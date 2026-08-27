@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Search as SearchIcon, ArrowRight, MapPin, Tag, Clock } from "lucide-react";
@@ -77,6 +77,7 @@ export default function Search() {
   const [q, setQ] = useState(initialQ);
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showSuggest, setShowSuggest] = useState(false);
 
   // Fetch all products once
   useEffect(() => {
@@ -85,6 +86,29 @@ export default function Search() {
       .catch(() => setAllProducts([]))
       .finally(() => setLoading(false));
   }, []);
+
+  // Build a unique word index from searchable fields
+  const wordIndex = useMemo(() => {
+    const words = new Set();
+    allProducts.forEach((p) => {
+      [p.title, p.description, p.category, p.location, p.seller_name, p.condition]
+        .filter(Boolean)
+        .forEach((field) => {
+          field.split(/\s+/).forEach((w) => {
+            const clean = w.replace(/[(),.״""']/g, "").trim();
+            if (clean.length >= 2) words.add(clean);
+          });
+        });
+    });
+    return [...words].sort((a, b) => a.localeCompare(b, "he"));
+  }, [allProducts]);
+
+  // Suggestions matching the current term (from the 2nd letter)
+  const suggestions = (() => {
+    const term = q.trim().toLowerCase();
+    if (term.length < 2) return [];
+    return wordIndex.filter((w) => w.toLowerCase().includes(term)).slice(0, 8);
+  })();
 
   // Live filtering — starts from the 2nd character
   const results = (() => {
@@ -99,8 +123,14 @@ export default function Search() {
 
   const submit = (e) => {
     e.preventDefault();
+    setShowSuggest(false);
     const term = q.trim();
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
+  };
+
+  const pickSuggestion = (word) => {
+    setQ(word);
+    setShowSuggest(false);
   };
 
   const active = results.filter((p) => new Date(p.ends_at) > new Date());
@@ -120,10 +150,38 @@ export default function Search() {
             <input
               autoFocus
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => { setQ(e.target.value); setShowSuggest(true); }}
+              onFocus={() => setShowSuggest(true)}
+              onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
               placeholder="חפש פריטים, קטגוריות, מיקומים..."
               className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right"
             />
+            {showSuggest && suggestions.length > 0 && (
+              <div className="absolute z-30 top-full right-0 left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden" dir="rtl">
+                {suggestions.map((word) => {
+                  const idx = word.toLowerCase().indexOf(q.trim().toLowerCase());
+                  return (
+                    <button
+                      key={word}
+                      type="button"
+                      onMouseDown={(e) => { e.preventDefault(); pickSuggestion(word); }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-right hover:bg-[#f700ff0a] transition-colors border-b border-gray-50 last:border-0"
+                    >
+                      <SearchIcon className="h-3.5 w-3.5 text-gray-300" />
+                      <span className="text-gray-700">
+                        {idx >= 0 ? (
+                          <>
+                            {word.slice(0, idx)}
+                            <span className="font-bold" style={{ color: "#f700ff" }}>{word.slice(idx, idx + q.trim().length)}</span>
+                            {word.slice(idx + q.trim().length)}
+                          </>
+                        ) : word}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </form>
           {!loading && q.trim().length >= 2 && (
             <p className="text-sm text-gray-400 mt-3">

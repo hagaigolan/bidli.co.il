@@ -22,9 +22,11 @@ export default async function(req: Request): Promise<Response> {
     const pm = await stripeRequest('GET', `/payment_methods/${pmId}`);
     const card = pm.card || {};
 
-    const SOLD_STATUSES = ['awaiting_payment', 'paid', 'escrow', 'delivered'];
+    // Save the payout card to every active and sold product of this seller
+    // (active auctions will need the card once they sell), skipping released/cancelled.
+    const PAYOUT_STATUSES = ['active', 'ended', 'awaiting_payment', 'paid', 'escrow', 'delivered'];
     const all = await base44.asServiceRole.entities.Product.filter({ seller_email });
-    const sold = all.filter((p) => SOLD_STATUSES.includes(p.status));
+    const sold = all.filter((p) => PAYOUT_STATUSES.includes(p.status) && !p.seller_payout_method_id);
 
     let count = 0;
     for (const p of sold) {

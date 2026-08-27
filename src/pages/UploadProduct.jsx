@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
+import SellerPayoutPanel from "@/components/SellerPayoutPanel";
 
 const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "מטבעות", "בולים", "תכשיטים", "שעונים", "עיצוב הבית", "אופנה", "ספרים", "כלי נגינה", "יין ואלכוהול", "אלקטרוניקה", "רכבים", 'נדל"ן', "אחר"];
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
@@ -84,13 +85,23 @@ export default function UploadProduct() {
   if (done) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6" dir="rtl">
-        <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "2px solid #f700ff44" }}>
-            <CheckCircle className="h-8 w-8" style={{ color: "#f700ff" }} />
+        <div className="max-w-md w-full">
+          <div className="text-center mb-5">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "2px solid #f700ff44" }}>
+              <CheckCircle className="h-8 w-8" style={{ color: "#f700ff" }} />
+            </div>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">המוצר פורסם!</h2>
+            <p className="text-gray-500 text-sm mb-5">המכרז יפתח מיידית ויסתיים בעוד 24 שעות. ההצעה הגבוהה ביותר תזכה.</p>
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-2">המוצר פורסם!</h2>
-          <p className="text-gray-500 text-sm mb-6">המכרז יפתח מיידית ויסתיים בעוד 24 שעות. ההצעה הגבוהה ביותר תזכה.</p>
+
+          {/* רישום כרטיס לקבלת התשלום */}
+          <div className="mb-5 p-4 rounded-2xl border border-amber-200" style={{ background: "#f59e0b08" }}>
+            <h3 className="text-sm font-bold text-amber-800 mb-1">כרטיס לקבלת התשלום</h3>
+            <p className="text-xs text-amber-700 mb-3">כדי שנוכל להעביר אליך את סכום המכירה לאחר סיום המכרז, יש להזין כרטיס אשראי כעת. אין חיוב מיידי.</p>
+            <SellerPayoutPanel sellerEmail={form.seller_email} />
+          </div>
+
           <div className="flex gap-3 justify-center">
             <button onClick={() => navigate("/auctions")}
               className="text-white text-sm px-6 py-2.5 rounded-xl font-semibold"

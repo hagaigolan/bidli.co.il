@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Search, User, Bell, Gavel } from "lucide-react";
+import { Menu, ChevronDown, Search, Bell, Gavel } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/AuthContext";
+import UserMenu from "@/components/UserMenu";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -42,7 +45,9 @@ export default function Header() {
           <div className="hidden sm:flex items-center gap-4">
           </div>
           <div className="flex items-center gap-3 mr-auto">
-            <Link to="/login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה / הרשמה</Link>
+            {!isAuthenticated && (
+              <Link to="/login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה / הרשמה</Link>
+            )}
           </div>
         </div>
       </div>
@@ -87,11 +92,7 @@ export default function Header() {
               <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Link to="/profile">
-                <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
-                  <User className="h-4 w-4" />
-                </Button>
-              </Link>
+              <UserMenu />
               <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
                 + פרסם מכרז
               </Link>

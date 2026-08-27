@@ -22,9 +22,15 @@ export default function Footer() {
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <a href="#" className="px-4 py-2 rounded-xl text-xs font-semibold border border-[#f700ff55] text-white hover:bg-[#f700ff15] transition-colors">עובדים על זה</a>
-              <a href="#" className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-950 font-bold transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>עובדים על זה</a>
+              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold border border-[#f700ff55] text-white hover:bg-[#f700ff15] transition-colors">
+                <span className="group-hover:hidden">App Store</span>
+                <span className="hidden group-hover:inline">עובדים על זה</span>
+              </a>
+              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold text-gray-950 font-bold transition-all hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                <span className="group-hover:hidden">Google Play</span>
+                <span className="hidden group-hover:inline">עובדים על זה</span>
+              </a>
             </div>
           </div>
         </div>

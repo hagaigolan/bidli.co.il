@@ -97,7 +97,7 @@
     },
     "commission_rate": {
       "type": "number",
-      "default": 8
+      "default": 0
     },
     "commission_amount": {
       "type": "number"

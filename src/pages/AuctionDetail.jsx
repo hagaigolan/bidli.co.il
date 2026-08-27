@@ -308,7 +308,7 @@ export default function AuctionDetail() {
     if (!product) return;
     const ended = new Date(product.ends_at) <= new Date();
     if (!ended || product.commission_amount || !product.highest_bidder) return;
-    const rate = product.commission_rate ?? 8;
+    const rate = product.commission_rate ?? 0;
     const finalPrice = product.current_price || 0;
     const commissionAmount = parseFloat((finalPrice * rate / 100).toFixed(2));
     base44.entities.Commission.create({
@@ -554,14 +554,14 @@ export default function AuctionDetail() {
                       <span className="font-semibold text-gray-800">₪{(product.current_price || 0).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>עמלת פלטפורמה ({product.commission_rate ?? 8}%)</span>
+                      <span>עמלת פלטפורמה ({product.commission_rate ?? 0}%)</span>
                       <span className="font-semibold" style={{ color: "#f700ff" }}>
-                        ₪{(product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 8) / 100)).toFixed(2)}
+                        ₪{(product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 0) / 100)).toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between border-t border-gray-200 pt-1 font-semibold text-gray-800">
                       <span>נטו למוכר</span>
-                      <span>₪{((product.current_price || 0) - (product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 8) / 100))).toFixed(2)}</span>
+                      <span>₪{((product.current_price || 0) - (product.commission_amount ?? ((product.current_price || 0) * (product.commission_rate ?? 0) / 100))).toFixed(2)}</span>
                     </div>
                   </div>
                 )}

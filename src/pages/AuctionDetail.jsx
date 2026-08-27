@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
+import RelatedProducts from "@/components/RelatedProducts";
+import RelatedArticle from "@/components/RelatedArticle";
 import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
@@ -581,6 +583,14 @@ export default function AuctionDetail() {
           </div>
         </div>
       </div>
+
+      {/* ── RELATED PRODUCTS + ARTICLE ── */}
+      {product?.category && (
+        <div className="max-w-5xl mx-auto px-4 pb-12">
+          <RelatedProducts category={product.category} excludeId={product.id} />
+          <RelatedArticle category={product.category} />
+        </div>
+      )}
 
       {showNotifModal && (
         <OutbidNotificationModal

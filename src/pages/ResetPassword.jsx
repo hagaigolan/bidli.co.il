@@ -9,7 +9,10 @@ import AuthLayout from "@/components/AuthLayout";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const resetToken = searchParams.get("token");
+  const resetToken =
+    searchParams.get("token") ||
+    searchParams.get("reset_token") ||
+    searchParams.get("resetToken");
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

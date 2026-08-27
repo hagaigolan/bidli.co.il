@@ -75,26 +75,27 @@ export default function Search() {
   const navigate = useNavigate();
   const initialQ = searchParams.get("q") || "";
   const [q, setQ] = useState(initialQ);
-  const [results, setResults] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch all products once
   useEffect(() => {
-    setQ(initialQ);
-    setLoading(true);
     base44.entities.Product.list("-created_date", 100)
-      .then((items) => {
-        const term = initialQ.trim().toLowerCase();
-        if (!term) { setResults(items); return; }
-        const matched = items.filter((p) =>
-          [p.title, p.description, p.category, p.location, p.seller_name, p.condition]
-            .filter(Boolean)
-            .some((field) => field.toLowerCase().includes(term))
-        );
-        setResults(matched);
-      })
-      .catch(() => setResults([]))
+      .then(setAllProducts)
+      .catch(() => setAllProducts([]))
       .finally(() => setLoading(false));
-  }, [initialQ]);
+  }, []);
+
+  // Live filtering — starts from the 2nd character
+  const results = (() => {
+    const term = q.trim().toLowerCase();
+    if (!term || term.length < 2) return allProducts;
+    return allProducts.filter((p) =>
+      [p.title, p.description, p.category, p.location, p.seller_name, p.condition]
+        .filter(Boolean)
+        .some((field) => field.toLowerCase().includes(term))
+    );
+  })();
 
   const submit = (e) => {
     e.preventDefault();
@@ -124,9 +125,9 @@ export default function Search() {
               className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right"
             />
           </form>
-          {!loading && initialQ && (
+          {!loading && q.trim().length >= 2 && (
             <p className="text-sm text-gray-400 mt-3">
-              {results.length} תוצאות עבור «{initialQ}»
+              {results.length} תוצאות עבור «{q.trim()}»
             </p>
           )}
         </div>

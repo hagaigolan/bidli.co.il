@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { capturePayment } from "@/functions/capturePayment";
+import PaymentPanel from "@/components/PaymentPanel";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight,
   Trophy, XCircle, CheckCircle, RefreshCw, ShieldAlert, PackageCheck
@@ -41,20 +43,8 @@ const STATUS_CONFIG = {
   lost:   { label: "לא זכית", color: "#9ca3af", bg: "#f3f4f6", icon: XCircle },
 };
 
-async function confirmDelivery(productId) {
-  const escrows = await base44.entities.Escrow.filter({ product_id: productId });
-  if (escrows.length) {
-    await base44.entities.Escrow.update(escrows[0].id, {
-      status: "released",
-      released_at: new Date().toISOString(),
-      resolved_by: "buyer",
-    });
-  }
-  await base44.entities.Product.update(productId, {
-    status: "released",
-    payment_status: "released",
-    delivered_at: new Date().toISOString(),
-  });
+async function confirmDelivery(productId, buyerEmail) {
+  await capturePayment({ product_id: productId, bidder_email: buyerEmail });
 }
 
 async function openDispute(productId, reason) {
@@ -69,7 +59,7 @@ async function openDispute(productId, reason) {
   await base44.entities.Product.update(productId, { status: "disputed", dispute_reason: reason });
 }
 
-function BidRow({ bid, product, buyerEmail }) {
+function BidRow({ bid, product, buyerEmail, onReload }) {
   const [actionDone, setActionDone] = useState(false);
   const [disputing, setDisputing] = useState(false);
   const [disputeReason, setDisputeReason] = useState("");
@@ -80,6 +70,7 @@ function BidRow({ bid, product, buyerEmail }) {
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.active;
   const Icon = cfg.icon;
   const canEscrowAction = ended && isLeading && product && ["paid", "escrow"].includes(product.status) && !actionDone;
+  const canPay = ended && isLeading && product && product.status === "awaiting_payment" && !actionDone;
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white overflow-hidden">
@@ -140,7 +131,7 @@ function BidRow({ bid, product, buyerEmail }) {
             </div>
           ) : (
             <div className="flex gap-2">
-              <button onClick={async () => { await confirmDelivery(product.id); setActionDone(true); }}
+              <button onClick={async () => { await confirmDelivery(product.id, buyerEmail); setActionDone(true); }}
                 className="flex-1 flex items-center justify-center gap-1 text-xs py-2 rounded-xl font-bold text-green-700 border-2 border-green-200 bg-green-50">
                 <PackageCheck className="h-3.5 w-3.5" /> אישור קבלת מוצר
               </button>
@@ -154,6 +145,10 @@ function BidRow({ bid, product, buyerEmail }) {
       )}
       {actionDone && (
         <div className="px-3 pb-3 pt-1 border-t border-gray-50 text-xs text-gray-400 text-center">✓ הפעולה בוצעה</div>
+      )}
+
+      {canPay && (
+        <PaymentPanel product={product} bidderEmail={buyerEmail} onPaid={() => setTimeout(() => onReload?.(), 1500)} />
       )}
     </div>
   );
@@ -332,7 +327,7 @@ export default function Profile() {
             ) : (
               <div className="space-y-2">
                 {filteredBids.map(bid => (
-                  <BidRow key={bid.id} bid={bid} product={products[bid.product_id]} buyerEmail={buyerEmail} />
+                  <BidRow key={bid.id} bid={bid} product={products[bid.product_id]} buyerEmail={buyerEmail} onReload={loadData} />
                 ))}
               </div>
             )}

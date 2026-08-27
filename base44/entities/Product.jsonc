@@ -117,6 +117,22 @@
     },
     "dispute_reason": {
       "type": "string"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_payment_intent_id": {
+      "type": "string"
+    },
+    "stripe_payment_intent_client_secret": {
+      "type": "string"
+    },
+    "card_registered": {
+      "type": "boolean",
+      "default": false
+    },
+    "payment_error": {
+      "type": "string"
     }
   },
   "required": [

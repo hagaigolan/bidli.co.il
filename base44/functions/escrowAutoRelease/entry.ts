@@ -1,7 +1,9 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { captureAndRelease } from '../../shared/stripe.ts';
 
-// Runs daily. Auto-releases escrow 7 days after shipping if buyer hasn't confirmed.
-Deno.serve(async (req) => {
+// Runs daily. Auto-releases escrow 3 days after payment if buyer hasn't confirmed.
+// Captures the authorized Stripe payment and marks escrow + product as released.
+export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -11,24 +13,30 @@ Deno.serve(async (req) => {
 
     const now = new Date();
     const escrows = await base44.asServiceRole.entities.Escrow.filter({ status: 'frozen' });
-    const autoRelease = escrows.filter(e => e.release_after && new Date(e.release_after) <= now);
+    const due = escrows.filter((e) => e.release_after && new Date(e.release_after) <= now);
 
     const results = [];
-    for (const escrow of autoRelease) {
-      await base44.asServiceRole.entities.Escrow.update(escrow.id, {
-        status: 'released',
-        released_at: now.toISOString(),
-        resolved_by: 'auto',
-      });
-      await base44.asServiceRole.entities.Product.update(escrow.product_id, {
-        status: 'released',
-        payment_status: 'released',
-      });
-      results.push({ escrow_id: escrow.id, action: 'auto_released' });
+    for (const escrow of due) {
+      try {
+        const products = await base44.asServiceRole.entities.Product.filter({ id: escrow.product_id });
+        if (products.length) {
+          await captureAndRelease(base44, products[0], 'auto');
+        } else {
+          await base44.asServiceRole.entities.Escrow.update(escrow.id, {
+            status: 'released',
+            released_at: now.toISOString(),
+            resolved_by: 'auto',
+          });
+        }
+        results.push({ escrow_id: escrow.id, action: 'released' });
+      } catch (error) {
+        console.error('escrowAutoRelease error for', escrow.id, error);
+        results.push({ escrow_id: escrow.id, action: 'error', error: error.message });
+      }
     }
 
     return Response.json({ processed: results.length, results });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
-});
+}

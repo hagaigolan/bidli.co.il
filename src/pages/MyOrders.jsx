@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   ArrowRight, Package, RefreshCw, Trophy, Wallet,
-  Hourglass, ShieldCheck, ShieldAlert, XCircle, Lock, Undo2
+  Hourglass, ShieldCheck, ShieldAlert, XCircle, Lock, Undo2, ChevronDown, Receipt
 } from "lucide-react";
+import { HANDLING_FEE_RATE, getFeeBreakdown } from "@/lib/handlingFee";
 
 // Payment / order status derived from product.status + payment_status
 function getOrderStatus(product) {
@@ -27,36 +28,65 @@ function getOrderStatus(product) {
 function OrderRow({ product }) {
   const cfg = getOrderStatus(product);
   const Icon = cfg.icon;
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const { base, fee, total } = getFeeBreakdown(product.current_price || product.starting_price || 0);
+
   return (
-    <Link to={`/auction/${product.id}`}
-      className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 hover:border-[#f700ff33] transition-all group">
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
-        {product.image_url
-          ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
-          : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
-      </div>
-      <div className="flex-1 min-w-0" dir="rtl">
-        <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#f700ff] transition-colors">
-          {product.title}
-        </p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-xs text-gray-400">מחיר זכייה:</span>
-          <span className="text-sm font-black text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</span>
+    <div className="rounded-xl border border-gray-100 bg-white overflow-hidden">
+      <Link to={`/auction/${product.id}`}
+        className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-all group">
+        <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
+          {product.image_url
+            ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+            : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
         </div>
-        <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-400">
-          <span>זכית בתאריך</span>
-          <span>{new Date(product.ends_at).toLocaleDateString("he-IL")}</span>
-          {product.seller_name && (<><span className="text-gray-200">·</span><span>מוכר: {product.seller_name}</span></>)}
+        <div className="flex-1 min-w-0" dir="rtl">
+          <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#f700ff] transition-colors">
+            {product.title}
+          </p>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-xs text-gray-400">מחיר זכייה:</span>
+            <span className="text-sm font-black text-gray-900">₪{base.toLocaleString()}</span>
+          </div>
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-400">
+            <span>זכית בתאריך</span>
+            <span>{new Date(product.ends_at).toLocaleDateString("he-IL")}</span>
+            {product.seller_name && (<><span className="text-gray-200">·</span><span>מוכר: {product.seller_name}</span></>)}
+          </div>
         </div>
-      </div>
-      <div className="flex-shrink-0">
-        <div className="px-2.5 py-1 rounded-full flex items-center gap-1"
-          style={{ background: cfg.bg, color: cfg.color }}>
-          <Icon className="h-3 w-3" />
-          <span className="text-xs font-bold whitespace-nowrap">{cfg.label}</span>
+        <div className="flex-shrink-0 flex flex-col items-end gap-1.5">
+          <div className="px-2.5 py-1 rounded-full flex items-center gap-1"
+            style={{ background: cfg.bg, color: cfg.color }}>
+            <Icon className="h-3 w-3" />
+            <span className="text-xs font-bold whitespace-nowrap">{cfg.label}</span>
+          </div>
+          <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowBreakdown(s => !s); }}
+            className="flex items-center gap-0.5 text-xs font-semibold transition-colors"
+            style={{ color: showBreakdown ? "#9d00ff" : "#9ca3af" }}>
+            <Receipt className="h-3.5 w-3.5" />
+            פירוט
+            <ChevronDown className={`h-3 w-3 transition-transform ${showBreakdown ? "rotate-180" : ""}`} />
+          </button>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {showBreakdown && (
+        <div className="px-3 pb-3 pt-2 border-t border-gray-50" style={{ background: "#f9fafb" }} dir="rtl">
+          <div className="flex justify-between items-center text-xs py-1">
+            <span className="text-gray-500">מחיר הפריט (מחיר זכייה)</span>
+            <span className="font-semibold text-gray-700">₪{base.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between items-center text-xs py-1">
+            <span className="text-gray-500">דמי טיפול ({Math.round(HANDLING_FEE_RATE * 100)}%)</span>
+            <span className="font-semibold text-gray-700">₪{fee.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between items-center text-sm py-1.5 border-t border-gray-200 mt-1">
+            <span className="font-bold text-gray-800">סה"כ שולם</span>
+            <span className="font-black" style={{ color: "#9d00ff" }}>₪{total.toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

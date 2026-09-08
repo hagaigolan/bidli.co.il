@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart } from "lucide-react";
+import { getOwnerKey } from "@/lib/favorites";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -233,6 +234,8 @@ export default function AuctionDetail() {
   const [myLastBid, setMyLastBid] = useState(null);
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [favSaved, setFavSaved] = useState(false);
+  const [favError, setFavError] = useState("");
   // ── 7. notifications opt-in ──
   const [notifEnabled, setNotifEnabled] = useState(() => !!localStorage.getItem("notif_channels"));
   const [showNotifModal, setShowNotifModal] = useState(false);
@@ -243,6 +246,35 @@ export default function AuctionDetail() {
       if (items.length) setProduct(items[0]);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [id]);
+
+  // Check if already saved to favorites
+  useEffect(() => {
+    if (!id) return;
+    base44.entities.Favorite.filter({ product_id: id, owner_key: getOwnerKey() })
+      .then(items => setFavSaved(items.length > 0))
+      .catch(() => {});
+  }, [id]);
+
+  const toggleFavorite = async () => {
+    if (!product) return;
+    setFavError("");
+    try {
+      const existing = await base44.entities.Favorite.filter({ product_id: product.id, owner_key: getOwnerKey() });
+      if (existing.length) {
+        await base44.entities.Favorite.delete(existing[0].id);
+        setFavSaved(false);
+      } else {
+        await base44.entities.Favorite.create({
+          product_id: product.id,
+          product_title: product.title,
+          product_image_url: product.image_url || "",
+          product_ends_at: product.ends_at,
+          owner_key: getOwnerKey(),
+        });
+        setFavSaved(true);
+      }
+    } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
+  };
 
   // Load bid history
   useEffect(() => {
@@ -439,6 +471,17 @@ export default function AuctionDetail() {
               )}
               <h1 className="text-2xl font-black text-gray-900 mt-1">{product.title}</h1>
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
+
+              {/* ── FAVORITES TOGGLE ── */}
+              <button type="button" onClick={toggleFavorite}
+                className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"
+                style={favSaved
+                  ? { background: "#f700ff15", borderColor: "#f700ff", color: "#f700ff" }
+                  : { background: "white", borderColor: "#e5e7eb", color: "#6b7280" }}>
+                <Heart className={`h-4 w-4 ${favSaved ? "fill-current" : ""}`} />
+                {favSaved ? "נשמר למועדפים ♥" : "שמור למועדפים"}
+              </button>
+              {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
             </div>
 
             {/* ── FOMO BANNER ── */}

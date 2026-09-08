@@ -24,6 +24,7 @@ import SellerPayout from './pages/SellerPayout';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
+import MyOrders from './pages/MyOrders';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
         <Route path="/articles/:id" element={<ArticleDetail />} />
         <Route path="/seller-payout" element={<SellerPayout />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/my-orders" element={<MyOrders />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

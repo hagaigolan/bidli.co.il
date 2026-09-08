@@ -279,6 +279,20 @@ export default function Profile() {
 
         {hasProfile && (
           <>
+            <Link to="/my-orders"
+              className="flex items-center gap-3 p-3.5 rounded-2xl border mb-6 transition-all hover:shadow-md"
+              style={{ borderColor: "#9d00ff33", background: "linear-gradient(135deg, #9d00ff08, #f700ff05)" }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "linear-gradient(135deg, #9d00ff22, #f700ff11)", border: "1px solid #9d00ff33" }}>
+                <Package className="h-5 w-5" style={{ color: "#9d00ff" }} />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-gray-900">ההזמנות שלי</p>
+                <p className="text-xs text-gray-400">המוצרים שזכית בהם וסטטוס התשלום שלהם</p>
+              </div>
+              <ChevronLeft className="h-4 w-4 text-gray-300" />
+            </Link>
+
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
                 { label: "הצעות פעילות", value: activeBids.length, color: "#0088ff", icon: Clock },

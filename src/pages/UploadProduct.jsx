@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Upload, ArrowRight, Image, DollarSign, CheckCircle } from "lucide-react";
+import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 import SellerPayoutPanel from "@/components/SellerPayoutPanel";
 
@@ -14,8 +14,8 @@ export default function UploadProduct() {
     title: "", description: "", category: "", condition: "מצב מעולה",
     starting_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
   });
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -42,10 +42,16 @@ export default function UploadProduct() {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const handleImage = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setImageFiles(prev => [...prev, ...files].slice(0, 8));
+    setImagePreviews(prev => [...prev, ...files.map(f => URL.createObjectURL(f))].slice(0, 8));
+    e.target.value = "";
+  };
+
+  const removeImage = (i) => {
+    setImageFiles(prev => prev.filter((_, idx) => idx !== i));
+    setImagePreviews(prev => prev.filter((_, idx) => idx !== i));
   };
 
   const handleSubmit = async (e) => {
@@ -58,10 +64,12 @@ export default function UploadProduct() {
     setError("");
     try {
       let image_url = "";
-      if (imageFile) {
-        const res = await base44.integrations.Core.UploadFile({ file: imageFile });
-        image_url = res.file_url;
+      let image_urls = [];
+      for (const f of imageFiles) {
+        const res = await base44.integrations.Core.UploadFile({ file: f });
+        image_urls.push(res.file_url);
       }
+      if (image_urls.length) image_url = image_urls[0];
       const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
       const startingPrice = parseFloat(form.starting_price);
@@ -70,6 +78,7 @@ export default function UploadProduct() {
         starting_price: startingPrice,
         current_price: startingPrice,
         image_url,
+        image_urls,
         ends_at,
         status: "active",
         bid_count: 0,
@@ -108,7 +117,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"" }); setImageFile(null); setImagePreview(null); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"" }); setImageFiles([]); setImagePreviews([]); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -117,6 +126,7 @@ export default function UploadProduct() {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -137,19 +147,42 @@ export default function UploadProduct() {
         <SellerFomoBanner />
         {/* Image Upload */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">תמונת המוצר</label>
-          <label className="relative flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-[#f700ff66] transition-all bg-gray-50 overflow-hidden">
-            {imagePreview ? (
-              <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
-            ) : (
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            תמונות המוצר
+            <span className="text-xs text-gray-400 font-normal"> — עד 8 תמונות. תמונות נוספות מגדילות את סיכויי המכירה</span>
+          </label>
+          {imagePreviews.length > 0 ? (
+            <div className="grid grid-cols-4 gap-2">
+              {imagePreviews.map((src, i) => (
+                <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group">
+                  <img src={src} alt={`preview ${i + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => removeImage(i)}
+                    className="absolute top-1 left-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                  {i === 0 && (
+                    <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold"
+                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>ראשית</span>
+                  )}
+                </div>
+              ))}
+              {imageFiles.length < 8 && (
+                <label className="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 cursor-pointer hover:border-[#f700ff66] hover:text-[#f700ff] transition-all bg-gray-50">
+                  <Plus className="h-6 w-6" />
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleImage} />
+                </label>
+              )}
+            </div>
+          ) : (
+            <label className="relative flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-[#f700ff66] transition-all bg-gray-50 overflow-hidden">
               <div className="flex flex-col items-center gap-2 text-gray-400">
                 <Image className="h-10 w-10" />
-                <p className="text-sm">לחץ להעלאת תמונה</p>
-                <p className="text-xs">JPG, PNG עד 10MB</p>
+                <p className="text-sm">לחץ להעלאת תמונות</p>
+                <p className="text-xs">JPG, PNG — אפשר לבחור כמה תמונות ביחד</p>
               </div>
-            )}
-            <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
-          </label>
+              <input type="file" accept="image/*" multiple className="hidden" onChange={handleImage} />
+            </label>
+          )}
         </div>
 
         {/* Basic Info */}

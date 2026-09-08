@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare } from "lucide-react";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
+import ImageSlider from "@/components/ImageSlider";
 import RelatedProducts from "@/components/RelatedProducts";
 import RelatedArticle from "@/components/RelatedArticle";
 import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
@@ -409,20 +410,20 @@ export default function AuctionDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Image */}
           <div>
-            <div className="rounded-2xl overflow-hidden bg-gray-50 aspect-square relative">
-              {product.image_url
-                ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
-                : <div className="w-full h-full flex items-center justify-center text-6xl">🏺</div>}
+            <ImageSlider
+              images={[...(product.image_urls || []), product.image_url].filter(Boolean)}
+              alt={product.title}
+            >
               {/* ── 5. STATUS BADGE on image ── */}
               {!ended && (
                 <div className="absolute top-3 right-3">
                   {isLeading
                     ? <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #00c853, #00e676)", boxShadow: "0 0 12px #00c85366" }}>🏆 אתה מוביל!</span>
                     : myLastBid && <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #ff6600, #f700ff)", boxShadow: "0 0 12px #ff660066" }}>⚠️ עקפו אותך</span>
-                  }
-                </div>
-              )}
-            </div>
+                    }
+                    </div>
+                    )}
+                    </ImageSlider>
             {/* ── 3. BID FEED ── */}
             <div className="mt-4">
               <BidFeed bids={bids} flashNew={flashNew} />

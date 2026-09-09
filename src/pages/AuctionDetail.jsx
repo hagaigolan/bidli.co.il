@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
@@ -405,6 +405,27 @@ export default function AuctionDetail() {
     finally { setBidding(false); }
   };
 
+  // פרסום חוזר של מכרז שלא נמכר — העתקת כל הפרטים לטופס הפרסום
+  const handleRepublish = () => {
+    const draft = {
+      title: product.title,
+      description: product.description || "",
+      category: product.category || "",
+      condition: product.condition || "",
+      location: product.location || "",
+      starting_price: product.starting_price,
+      image_url: product.image_url || "",
+      image_urls: product.image_urls || [],
+    };
+    if (isMyAuction) {
+      draft.seller_name = product.seller_name || "";
+      draft.seller_email = product.seller_email || "";
+      draft.seller_phone = product.seller_phone || "";
+    }
+    localStorage.setItem("republish_draft", JSON.stringify(draft));
+    navigate("/upload-product");
+  };
+
   const enableNotifications = () => {
     setShowNotifModal(true);
   };
@@ -603,6 +624,16 @@ export default function AuctionDetail() {
                       <span>מחיר מכירה סופי</span>
                       <span>₪{(product.current_price || 0).toLocaleString()}</span>
                     </div>
+                  </div>
+                )}
+                {!product.highest_bidder && (
+                  <div className="p-3 border-t border-gray-100">
+                    <button type="button" onClick={handleRepublish}
+                      className="w-full text-white text-sm py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
+                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" /> פרסום חוזר — עריכה מחדש של המכרז
+                    </button>
+                    <p className="text-xs text-gray-400 text-center mt-1.5">כל הפרטים והתמונות יועתקו לטופס הפרסום וניתן לערוך אותם לפני הפרסום מחדש</p>
                   </div>
                 )}
               </div>

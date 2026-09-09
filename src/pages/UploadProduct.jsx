@@ -16,6 +16,8 @@ export default function UploadProduct() {
   });
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [isRepublish, setIsRepublish] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -29,6 +31,29 @@ export default function UploadProduct() {
         setAuthChecked(true);
       }
     });
+  }, []);
+
+  // פרסום חוזר — טעינת פרטי מכרז קודם לעריכה מחדש
+  useEffect(() => {
+    const draft = localStorage.getItem("republish_draft");
+    if (!draft) return;
+    localStorage.removeItem("republish_draft");
+    try {
+      const d = JSON.parse(draft);
+      setForm(f => ({
+        ...f,
+        title: d.title || "",
+        description: d.description || "",
+        category: d.category || "",
+        condition: d.condition || f.condition,
+        location: d.location || "",
+        starting_price: d.starting_price != null ? String(d.starting_price) : "",
+        ...(d.seller_name ? { seller_name: d.seller_name, seller_email: d.seller_email, seller_phone: d.seller_phone } : {}),
+      }));
+      const urls = (Array.isArray(d.image_urls) && d.image_urls.length ? d.image_urls : (d.image_url ? [d.image_url] : [])).filter(Boolean);
+      setExistingImages(urls);
+      setIsRepublish(true);
+    } catch {}
   }, []);
 
   if (!authChecked) {
@@ -72,13 +97,12 @@ export default function UploadProduct() {
     setLoading(true);
     setError("");
     try {
-      let image_url = "";
-      let image_urls = [];
+      let image_urls = [...existingImages];
       for (const f of imageFiles) {
         const res = await base44.integrations.Core.UploadFile({ file: f });
         image_urls.push(res.file_url);
       }
-      if (image_urls.length) image_url = image_urls[0];
+      const image_url = image_urls[0] || "";
       const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
       const startingPrice = parseFloat(form.starting_price);
@@ -125,7 +149,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"" }); setImageFiles([]); setImagePreviews([]); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"" }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -134,6 +158,8 @@ export default function UploadProduct() {
       </div>
     );
   }
+
+
 
 
   return (
@@ -153,20 +179,27 @@ export default function UploadProduct() {
 
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <SellerFomoBanner />
+        {isRepublish && (
+          <div className="p-4 rounded-2xl" style={{ background: "#f700ff08", border: "1px solid #f700ff33" }} dir="rtl">
+            <p className="text-sm font-bold text-gray-800 mb-0.5">🔄 מכרז חוזר</p>
+            <p className="text-xs text-gray-500">כל פרטי המכרז הקודם הועתקו לטופס — ערוך את הפרטים ופרסם מחדש.</p>
+          </div>
+        )}
         {/* Image Upload */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             תמונות המוצר
             <span className="text-xs text-gray-400 font-normal"> — עד 8 תמונות. תמונות נוספות מגדילות את סיכויי המכירה</span>
           </label>
-          {imagePreviews.length > 0 ? (
+          {imagePreviews.length + existingImages.length > 0 ? (
             <div className="grid grid-cols-4 gap-2">
-              {imagePreviews.map((src, i) => (
-                <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group">
-                  <img src={src} alt={`preview ${i + 1}`} className="w-full h-full object-cover" />
-                  <button type="button" onClick={() => removeImage(i)}
+              {existingImages.map((src, i) => (
+                <div key={`ex-${i}`} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group">
+                  <img src={src} alt={`תמונה קיימת ${i + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}
+                    aria-label={`הסר תמונה ${i + 1}`}
                     className="absolute top-1 left-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                   {i === 0 && (
                     <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold"
@@ -174,7 +207,21 @@ export default function UploadProduct() {
                   )}
                 </div>
               ))}
-              {imageFiles.length < 8 && (
+              {imagePreviews.map((src, i) => (
+                <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group">
+                  <img src={src} alt={`preview ${i + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => removeImage(i)}
+                    aria-label={`הסר preview ${i + 1}`}
+                    className="absolute top-1 left-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <X className="h-3.5 w-3.5" aria-hidden="true" />
+                  </button>
+                  {existingImages.length === 0 && i === 0 && (
+                    <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold"
+                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>ראשית</span>
+                  )}
+                </div>
+              ))}
+              {imageFiles.length + existingImages.length < 8 && (
                 <label className="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 cursor-pointer hover:border-[#f700ff66] hover:text-[#f700ff] transition-all bg-gray-50">
                   <Plus className="h-6 w-6" />
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleImage} />

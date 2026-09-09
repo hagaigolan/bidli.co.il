@@ -90,3 +90,43 @@ export function adminBidEmail(product, bid) {
     text: `התקבלה הצעה חדשה במכרז "${product.title}"\n\nהצעה: ₪${priceHtml(bid.amount)}\nמציע: ${bid.bidder_name || "אנונימי"}${bid.bidder_email ? ` (${bid.bidder_email})` : ""}\nמוכר: ${product.seller_name || "—"} (${product.seller_email || "—"})\nסך ההצעות: ${product.bid_count ?? "—"}\n\nקישור: ${productUrl}`,
   };
 }
+
+function escHtml(str) {
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ── Seller: buyer question from the live chat, forwarded in real time ──
+export function sellerQuestionEmail(product, { question, asker_name, asker_contact }) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const asker = asker_name || "קונה מהצ'אט";
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">⚡ נשאלה כרגע שאלה חדשה על המוצר שלך בצ'אט החי. ענה מהר — קונה שמקבל תשובה מהירה הרבה יותר מוכן להציע!</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:18px 0;">
+      <tr><td style="padding:16px 18px;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#a1a1aa;">השאלה של ${escHtml(asker)}:</p>
+        <p style="margin:0;font-size:16px;line-height:1.7;color:#18181b;white-space:pre-line;">${escHtml(question)}</p>
+      </td></tr>
+    </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;margin:16px 0;">
+      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#3f3f46;">
+        שם השואל: <strong>${escHtml(asker)}</strong><br>
+        ${asker_contact ? `דרך חזרה: <strong style="color:#e5893d;">${escHtml(asker_contact)}</strong><br>` : ""}
+        השאלה נשלחה בזמן אמת מעמוד המכירה — ענה ישירות לשואל כדי לסגור את המכירה.
+      </td></tr>
+    </table>
+    ${productCard(product, productUrl)}`;
+  return {
+    subject: `⚡ שאלה חדשה בצ'אט על "${product.title}"`,
+    html: shell({
+      title: "שאלה חדשה מקונה!",
+      heroColor: "#e5893d",
+      heroEmoji: "⚡",
+      heroLine: "נשלח בזמן אמת מהצ'אט החי",
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "צפה במכרז שלך →",
+    }),
+    text: `שלום ${product.seller_name || "מוכר"},\n\nנשאלה שאלה חדשה על "${product.title}" בצ'אט החי:\n\n"${question}"\n\nשואל: ${asker}${asker_contact ? ` (${asker_contact})` : ""}\n\nקישור למכרז: ${productUrl}\n\nענה מהר כדי לסגור את המכירה!`,
+  };
+}

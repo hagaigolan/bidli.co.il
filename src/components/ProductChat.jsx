@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Send, Loader2, Phone } from "lucide-react";
 import { getProductFaqs } from "@/lib/productFaq";
+import { forwardQuestionToSeller } from "@/functions/forwardQuestionToSeller";
 
 // מספר הוואטסאפ של הנהלת המכירה — החלף כאן (פורמט בינלאומי ללא +, למשל 972501234567).
 // אם ריק, נשלחת ברירת מחדל לטלפון המוכר של הפריט.
@@ -38,15 +39,29 @@ ${details}
 export default function ProductChat({ product }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { from: "bot", text: "שלום! 👋 אני עוזר השירות של bidli. שאל אותי כל שאלה על הפריט, מצבו או תנאי המכרז." },
+    { from: "bot", text: "שלום! 👋 זה הצ'אט החי של bidli. שאל כל שאלה על הפריט — אענה מיד, וכל שאלה תישלח גם למוכר במייל כדי שתקבל תשובה מהירה." },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [askerName, setAskerName] = useState("");
+  const [askerContact, setAskerContact] = useState("");
   const listRef = useRef(null);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing, open]);
+
+  // מילוי אוטומטי של פרטי הקשר לפי המשתמש המחובר (האפליקציה פתוחה גם לאורחים)
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(async (authed) => {
+      if (!authed) return;
+      try {
+        const me = await base44.auth.me();
+        setAskerName(me.full_name || "");
+        setAskerContact(me.email || "");
+      } catch {}
+    });
+  }, []);
 
   const send = async (e) => {
     e.preventDefault();
@@ -55,6 +70,15 @@ export default function ProductChat({ product }) {
     setInput("");
     setMessages(m => [...m, { from: "user", text: question }]);
     setTyping(true);
+    // העברת השאלה למייל המוכר בזמן אמת, במקביל למענה המיידי
+    forwardQuestionToSeller({
+      product_id: product.id,
+      question,
+      asker_name: askerName,
+      asker_contact: askerContact,
+    })
+      .then(() => setMessages(m => [...m, { from: "bot", text: "📩 השאלה נשלחה למוכר במייל — הוא יענה בהקדם." }]))
+      .catch(() => {});
     try {
       const res = await base44.integrations.Core.InvokeLLM({ prompt: buildPrompt(product, question) });
       const answer = typeof res === "string" ? res : res?.response ?? res?.message ?? res?.data ?? "";
@@ -84,7 +108,7 @@ export default function ProductChat({ product }) {
             <MessageCircle className="h-4 w-4 text-white" />
             <div className="flex-1">
               <p className="text-sm font-bold text-white">שאלות על הפריט</p>
-              <p className="text-xs text-white/80">עוזר bidli · מענה מיידי</p>
+              <p className="text-xs text-white/80">צ'אט חי · כל שאלה נשלחת למוכר במיידי</p>
             </div>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">
               <X className="h-4 w-4" />
@@ -124,6 +148,17 @@ export default function ProductChat({ product }) {
                 {f.q}
               </button>
             ))}
+          </div>
+
+          <div className="flex gap-1.5 px-3 pb-1.5" dir="rtl">
+            <input value={askerName} onChange={e => setAskerName(e.target.value)}
+              aria-label="השם שלך"
+              placeholder="השם שלך"
+              className="flex-1 px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] text-right" />
+            <input value={askerContact} onChange={e => setAskerContact(e.target.value)}
+              aria-label="טלפון או אימייל לחזרה"
+              placeholder="טלפון / אימייל שלך לחזרה"
+              className="flex-1 px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] text-right" />
           </div>
 
           <form onSubmit={send} className="p-3 flex gap-2">

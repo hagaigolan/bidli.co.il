@@ -6,6 +6,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import { TrendingUp, Gavel, CheckCircle, XCircle, DollarSign, Users, ShieldAlert, Lock } from "lucide-react";
+import { getFeeConfig } from "@/functions/getFeeConfig";
+import ClosedSalesSection from "@/components/admin/ClosedSalesSection";
 
 const NEON_COLORS = ["#e5893d", "#3e6b8a", "#6aa3cd", "#2d4f68", "#00c853", "#ff6600"];
 
@@ -61,6 +63,8 @@ export default function AdminDashboard() {
   const [dailyData, setDailyData] = useState([]);
   const [auctionsByCategory, setAuctionsByCategory] = useState([]);
   const [outcomeData, setOutcomeData] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [feeRate, setFeeRate] = useState(0);
 
   const checkPin = () => {
     if (pinInput === SECRET_PIN) {
@@ -74,6 +78,7 @@ export default function AdminDashboard() {
 
   const loadData = async () => {
     setLoading(true);
+    getFeeConfig().then(r => setFeeRate(r?.data?.seller_commission_rate ?? 0)).catch(() => {});
     try {
       const [products, bids, escrows] = await Promise.all([
         base44.entities.Product.list("-created_date", 500),
@@ -92,6 +97,7 @@ export default function AdminDashboard() {
       const noWinner = products.filter(p => p.status === "ended" && !p.highest_bidder).length;
 
       const frozenEscrow = escrows.filter(e => e.status === "frozen").reduce((s, e) => s + (e.amount || 0), 0);
+      setAllProducts(products);
 
       setStats({
         activeAuctions: active,
@@ -226,6 +232,9 @@ export default function AdminDashboard() {
           <StatCard icon={XCircle} label="בוטלו / ללא זוכה" value={stats.cancelled + stats.endedNoWinner} color="#e5893d" />
           <StatCard icon={ShieldAlert} label="סכסוכים פתוחים" value={stats.disputed} color="#ff6600" />
         </div>
+
+        {/* Closed sales with commissions */}
+        <ClosedSalesSection products={allProducts} commissionRate={feeRate} />
 
         {/* Bottom row: pie + bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

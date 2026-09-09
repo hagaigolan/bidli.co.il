@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "name": "ProductQuestion",
+  "properties": {
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "asker_name": {
+      "type": "string"
+    },
+    "asker_contact": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_user_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "handled"
+      ],
+      "default": "open"
+    },
+    "handled_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "question",
+    "seller_email"
+  ]
+}

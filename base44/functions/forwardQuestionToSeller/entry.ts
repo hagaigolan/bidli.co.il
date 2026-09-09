@@ -19,6 +19,19 @@ export default async function (req: Request): Promise<Response> {
       return Response.json({ error: 'product not found' }, { status: 404 });
     }
 
+    // שמירת הפנייה למעקב המוכר — כך שהמוכר יוכל לסמן אותה כ"טופלה"
+    await base44.asServiceRole.entities.ProductQuestion.create({
+      product_id: product.id,
+      product_title: product.title || "",
+      question: q,
+      asker_name: (asker_name || "").toString().slice(0, 120),
+      asker_contact: (asker_contact || "").toString().slice(0, 120),
+      seller_email: product.seller_email,
+      seller_name: product.seller_name || "",
+      seller_user_id: product.seller_user_id || "",
+      status: "open",
+    }).catch(() => null);
+
     const email = sellerQuestionEmail(product, {
       question: q,
       asker_name: (asker_name || "").toString().slice(0, 120),

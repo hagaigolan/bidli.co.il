@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import UserMenu from "@/components/UserMenu";
+import logoWordmark from "@/assets/logo-wordmark.png";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -64,12 +65,13 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between min-h-16 py-3 gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
+            <Link to="/" className="flex flex-col items-center gap-1.5 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
               <img
-                src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/db19a1097_generated_image.png"
-                alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
-                className="h-[132px] w-auto object-contain"
+                src={logoWordmark}
+                alt="bidli.co.il"
+                className="h-[96px] w-auto object-contain"
               />
+              <span className="text-sm font-bold text-gray-500 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
             </Link>
 
             {/* Search bar */}

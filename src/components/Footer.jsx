@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Smartphone, ArrowRight } from "lucide-react";
+import logoWordmark from "@/assets/logo-wordmark.png";
 
 export default function Footer() {
   return (
@@ -42,12 +43,13 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
             {/* Brand */}
             <div>
-              <Link to="/" className="flex items-center gap-2 mb-4" aria-label="bidli.co.il — דף הבית">
+              <Link to="/" className="flex flex-col items-center gap-1.5 mb-4" aria-label="bidli.co.il — דף הבית">
                 <img
-                  src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/db19a1097_generated_image.png"
-                  alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
-                  className="h-[168px] w-auto object-contain"
+                  src={logoWordmark}
+                  alt="bidli.co.il"
+                  className="h-[96px] w-auto object-contain"
                 />
+                <span className="text-sm font-bold text-white/60 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
               </Link>
               <p className="text-white/40 text-xs mb-4 leading-relaxed">
                 נשמח לשמוע ממך! שלח לנו שאלות, הערות או רעיונות.

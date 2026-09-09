@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { capturePayment } from "@/functions/capturePayment";
-import PaymentPanel from "@/components/PaymentPanel";
+import SalesManager from "@/components/SalesManager";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
-  Trophy, XCircle, CheckCircle, RefreshCw, ShieldAlert, PackageCheck
+  Trophy, XCircle, RefreshCw
 } from "lucide-react";
 
 function useCountdown(endsAt) {
@@ -43,34 +42,14 @@ const STATUS_CONFIG = {
   lost:   { label: "לא זכית", color: "#9ca3af", bg: "#f3f4f6", icon: XCircle },
 };
 
-async function confirmDelivery(productId, buyerEmail) {
-  await capturePayment({ product_id: productId, bidder_email: buyerEmail });
-}
-
-async function openDispute(productId, reason) {
-  const escrows = await base44.entities.Escrow.filter({ product_id: productId });
-  if (escrows.length) {
-    await base44.entities.Escrow.update(escrows[0].id, {
-      status: "disputed",
-      dispute_reason: reason,
-      dispute_opened_at: new Date().toISOString(),
-    });
-  }
-  await base44.entities.Product.update(productId, { status: "disputed", dispute_reason: reason });
-}
-
-function BidRow({ bid, product, buyerEmail, onReload }) {
-  const [actionDone, setActionDone] = useState(false);
-  const [disputing, setDisputing] = useState(false);
-  const [disputeReason, setDisputeReason] = useState("");
-
+function BidRow({ bid, product, onReload }) {
   const ended = product ? new Date(product.ends_at) <= new Date() : false;
   const isLeading = !!(product && product.highest_bidder === bid.bidder_name && product.current_price === bid.amount);
   const status = ended ? (isLeading ? "won" : "lost") : (isLeading ? "active" : "outbid");
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.active;
   const Icon = cfg.icon;
-  const canEscrowAction = ended && isLeading && product && ["paid", "escrow"].includes(product.status) && !actionDone;
-  const canPay = ended && isLeading && product && product.status === "awaiting_payment" && !actionDone;
+  const needsPayment = ended && isLeading && product && product.status === "awaiting_payment";
+  const reportedTransfer = ended && isLeading && product && product.status === "transfer_reported";
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white overflow-hidden">
@@ -112,43 +91,20 @@ function BidRow({ bid, product, buyerEmail, onReload }) {
         </div>
       </Link>
 
-      {/* Escrow actions */}
-      {canEscrowAction && (
-        <div className="px-3 pb-3 pt-1 border-t border-gray-50 space-y-2" dir="rtl">
-          {disputing ? (
-            <div className="space-y-2">
-              <textarea value={disputeReason} onChange={e => setDisputeReason(e.target.value)}
-                placeholder="תאר את הבעיה (מוצר פגום, לא הגיע, שונה מהתיאור...)"
-                rows={2}
-                className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none resize-none text-right" />
-              <div className="flex gap-2">
-                <button onClick={async () => { await openDispute(product.id, disputeReason); setActionDone(true); }}
-                  className="flex-1 text-xs py-2 rounded-xl font-bold text-red-600 border-2 border-red-200 bg-red-50">
-                  שלח דיווח סכסוך
-                </button>
-                <button onClick={() => setDisputing(false)} className="text-xs px-3 py-2 rounded-xl border border-gray-200 text-gray-500">ביטול</button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <button onClick={async () => { await confirmDelivery(product.id, buyerEmail); setActionDone(true); }}
-                className="flex-1 flex items-center justify-center gap-1 text-xs py-2 rounded-xl font-bold text-green-700 border-2 border-green-200 bg-green-50">
-                <PackageCheck className="h-3.5 w-3.5" /> אישור קבלת מוצר
-              </button>
-              <button onClick={() => setDisputing(true)}
-                className="flex items-center justify-center gap-1 text-xs px-3 py-2 rounded-xl font-bold text-red-600 border-2 border-red-200 bg-red-50">
-                <ShieldAlert className="h-3.5 w-3.5" /> סכסוך
-              </button>
-            </div>
-          )}
+      {/* תשלום בהעברה — מעבר לההזמנות שלי */}
+      {needsPayment && (
+        <div className="px-3 pb-3 pt-1 border-t border-gray-50" dir="rtl">
+          <Link to="/my-orders"
+            className="block text-center text-xs py-2.5 rounded-xl font-bold text-white"
+            style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+            להשלמת התשלום בהעברה →
+          </Link>
         </div>
       )}
-      {actionDone && (
-        <div className="px-3 pb-3 pt-1 border-t border-gray-50 text-xs text-gray-400 text-center">✓ הפעולה בוצעה</div>
-      )}
-
-      {canPay && (
-        <PaymentPanel product={product} bidderEmail={buyerEmail} onPaid={() => setTimeout(() => onReload?.(), 1500)} />
+      {reportedTransfer && (
+        <div className="px-3 pb-3 pt-1 border-t border-gray-50 text-xs text-gray-500 text-center" dir="rtl">
+          ההעברה דווחה — ממתין לאישור המוכר. מעקב בעמוד "ההזמנות שלי".
+        </div>
       )}
     </div>
   );
@@ -211,7 +167,6 @@ export default function Profile() {
   });
 
   const hasProfile = localStorage.getItem("bidder_name") || localStorage.getItem("bidder_email");
-  const buyerEmail = localStorage.getItem("bidder_email");
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -307,6 +262,8 @@ export default function Profile() {
               <ChevronLeft className="h-4 w-4 text-gray-300" />
             </Link>
 
+            <SalesManager />
+
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
                 { label: "הצעות פעילות", value: activeBids.length, color: "#0088ff", icon: Clock },
@@ -355,7 +312,7 @@ export default function Profile() {
             ) : (
               <div className="space-y-2">
                 {filteredBids.map(bid => (
-                  <BidRow key={bid.id} bid={bid} product={products[bid.product_id]} buyerEmail={buyerEmail} onReload={loadData} />
+                  <BidRow key={bid.id} bid={bid} product={products[bid.product_id]} onReload={loadData} />
                 ))}
               </div>
             )}

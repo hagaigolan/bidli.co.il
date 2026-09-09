@@ -20,7 +20,6 @@ import TermsAndPrivacy from './pages/TermsAndPrivacy';
 import Stocks from './pages/Stocks';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
-import SellerPayout from './pages/SellerPayout';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
@@ -77,7 +76,6 @@ const AuthenticatedApp = () => {
         <Route path="/stocks" element={<Stocks />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
-        <Route path="/seller-payout" element={<SellerPayout />} />
         <Route path="/search" element={<Search />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/favorites" element={<Favorites />} />

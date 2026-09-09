@@ -3,16 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
-import SellerPayoutPanel from "@/components/SellerPayoutPanel";
 
 const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "מטבעות", "בולים", "תכשיטים", "שעונים", "עיצוב הבית", "אופנה", "ספרים", "כלי נגינה", "יין ואלכוהול", "אלקטרוניקה", "רכבים", 'נדל"ן', "אחר"];
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
+const PAYMENT_METHOD_LABELS = { kashcash: "קשקאש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "", description: "", category: "", condition: "מצב מעולה",
     starting_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
+    seller_payment_method: "", seller_payme_phone: "", seller_bank_details: "",
   });
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -60,6 +61,15 @@ export default function UploadProduct() {
     if (!form.seller_name || !form.seller_email || !form.seller_phone) {
       setError("לצורך פרסום חובה להירשם עם שם, אימייל וטלפון"); return;
     }
+    if (!form.seller_payment_method) {
+      setError("יש לבחור אמצעי תשלום לקבלת הכסף מהזוכה"); return;
+    }
+    if (["kashcash", "bit"].includes(form.seller_payment_method) && !form.seller_payme_phone) {
+      setError("יש להזין מספר טלפון לקבלת ההעברה"); return;
+    }
+    if (form.seller_payment_method === "bank" && !form.seller_bank_details) {
+      setError("יש להזין פרטי חשבון בנק לקבלת ההעברה"); return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -104,11 +114,10 @@ export default function UploadProduct() {
             <p className="text-gray-500 text-sm mb-5">המכרז יפתח מיידית ויסתיים בעוד 24 שעות. ההצעה הגבוהה ביותר תזכה.</p>
           </div>
 
-          {/* רישום כרטיס לקבלת התשלום */}
-          <div className="mb-5 p-4 rounded-2xl border border-amber-200" style={{ background: "#f59e0b08" }}>
-            <h3 className="text-sm font-bold text-amber-800 mb-1">כרטיס לקבלת התשלום</h3>
-            <p className="text-xs text-amber-700 mb-3">כדי שנוכל להעביר אליך את סכום המכירה לאחר סיום המכרז, יש להזין כרטיס אשראי כעת. אין חיוב מיידי.</p>
-            <SellerPayoutPanel sellerEmail={form.seller_email} />
+          {/* קבלת התשלום בהעברה ישירה */}
+          <div className="mb-5 p-4 rounded-2xl border border-green-200" style={{ background: "#00c85308" }} dir="rtl">
+            <h3 className="text-sm font-bold text-green-800 mb-1">התשלום יתקבל בהעברה ישירה</h3>
+            <p className="text-xs text-green-700">הזוכה יעביר אליך את סכום הזכייה דרך {PAYMENT_METHOD_LABELS[form.seller_payment_method] || "האמצעי שהגדרת"}, וההזמנה תסומן כשולמה לאחר שתאשר את קבלת הכסף באזור האישי. הכל ללא כרטיס אשראי וללא עמלות.</p>
           </div>
 
           <div className="flex gap-3 justify-center">
@@ -117,7 +126,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"" }); setImageFiles([]); setImagePreviews([]); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"" }); setImageFiles([]); setImagePreviews([]); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -258,6 +267,39 @@ export default function UploadProduct() {
               placeholder="050-1234567"
               className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" dir="ltr" />
           </div>
+          {/* אמצעי תשלום לקבלת הכסף */}
+          <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #00c85308, #00e67605)", border: "1px solid #00c85322" }}>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">אמצעי תשלום לקבלת הכסף *</label>
+            <p className="text-xs text-gray-400 mb-3">הזוכה יעביר אליך את סכום הזכייה ישירות — ללא כרטיס אשראי וללא עמלות.</p>
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {[["kashcash", "קשקאש"], ["bit", "ביט"], ["bank", "העברה בנקאית"]].map(([value, label]) => (
+                <button key={value} type="button" onClick={() => set("seller_payment_method", value)}
+                  className="py-2.5 rounded-xl text-xs font-bold border transition-all"
+                  style={form.seller_payment_method === value
+                    ? { borderColor: "#00c853", color: "#00c853", background: "#00c85310" }
+                    : { borderColor: "#e5e7eb", color: "#6b7280", background: "white" }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            {["kashcash", "bit"].includes(form.seller_payment_method) && (
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">מספר הטלפון לקבלת ההעברה *</label>
+                <input type="tel" value={form.seller_payme_phone} onChange={e => set("seller_payme_phone", e.target.value)}
+                  placeholder="050-1234567"
+                  className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#00c85388] transition-all" dir="ltr" />
+              </div>
+            )}
+            {form.seller_payment_method === "bank" && (
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">פרטי חשבון בנק *</label>
+                <textarea value={form.seller_bank_details} onChange={e => set("seller_bank_details", e.target.value)}
+                  placeholder="שם בנק, מספר סניף, מספר חשבון, שם החשבון" rows={3}
+                  className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#00c85388] transition-all text-right resize-none" />
+              </div>
+            )}
+          </div>
+
           <div>
             <label className="block text-xs text-gray-500 mb-1">מיקום</label>
             <input value={form.location} onChange={e => set("location", e.target.value)}

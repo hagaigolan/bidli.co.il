@@ -1,7 +1,35 @@
 // Designed HTML email builders for sale notifications.
-// Both buyer (winner) and seller receive a branded email with a link to the auction page.
+// Transfer-based flow: the winner pays the seller directly (KashCash / Bit / bank
+// transfer), reports the transfer in the app, and the seller confirms receipt.
 
 const APP_URL = "https://bid-it-now-app.base44.app";
+
+const METHOD_LABELS = {
+  kashcash: "קשקאש",
+  bit: "ביט",
+  bank: "העברה בנקאית",
+};
+
+function paymentMethodHtml(product) {
+  const label = METHOD_LABELS[product.seller_payment_method];
+  if (!label) return "";
+  if (product.seller_payment_method === "bank") {
+    return `<p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong></p>
+      ${product.seller_bank_details
+        ? `<div style="background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px;line-height:1.7;color:#18181b;white-space:pre-line;">${product.seller_bank_details}</div>`
+        : ""}`;
+  }
+  return `<p style="margin:0;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong> — <strong style="color:#f700ff;">${product.seller_payme_phone || ""}</strong></p>`;
+}
+
+function stepsBox(stepsHtml) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;margin:16px 0;">
+    <tr><td style="padding:16px 18px;font-size:14px;line-height:1.9;color:#3f3f46;">
+      <strong style="color:#7e22ce;">שלושה שלבים וההזמנה שלך שלמה:</strong><br>
+      ${stepsHtml}
+    </td></tr>
+  </table>`;
+}
 
 function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
   return `<!DOCTYPE html>
@@ -52,42 +80,49 @@ function productCard(product, productUrl) {
 
 export function buyerSaleEmail(product, winnerName) {
   const productUrl = `${APP_URL}/auction/${product.id}`;
+  const ordersUrl = `${APP_URL}/my-orders`;
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${winnerName || "זוכה"},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">ברכותינו! 🎉 זכית במכרז. עליך להשלים את התשלום תוך <strong style="color:#f700ff;">24 שעות</strong> כדי לאשר את הזכייה. הסכום יוחזק באסקרו מאובטח עד אישור קבלת המוצר.</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">ברכותינו! 🎉 זכית במכרז. עליך להעביר את סכום הזכייה ישירות למוכר תוך <strong style="color:#f700ff;">24 שעות</strong> — בהעברה ישירה, ללא כרטיס אשראי.</p>
+    ${paymentMethodHtml(product)}
     ${productCard(product, productUrl)}
-    <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">לאחר התשלום, יש לאשר קבלת המוצר באזור האישי כדי שהתשלום יועבר למוכר. במקרה של בעיה ניתן לפתוח סכסוך מול צוות bid-it.</p>`;
+    ${stepsBox(`
+      <strong>1.</strong> בצע את ההעברה למוכר בסכום הזכייה.<br>
+      <strong>2.</strong> דווח על ההעברה בעמוד "ההזמנות שלי" (אפשר לצרף אסמכתא).<br>
+      <strong>3.</strong> המוכר יאשר שהכסף התקבל — וההזמנה תסומן כשולמה. משם תתואם המסירה ישירות מול המוכר.`)}
+    <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">חשוב: אי-דיווח על העברה בתוך 24 שעות עשוי להעביר את הזכייה למציע המשני. שמור את אישור ההעברה שלך.</p>`;
   return shell({
     title: "זכית במכרז!",
     heroColor: "#9d00ff",
     heroEmoji: "🏆",
     heroLine: "ההצעה שלך היא הגבוהה ביותר",
     bodyHtml: body,
+    ctaUrl: ordersUrl,
+    ctaLabel: "לדיווח על ההעברה בההזמנות שלי →",
   });
 }
 
 export function sellerSaleEmail(product, winnerName) {
   const productUrl = `${APP_URL}/auction/${product.id}`;
-  const payoutUrl = `${APP_URL}/seller-payout?email=${encodeURIComponent(product.seller_email || "")}`;
+  const profileUrl = `${APP_URL}/profile`;
+  const method = METHOD_LABELS[product.seller_payment_method] || "העברה";
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${winnerName}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הכסף יוחזק באסקרו מאובטח ויועבר אליך לאחר שהקונה יאשר קבלת המוצר.</p>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;margin:8px 0 16px;">
-      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.6;color:#92400e;">
-        <strong style="color:#b45309;">פעולה נדרשת — הזנת כרטיס לקבלת התשלום</strong><br>
-        כדי שנוכל להעביר אליך את סכום המכירה, יש להזין פרטי כרטיס אשראי / חשבון לזיכוי באזור האישי. ללא הזנת פרטי תשלום, שחרור הכסף יתעכב.
-      </td></tr>
-    </table>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${winnerName}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הקונה יעביר אליך את הסכום ישירות ב<strong>${method}</strong> — ללא כרטיס אשראי וללא עמלות.</p>
     ${productCard(product, productUrl)}
-    <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">תקבל עדכון במייל כשהקונה יאשר את התשלום והמשלוח. במידה והקונה לא ישלם בזמן, המכרז יועבר למציע השני או יבוטל.</p>`;
+    ${stepsBox(`
+      <strong>1.</strong> הקונה יבצע את ההעברה וידווח עליה במערכת.<br>
+      <strong>2.</strong> תקבל מייל כשהקונה ידווח על ההעברה.<br>
+      <strong>3.</strong> לאחר שהכסף התקבל בפועל — אשר קבלת תשלום באזור האישי, וההזמנה תסומן כשולמה.`)}
+    <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">במידה והקונה לא ידווח על העברה בזמן, הזכייה תועבר למציע המשני או שהמכרז יבוטל.</p>`;
   return shell({
     title: "המוצר שלך נמכר!",
     heroColor: "#00c853",
     heroEmoji: "💰",
     heroLine: "המכרז הסתיים בהצלחה",
     bodyHtml: body,
-    ctaUrl: payoutUrl,
-    ctaLabel: "הזן כרטיס לקבלת התשלום →",
+    ctaUrl: profileUrl,
+    ctaLabel: "לאזור האישי שלי →",
   });
 }
 

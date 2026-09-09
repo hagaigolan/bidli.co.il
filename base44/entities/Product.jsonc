@@ -63,13 +63,27 @@
     "seller_user_id": {
       "type": "string"
     },
-    "seller_payout_method_id": {
+    "seller_payment_method": {
+      "type": "string",
+      "enum": [
+        "kashcash",
+        "bit",
+        "bank"
+      ]
+    },
+    "seller_payme_phone": {
       "type": "string"
     },
-    "seller_card_last4": {
+    "seller_bank_details": {
       "type": "string"
     },
-    "seller_card_brand": {
+    "transfer_reported_at": {
+      "type": "string"
+    },
+    "transfer_reference": {
+      "type": "string"
+    },
+    "seller_confirmed_at": {
       "type": "string"
     },
     "location": {
@@ -90,6 +104,7 @@
         "active",
         "ended",
         "awaiting_payment",
+        "transfer_reported",
         "paid",
         "escrow",
         "delivered",

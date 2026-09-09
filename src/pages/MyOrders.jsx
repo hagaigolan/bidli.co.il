@@ -2,31 +2,29 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
-  ArrowRight, Package, RefreshCw, Trophy, Wallet,
-  Hourglass, ShieldCheck, ShieldAlert, XCircle, Lock, Undo2, ChevronDown, Receipt
+  ArrowRight, Package, RefreshCw, Trophy,
+  Hourglass, ShieldCheck, ShieldAlert, XCircle, ChevronDown, Receipt
 } from "lucide-react";
 import { getFeeBreakdown } from "@/lib/handlingFee";
 import { getFeeConfig } from "@/functions/getFeeConfig";
+import OrderPaymentFlow from "@/components/OrderPaymentFlow";
 
 // Payment / order status derived from product.status + payment_status
 function getOrderStatus(product) {
-  const ps = product.payment_status;
   if (product.status === "disputed")
     return { label: "בסכסוך", color: "#ef4444", bg: "#ef444415", icon: ShieldAlert };
   if (product.status === "cancelled")
     return { label: "בוטל", color: "#6b7280", bg: "#f3f4f6", icon: XCircle };
-  if (ps === "released")
-    return { label: "הושלם — התשלום שוחרר", color: "#22c55e", bg: "#22c55e15", icon: ShieldCheck };
-  if (ps === "refunded")
-    return { label: "הוחזר", color: "#f97316", bg: "#f9731615", icon: Undo2 };
-  if (ps === "frozen")
-    return { label: "שולם — כסף בנאמנות", color: "#0088ff", bg: "#0088ff15", icon: Lock };
-  if (product.status === "awaiting_payment" || ps === "unpaid")
-    return { label: "ממתין לתשלום", color: "#f700ff", bg: "#f700ff15", icon: Hourglass };
+  if (product.status === "paid" || product.payment_status === "released")
+    return { label: "שולם ואושר ✓", color: "#22c55e", bg: "#22c55e15", icon: ShieldCheck };
+  if (product.status === "transfer_reported")
+    return { label: "העברה דווחה — ממתין לאישור המוכר", color: "#0088ff", bg: "#0088ff15", icon: Hourglass };
+  if (product.status === "awaiting_payment" || product.payment_status === "unpaid")
+    return { label: "ממתין להעברה", color: "#f700ff", bg: "#f700ff15", icon: Hourglass };
   return { label: "בטיפול", color: "#f97316", bg: "#f9731615", icon: Hourglass };
 }
 
-function OrderRow({ product, feeRate }) {
+function OrderRow({ product, feeRate, onReload }) {
   const cfg = getOrderStatus(product);
   const Icon = cfg.icon;
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -87,6 +85,10 @@ function OrderRow({ product, feeRate }) {
           </div>
         </div>
       )}
+
+      {["awaiting_payment", "transfer_reported"].includes(product.status) && (
+        <OrderPaymentFlow product={product} onDone={onReload} />
+      )}
     </div>
   );
 }
@@ -121,8 +123,8 @@ export default function MyOrders() {
 
   const hasProfile = storedName || storedEmail;
 
-  const paidCount = orders.filter(p => ["frozen", "released"].includes(p.payment_status)).length;
-  const releasedCount = orders.filter(p => p.payment_status === "released").length;
+  const paidCount = orders.filter(p => p.status === "paid").length;
+  const reportedCount = orders.filter(p => p.status === "transfer_reported").length;
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -164,8 +166,8 @@ export default function MyOrders() {
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
                 { label: "זכיות בסה\"כ", value: orders.length, color: "#9d00ff", icon: Trophy },
-                { label: "שולם", value: paidCount, color: "#0088ff", icon: Wallet },
-                { label: "הושלם", value: releasedCount, color: "#22c55e", icon: ShieldCheck },
+                { label: "ממתין לאישור", value: reportedCount, color: "#0088ff", icon: Hourglass },
+                { label: "שולם ואושר", value: paidCount, color: "#22c55e", icon: ShieldCheck },
               ].map(({ label, value, color, icon: Icon }) => (
                 <div key={label} className="p-3 rounded-2xl border border-gray-100 text-center" style={{ background: color + "06" }}>
                   <Icon className="h-5 w-5 mx-auto mb-1" style={{ color }} />
@@ -186,7 +188,7 @@ export default function MyOrders() {
               </div>
             ) : (
               <div className="space-y-2">
-                {orders.map(p => <OrderRow key={p.id} product={p} feeRate={feeRate} />)}
+                {orders.map(p => <OrderRow key={p.id} product={p} feeRate={feeRate} onReload={loadOrders} />)}
               </div>
             )}
 

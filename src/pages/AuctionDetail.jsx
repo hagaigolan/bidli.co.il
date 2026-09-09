@@ -355,12 +355,13 @@ export default function AuctionDetail() {
       return;
     }
     // Anti-shill: block seller from bidding on own auction
-    const myEmail = localStorage.getItem("bidder_email");
-    if (product.seller_email && myEmail && product.seller_email === myEmail) {
-      setBidError("לא ניתן להגיש הצעה על מכרז שפרסמת בעצמך");
-      return;
-    }
-    if (product.seller_name && bidderName && product.seller_name === bidderName && !myEmail) {
+    const myEmail = localStorage.getItem("bidder_email") || "";
+    const myNameTrim = (bidderName || "").trim();
+    const sameEmail = product.seller_email && myEmail &&
+      product.seller_email.trim().toLowerCase() === myEmail.trim().toLowerCase();
+    const sameName = product.seller_name && myNameTrim &&
+      product.seller_name.trim().toLowerCase() === myNameTrim.toLowerCase();
+    if (sameEmail || sameName) {
       setBidError("לא ניתן להגיש הצעה על מכרז שפרסמת בעצמך");
       return;
     }

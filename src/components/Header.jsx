@@ -66,7 +66,7 @@ export default function Header() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
               <img
-                src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
+                src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/db19a1097_generated_image.png"
                 alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
                 className="h-[132px] w-auto object-contain"
               />

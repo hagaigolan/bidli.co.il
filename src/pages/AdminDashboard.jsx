@@ -8,6 +8,7 @@ import {
 import { TrendingUp, Gavel, CheckCircle, XCircle, DollarSign, Users, ShieldAlert, Lock } from "lucide-react";
 import { getFeeConfig } from "@/functions/getFeeConfig";
 import ClosedSalesSection from "@/components/admin/ClosedSalesSection";
+import MonthlySalesChart from "@/components/admin/MonthlySalesChart";
 
 const NEON_COLORS = ["#e5893d", "#3e6b8a", "#6aa3cd", "#2d4f68", "#00c853", "#ff6600"];
 
@@ -305,6 +306,9 @@ export default function AdminDashboard() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        {/* Monthly sales volume */}
+        <MonthlySalesChart products={allProducts} />
 
       </div>
     </div>

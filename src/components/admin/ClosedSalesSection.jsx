@@ -27,6 +27,11 @@ function SummaryCard({ icon: Icon, label, value, sub, color }) {
   );
 }
 
+// "מכירה שנסגרה": כל מוצר עם זוכה בכל סטטוס — למעט בוטל, למעט פעיל ולמעט נסגר ללא זוכה
+export function isClosedSale(p) {
+  return !!(p && p.highest_bidder && p.status !== "cancelled" && p.status !== "active");
+}
+
 // עמלה לכל עסקה — לפי שיעור העמלה המרכזי שמגיע ממנוע העמלות (fees.ts)
 function commissionFor(salePrice, rate) {
   const sale = Number(salePrice) || 0;
@@ -34,10 +39,7 @@ function commissionFor(salePrice, rate) {
 }
 
 export default function ClosedSalesSection({ products = [], commissionRate = 0 }) {
-  // "מכירה שנסגרה": כל מוצר עם זוכה בכל סטטוס — למעט בוטל ולמעט נסגר ללא זוכה
-  const closedSales = products.filter(p =>
-    p.highest_bidder && p.status !== "cancelled" && p.status !== "active"
-  );
+  const closedSales = products.filter(isClosedSale);
 
   const totalVolume = closedSales.reduce((s, p) => s + (Number(p.current_price) || 0), 0);
   const totalCommission = closedSales.reduce((s, p) => s + commissionFor(p.current_price, commissionRate), 0);

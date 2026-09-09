@@ -25,7 +25,7 @@ function CountdownBadge({ endsAt }) {
   if (!left) return <span className="text-xs font-bold text-gray-400">הסתיים</span>;
   const urgent = left.total < 3600000;
   return (
-    <span className="font-mono font-bold text-xs" style={{ color: urgent ? "#f700ff" : "#0088ff" }}>
+    <span className="font-mono font-bold text-xs" style={{ color: urgent ? "#e5893d" : "#2d4f68" }}>
       {String(left.h).padStart(2,"0")}:{String(left.m).padStart(2,"0")}:{String(left.s).padStart(2,"0")}
     </span>
   );
@@ -41,7 +41,7 @@ function ResultCard({ product }) {
           ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-50 to-gray-100">🏺</div>}
         <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
-          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#f700ff,#9d00ff)", color: ended ? "#6b7280" : "white" }}>
+          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#e5893d,#3e6b8a)", color: ended ? "#6b7280" : "white" }}>
           <Clock className="h-3 w-3" />
           {ended ? "הסתיים" : <CountdownBadge endsAt={product.ends_at} />}
         </div>
@@ -139,7 +139,7 @@ export default function Search() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
-      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
             <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
@@ -154,7 +154,7 @@ export default function Search() {
               onFocus={() => setShowSuggest(true)}
               onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
               placeholder="חפש פריטים, קטגוריות, מיקומים..."
-              className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right"
+              className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right"
             />
             {showSuggest && suggestions.length > 0 && (
               <div className="absolute z-30 top-full right-0 left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden" dir="rtl">
@@ -165,14 +165,14 @@ export default function Search() {
                       key={word}
                       type="button"
                       onMouseDown={(e) => { e.preventDefault(); pickSuggestion(word); }}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-right hover:bg-[#f700ff0a] transition-colors border-b border-gray-50 last:border-0"
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-right hover:bg-[#e5893d0a] transition-colors border-b border-gray-50 last:border-0"
                     >
                       <SearchIcon className="h-3.5 w-3.5 text-gray-300" />
                       <span className="text-gray-700">
                         {idx >= 0 ? (
                           <>
                             {word.slice(0, idx)}
-                            <span className="font-bold" style={{ color: "#f700ff" }}>{word.slice(idx, idx + q.trim().length)}</span>
+                            <span className="font-bold" style={{ color: "#e5893d" }}>{word.slice(idx, idx + q.trim().length)}</span>
                             {word.slice(idx + q.trim().length)}
                           </>
                         ) : word}
@@ -194,7 +194,7 @@ export default function Search() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
           </div>
         ) : results.length === 0 ? (
           <div className="text-center py-20">
@@ -202,7 +202,7 @@ export default function Search() {
             <h2 className="text-lg font-bold text-gray-700 mb-2">לא נמצאו תוצאות</h2>
             <p className="text-sm text-gray-400 mb-6">נסה מילות חיפוש אחרות או דפדף בכל המכרזים</p>
             <Link to="/auctions" className="text-white text-sm px-6 py-2.5 rounded-xl font-bold inline-block"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </Link>
           </div>

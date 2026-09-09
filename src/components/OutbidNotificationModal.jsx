@@ -31,7 +31,7 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
         </button>
 
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
             <Bell className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -43,7 +43,7 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
         {/* Channel selection */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           <button type="button" onClick={() => toggle("email")}
-            className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-sm font-semibold ${channels.email ? "border-[#f700ff] bg-[#f700ff08] text-[#f700ff]" : "border-gray-200 text-gray-500"}`}>
+            className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-sm font-semibold ${channels.email ? "border-[#e5893d] bg-[#e5893d08] text-[#e5893d]" : "border-gray-200 text-gray-500"}`}>
             <Mail className="h-4 w-4" />
             מייל
             {channels.email && <Check className="h-3.5 w-3.5 mr-auto" />}
@@ -65,7 +65,7 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right"
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right"
             />
           </div>
         )}
@@ -87,7 +87,7 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
 
         <button onClick={handleSave}
           className="w-full py-3 rounded-xl font-bold text-white text-sm mt-2"
-          style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+          style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
           הפעל התראות
         </button>
       </div>

@@ -21,7 +21,7 @@ function CountdownBadge({ endsAt }) {
   if (!left) return <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white bg-gray-400">הסתיים</span>;
 
   const critical = left.total < 3600000;
-  const bg = critical ? "#ef4444" : "#0088ff";
+  const bg = critical ? "#ef4444" : "#2d4f68";
   const time = left.h > 0
     ? `${String(left.h).padStart(2,"0")}:${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`
     : `${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`;
@@ -48,11 +48,11 @@ export default function Stocks() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)" }}>
+      <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-black text-gray-900">סטוקים</h1>
@@ -63,7 +63,7 @@ export default function Stocks() {
             <span className="text-sm text-gray-400">{products.length} פריטים פעילים</span>
             <Link to="/upload-product"
               className="flex items-center gap-2 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
               <Plus className="h-4 w-4" /> פרסם פריט
             </Link>
           </div>
@@ -74,7 +74,7 @@ export default function Stocks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-20">
@@ -83,7 +83,7 @@ export default function Stocks() {
             <p className="text-gray-400 text-sm mb-6">היה הראשון לפרסם פריט!</p>
             <Link to="/upload-product"
               className="inline-block text-white text-sm font-bold px-6 py-3 rounded-xl"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               פרסם עכשיו
             </Link>
           </div>

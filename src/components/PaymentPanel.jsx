@@ -42,7 +42,7 @@ function PaymentForm({ amountLabel, onAuthorized }) {
         type="submit"
         disabled={!stripe || loading}
         className="w-full text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
-        style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}
+        style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}
       >
         {loading ? (
           <>
@@ -97,7 +97,7 @@ export default function PaymentPanel({ product, bidderEmail, onPaid }) {
           target="_blank"
           rel="noreferrer"
           className="block mt-1 font-bold"
-          style={{ color: "#f700ff" }}
+          style={{ color: "#e5893d" }}
         >
           פתח בחלון חדש →
         </a>
@@ -126,7 +126,7 @@ export default function PaymentPanel({ product, bidderEmail, onPaid }) {
         onClick={start}
         disabled={loading}
         className="w-full text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
-        style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}
+        style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}
       >
         {loading ? (
           <>

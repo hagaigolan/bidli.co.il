@@ -19,7 +19,7 @@ function paymentMethodHtml(product) {
         ? `<div style="background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px;line-height:1.7;color:#18181b;white-space:pre-line;">${product.seller_bank_details}</div>`
         : ""}`;
   }
-  return `<p style="margin:0;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong> — <strong style="color:#f700ff;">${product.seller_payme_phone || ""}</strong></p>`;
+  return `<p style="margin:0;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong> — <strong style="color:#e5893d;">${product.seller_payme_phone || ""}</strong></p>`;
 }
 
 function stepsBox(stepsHtml) {
@@ -41,7 +41,7 @@ function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLab
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.06);">
         <tr>
           <td style="padding:28px 32px;text-align:center;background:linear-gradient(135deg,${heroColor}1a,${heroColor}08);border-bottom:1px solid ${heroColor}22;">
-            <div style="display:inline-block;width:56px;height:56px;line-height:56px;border-radius:16px;background:linear-gradient(135deg,#f700ff,#9d00ff);font-size:28px;">${heroEmoji}</div>
+            <div style="display:inline-block;width:56px;height:56px;line-height:56px;border-radius:16px;background:linear-gradient(135deg,#e5893d,#3e6b8a);font-size:28px;">${heroEmoji}</div>
             <h1 style="margin:14px 0 4px;font-size:22px;font-weight:900;color:#18181b;">${title}</h1>
             <p style="margin:0;font-size:14px;color:#71717a;font-weight:600;">${heroLine}</p>
           </td>
@@ -50,7 +50,7 @@ function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLab
           ${bodyHtml}
         </td></tr>
         <tr><td style="padding:0 32px 28px;">
-          <a href="${ctaUrl || APP_URL + "/auctions"}" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#f700ff,#9d00ff);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">${ctaLabel || "צפה במכרז ב-bidli →"}</a>
+          <a href="${ctaUrl || APP_URL + "/auctions"}" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#e5893d,#3e6b8a);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">${ctaLabel || "צפה במכרז ב-bidli →"}</a>
         </td></tr>
         <tr><td style="padding:20px 32px 28px;border-top:1px solid #f4f4f5;">
           <p style="margin:0;font-size:12px;color:#a1a1aa;text-align:center;line-height:1.6;">bidli — פלטפורמת מכרזים לאמנות, יודאיקה ואספנות<br>הודעה זו נשלחה אוטומטית, אין להשיב.</p>
@@ -70,12 +70,12 @@ function productCard(product, productUrl) {
       </td>
       <td style="padding:14px;vertical-align:top;">
         <p style="margin:0 0 4px;font-size:16px;font-weight:800;color:#18181b;">${product.title}</p>
-        ${product.category ? `<p style="margin:0 0 8px;font-size:12px;color:#f700ff;font-weight:700;">${product.category}</p>` : ""}
+        ${product.category ? `<p style="margin:0 0 8px;font-size:12px;color:#e5893d;font-weight:700;">${product.category}</p>` : ""}
         <p style="margin:0;font-size:20px;font-weight:900;color:#18181b;">₪${price}</p>
       </td>
     </tr>
   </table>
-  <a href="${productUrl}" style="display:block;text-align:center;text-decoration:none;background:#ffffff;border:2px solid #f700ff44;color:#f700ff;font-weight:800;font-size:14px;padding:12px 18px;border-radius:12px;">קישור ישיר למכירה →</a>`;
+  <a href="${productUrl}" style="display:block;text-align:center;text-decoration:none;background:#ffffff;border:2px solid #e5893d44;color:#e5893d;font-weight:800;font-size:14px;padding:12px 18px;border-radius:12px;">קישור ישיר למכירה →</a>`;
 }
 
 export function buyerSaleEmail(product, winnerName) {
@@ -83,7 +83,7 @@ export function buyerSaleEmail(product, winnerName) {
   const ordersUrl = `${APP_URL}/my-orders`;
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${winnerName || "זוכה"},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">ברכותינו! 🎉 זכית במכרז. עליך להעביר את סכום הזכייה ישירות למוכר תוך <strong style="color:#f700ff;">24 שעות</strong> — בהעברה ישירה, ללא כרטיס אשראי.</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">ברכותינו! 🎉 זכית במכרז. עליך להעביר את סכום הזכייה ישירות למוכר תוך <strong style="color:#e5893d;">24 שעות</strong> — בהעברה ישירה, ללא כרטיס אשראי.</p>
     ${paymentMethodHtml(product)}
     ${productCard(product, productUrl)}
     ${stepsBox(`
@@ -93,7 +93,7 @@ export function buyerSaleEmail(product, winnerName) {
     <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">חשוב: אי-דיווח על העברה בתוך 24 שעות עשוי להעביר את הזכייה למציע המשני. שמור את אישור ההעברה שלך.</p>`;
   return shell({
     title: "זכית במכרז!",
-    heroColor: "#9d00ff",
+    heroColor: "#3e6b8a",
     heroEmoji: "🏆",
     heroLine: "ההצעה שלך היא הגבוהה ביותר",
     bodyHtml: body,

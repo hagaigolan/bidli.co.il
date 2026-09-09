@@ -5,9 +5,9 @@ import { Flame, Users, Zap } from "lucide-react";
 export function BuyerFomoBanner() {
   return (
     <div className="rounded-2xl p-3" dir="rtl"
-      style={{ background: "linear-gradient(135deg, #f700ff12, #00f7ff08)", border: "1px solid #f700ff33" }}>
+      style={{ background: "linear-gradient(135deg, #e5893d12, #6aa3cd08)", border: "1px solid #e5893d33" }}>
       <p className="text-sm font-black text-gray-900 flex items-center gap-2">
-        <Flame className="h-4 w-4 flex-shrink-0" style={{ color: "#f700ff" }} />
+        <Flame className="h-4 w-4 flex-shrink-0" style={{ color: "#e5893d" }} />
         אתה לא לבד במשחק
       </p>
       <p className="text-xs text-gray-500 mt-1 leading-relaxed">
@@ -39,7 +39,7 @@ export function BuyerLiveBlock({ bidCount, lastBidTime }) {
 
   return (
     <div className="rounded-2xl p-4" dir="rtl"
-      style={{ background: "linear-gradient(135deg, #00c85308, #f700ff06)", border: "1px solid #00c85322" }}>
+      style={{ background: "linear-gradient(135deg, #00c85308, #e5893d06)", border: "1px solid #00c85322" }}>
       <div className="flex items-center gap-2 mb-2">
         <Users className="h-4 w-4" style={{ color: "#00c853" }} />
         <p className="text-sm font-black text-gray-900">{viewers} צופים כרגע</p>

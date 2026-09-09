@@ -5,13 +5,13 @@ import { Eye, CreditCard, BadgeCheck, Lock, Users, ShieldCheck } from "lucide-re
 const TRUST_ITEMS = [
   {
     icon: Eye,
-    color: "#f700ff",
+    color: "#e5893d",
     title: "שקיפות מחירים מלאה",
     text: "אין עמלות נסתרות: דמי טיפול של 3% מוצגים לך מראש, לפני שאתה מגיש הצעה או משלם. מה שאתה רואה — זה מה שאתה משלם.",
   },
   {
     icon: CreditCard,
-    color: "#0088ff",
+    color: "#2d4f68",
     title: "תשלום ישיר, בלי כרטיס אשראי",
     text: "התשלום עובר בהעברה ישירה (קשקאש / ביט / העברה בנקאית) ישירות למוכר. פרטי כרטיס אשראי לא נאספים ולא נשמרים במערכת.",
   },
@@ -23,7 +23,7 @@ const TRUST_ITEMS = [
   },
   {
     icon: Lock,
-    color: "#9d00ff",
+    color: "#3e6b8a",
     title: "הפרטים שלך נשארים שלך",
     text: "השם, האימייל והטלפון משמשים אך ורק לניהול ההזמנה וההתראות שביקשת. לא מוכרים ולא מעבירים אותם לצד שלישי.",
   },
@@ -35,7 +35,7 @@ const TRUST_ITEMS = [
   },
   {
     icon: ShieldCheck,
-    color: "#00f7ff",
+    color: "#6aa3cd",
     title: "דירוגי מוכרים אמיתיים",
     text: "בסיום כל מכרז הקונים מדרגים את המוכר, כך שהמוניטין נבנה מביקורות אמת — ומוצג לכל מכרז חדש.",
   },
@@ -46,7 +46,7 @@ export default function TrustSection() {
     <section className="py-10 border-t border-gray-100" style={{ background: "linear-gradient(180deg, #ffffff, #fafaff)" }} dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-3 mb-2">
-          <ShieldCheck className="h-6 w-6" style={{ color: "#9d00ff" }} aria-hidden="true" />
+          <ShieldCheck className="h-6 w-6" style={{ color: "#3e6b8a" }} aria-hidden="true" />
           <h2 className="text-xl font-bold text-gray-900 tracking-tight">שקיפות ופרטיות — ככה זה עובד אצלנו</h2>
         </div>
         <p className="text-sm text-gray-400 mb-6">כל מה שחשוב לדעת על מחירים, תשלומים והמידע שלך — בגלוי</p>
@@ -68,7 +68,7 @@ export default function TrustSection() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4 mt-5 text-xs">
-          <Link to="/terms" className="font-bold hover:opacity-80 transition-opacity" style={{ color: "#9d00ff" }}>
+          <Link to="/terms" className="font-bold hover:opacity-80 transition-opacity" style={{ color: "#3e6b8a" }}>
             תנאי שימוש ומדיניות פרטיות מלאים ←
           </Link>
           <Link to="/contact" className="font-bold text-gray-500 hover:text-gray-700 transition-colors">

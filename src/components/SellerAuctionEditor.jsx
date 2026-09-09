@@ -25,8 +25,8 @@ export default function SellerAuctionEditor() {
     <div className="mb-6" dir="rtl">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
-          <Gavel className="h-5 w-5" style={{ color: "#f700ff" }} />
+          style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
+          <Gavel className="h-5 w-5" style={{ color: "#e5893d" }} />
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-gray-900">המכרזים הפעילים שלי</p>
@@ -47,7 +47,7 @@ export default function SellerAuctionEditor() {
                   : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
               </div>
               <div className="flex-1 min-w-0">
-                <Link to={`/auction/${p.id}`} className="text-sm font-semibold text-gray-800 truncate block hover:text-[#f700ff] transition-colors">
+                <Link to={`/auction/${p.id}`} className="text-sm font-semibold text-gray-800 truncate block hover:text-[#e5893d] transition-colors">
                   {p.title}
                 </Link>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -58,7 +58,7 @@ export default function SellerAuctionEditor() {
               </div>
               <button type="button" onClick={() => setEditing(p)}
                 className="flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl border transition-all flex-shrink-0"
-                style={{ borderColor: "#f700ff44", color: "#f700ff", background: "#f700ff08" }}>
+                style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
                 <Pencil className="h-3.5 w-3.5" /> עריכה
               </button>
             </div>

@@ -53,7 +53,7 @@ export default function Header() {
           </div>
           <div className="flex items-center gap-3 mr-auto">
             {!isAuthenticated && (
-              <Link to="/login" className="font-medium text-[#f700ff] hover:opacity-80 transition-opacity">כניסה / הרשמה</Link>
+              <Link to="/login" className="font-medium text-[#e5893d] hover:opacity-80 transition-opacity">כניסה / הרשמה</Link>
             )}
           </div>
         </div>
@@ -83,24 +83,24 @@ export default function Header() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                   placeholder="חפש מכרזים, פריטים, בתי מכרזים..."
-                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f700ff44] focus:border-[#f700ff88] transition-all text-right"
+                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
                 />
               </div>
             </div>
 
             {/* Nav links */}
             <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
-              <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>דף הבית</Link>
-              <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">מכרזים פעילים</Link>
-              <Link to="/auctions?view=archive" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">ארכיון מכרזים</Link>
-              <Link to="/stocks" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">סטוקים</Link>
+              <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>דף הבית</Link>
+              <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">מכרזים פעילים</Link>
+              <Link to="/auctions?view=archive" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">ארכיון מכרזים</Link>
+              <Link to="/stocks" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">סטוקים</Link>
 
 
             </nav>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" aria-label="התראות" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
+              <Button variant="ghost" size="icon" aria-label="התראות" className="h-9 w-9 text-gray-500 hover:text-[#e5893d] hidden sm:flex rounded-xl">
                 <Bell className="h-4 w-4" aria-hidden="true" />
               </Button>
               <UserMenu />
@@ -117,14 +117,14 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 bg-white">
                   <div className="mt-6 flex flex-col gap-1" dir="rtl">
-                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">דף הבית</Link>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">מכרזים</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">חנויות</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">רכבים</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#f700ff] hover:bg-pink-50 rounded-xl">נדל"ן</a>
+                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">דף הבית</Link>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">חנויות</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">רכבים</a>
+                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">נדל"ן</a>
                     <div className="border-t border-gray-100 my-2" />
                     {categoryLinks.map(l => (
-                      <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-[#9d00ff] hover:bg-purple-50 rounded-xl">{l.label}</Link>
+                      <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-[#3e6b8a] hover:bg-blue-50 rounded-xl">{l.label}</Link>
                     ))}
                   </div>
                 </SheetContent>
@@ -140,11 +140,11 @@ export default function Header() {
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
               className="flex-shrink-0 flex flex-col items-center gap-1 group">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#f700ff66] transition-all duration-200"
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] transition-all duration-200"
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
                 <img src={link.img} alt={link.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span className="text-xs text-gray-600 group-hover:text-[#f700ff] transition-colors whitespace-nowrap font-medium">{link.label}</span>
+              <span className="text-xs text-gray-600 group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
             </Link>
           ))}
         </div>

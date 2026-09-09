@@ -80,7 +80,7 @@ export default function ProductChat({ product }) {
     <>
       {open && (
         <div className="fixed bottom-20 left-4 right-4 sm:right-auto sm:w-[360px] z-50 rounded-2xl border border-gray-100 bg-white shadow-2xl overflow-hidden" dir="rtl">
-          <div className="px-4 py-3 flex items-center gap-2" style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+          <div className="px-4 py-3 flex items-center gap-2" style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
             <MessageCircle className="h-4 w-4 text-white" />
             <div className="flex-1">
               <p className="text-sm font-bold text-white">שאלות על הפריט</p>
@@ -97,7 +97,7 @@ export default function ProductChat({ product }) {
                 className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                   m.from === "user" ? "ml-auto text-white" : "mr-auto bg-white text-gray-700 border border-gray-100"
                 }`}
-                style={m.from === "user" ? { background: "linear-gradient(135deg, #f700ff, #9d00ff)" } : {}}>
+                style={m.from === "user" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : {}}>
                 {m.text}
               </div>
             ))}
@@ -120,7 +120,7 @@ export default function ProductChat({ product }) {
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide px-3 py-2 border-t border-gray-50 bg-white" dir="rtl">
             {faqs.map(f => (
               <button key={f.q} type="button" onClick={() => askFaq(f)}
-                className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold border border-gray-200 text-gray-500 hover:border-[#f700ff66] hover:text-[#f700ff] transition-all whitespace-nowrap">
+                className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all whitespace-nowrap">
                 {f.q}
               </button>
             ))}
@@ -129,10 +129,10 @@ export default function ProductChat({ product }) {
           <form onSubmit={send} className="p-3 flex gap-2">
             <input value={input} onChange={e => setInput(e.target.value)}
               placeholder="שאל על הפריט, מצבו, המשלוח..."
-              className="flex-1 px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] text-right" />
+              className="flex-1 px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] text-right" />
             <button type="submit" disabled={typing || !input.trim()}
               className="w-11 h-11 rounded-xl flex items-center justify-center text-white disabled:opacity-50 flex-shrink-0"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               {typing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 -scale-x-100" />}
             </button>
           </form>
@@ -141,7 +141,7 @@ export default function ProductChat({ product }) {
 
       <button onClick={() => setOpen(o => !o)}
         className="fixed bottom-4 left-4 z-50 w-14 h-14 rounded-full flex items-center justify-center text-white transition-all hover:scale-105"
-        style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 20px #f700ff55" }}>
+        style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 20px #e5893d55" }}>
         <MessageCircle className="h-6 w-6" />
       </button>
     </>

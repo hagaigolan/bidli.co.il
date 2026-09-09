@@ -6,8 +6,8 @@ import { Store, RefreshCw, BadgeCheck, Hourglass, CheckCircle2, Loader2 } from "
 const SALE_STATUSES = ["awaiting_payment", "transfer_reported", "paid"];
 
 const SELLER_STATUS = {
-  awaiting_payment: { label: "ממתין להעברת הקונה", color: "#f700ff", bg: "#f700ff15", icon: Hourglass },
-  transfer_reported: { label: "הקונה דיווח על העברה", color: "#0088ff", bg: "#0088ff15", icon: BadgeCheck },
+  awaiting_payment: { label: "ממתין להעברת הקונה", color: "#e5893d", bg: "#e5893d15", icon: Hourglass },
+  transfer_reported: { label: "הקונה דיווח על העברה", color: "#2d4f68", bg: "#2d4f6815", icon: BadgeCheck },
   paid: { label: "שולם ואושר ✓", color: "#22c55e", bg: "#22c55e15", icon: CheckCircle2 },
 };
 
@@ -79,7 +79,7 @@ export default function SalesManager() {
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#f700ff] transition-colors">{p.title}</p>
+                  <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#e5893d] transition-colors">{p.title}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-gray-400">₪{(p.current_price || p.starting_price || 0).toLocaleString()}</span>
                     {p.highest_bidder && <span className="text-xs text-gray-400">· קונה: {p.highest_bidder}</span>}

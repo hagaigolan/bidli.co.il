@@ -36,7 +36,7 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
   const left = useCountdown(endsAt);
   const critical = left && left.total < 60000;   // < 1 min — RED flashing
   const urgent   = left && left.total < 3600000; // < 1 hr  — PINK
-  const color = critical ? "#ff2200" : urgent ? "#f700ff" : "#0088ff";
+  const color = critical ? "#ff2200" : urgent ? "#e5893d" : "#2d4f68";
   const pulseClass = critical ? "animate-pulse" : "";
 
   if (!left) {
@@ -100,10 +100,10 @@ function SocialProofBar({ bidCount, lastBidTime }) {
   return (
     <div className="flex items-center gap-3 flex-wrap text-xs">
       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-        style={{ background: "#f700ff0f", border: "1px solid #f700ff33" }}>
+        style={{ background: "#e5893d0f", border: "1px solid #e5893d33" }}>
         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-        <Eye className="h-3 w-3" style={{ color: "#f700ff" }} />
-        <span className="font-bold" style={{ color: "#f700ff" }}>{viewers} צופים כרגע</span>
+        <Eye className="h-3 w-3" style={{ color: "#e5893d" }} />
+        <span className="font-bold" style={{ color: "#e5893d" }}>{viewers} צופים כרגע</span>
       </div>
       {secAgo !== null && (
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200">
@@ -128,7 +128,7 @@ function BidFeed({ bids, flashNew }) {
   return (
     <div className="rounded-2xl border border-gray-100 overflow-hidden">
       <div className="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2"
-        style={{ background: "linear-gradient(to right, #f700ff08, transparent)" }}>
+        style={{ background: "linear-gradient(to right, #e5893d08, transparent)" }}>
         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-xs font-bold text-gray-700">הצעות אחרונות — חי</span>
       </div>
@@ -141,12 +141,12 @@ function BidFeed({ bids, flashNew }) {
               className={`flex items-center justify-between px-4 py-2 border-b border-gray-50 transition-all duration-500 ${i === 0 && flashNew ? "bg-green-50" : ""}`}>
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                  style={{ background: i === 0 ? "linear-gradient(135deg, #f700ff, #9d00ff)" : "#e5e7eb", color: i === 0 ? "white" : "#6b7280" }}>
+                  style={{ background: i === 0 ? "linear-gradient(135deg, #e5893d, #3e6b8a)" : "#e5e7eb", color: i === 0 ? "white" : "#6b7280" }}>
                   {i === 0 ? "👑" : i + 1}
                 </div>
                 <span className="text-xs font-semibold text-gray-700">{bid.bidder_name || "אנונימי"}</span>
               </div>
-              <span className="text-xs font-black" style={{ color: i === 0 ? "#f700ff" : "#374151" }}>
+              <span className="text-xs font-black" style={{ color: i === 0 ? "#e5893d" : "#374151" }}>
                 ₪{(bid.amount || 0).toLocaleString()}
               </span>
             </div>
@@ -164,7 +164,7 @@ function OutbidBanner({ show, currentLeader, onBidNow }) {
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce"
       style={{ maxWidth: 360, width: "90%" }}>
       <div className="rounded-2xl p-4 shadow-2xl text-white flex items-center gap-3"
-        style={{ background: "linear-gradient(135deg, #ff2200, #f700ff)", boxShadow: "0 0 32px #ff220066" }}>
+        style={{ background: "linear-gradient(135deg, #ff2200, #e5893d)", boxShadow: "0 0 32px #ff220066" }}>
         <Bell className="h-5 w-5 flex-shrink-0" />
         <div className="flex-1">
           <p className="text-sm font-black">הוצאת מהמשחק! 😤</p>
@@ -183,8 +183,8 @@ function OutbidBanner({ show, currentLeader, onBidNow }) {
 function BidButton({ isLeading, bidding }) {
   const bg = isLeading
     ? "linear-gradient(135deg, #00c853, #00e676)"
-    : "linear-gradient(135deg, #f700ff, #9d00ff)";
-  const shadow = isLeading ? "0 0 16px #00c85355" : "0 0 16px #f700ff44";
+    : "linear-gradient(135deg, #e5893d, #3e6b8a)";
+  const shadow = isLeading ? "0 0 16px #00c85355" : "0 0 16px #e5893d44";
   const label = isLeading ? "🏆 אתה מוביל — חזק עמדה" : "הגש הצעה";
 
   return (
@@ -211,7 +211,7 @@ function PriceProgress({ startingPrice, currentPrice, myLastBid }) {
       </div>
       <div className="w-full h-2.5 rounded-full bg-amber-200 overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, background: "linear-gradient(to right, #f59e0b, #f700ff)" }} />
+          style={{ width: `${pct}%`, background: "linear-gradient(to right, #f59e0b, #e5893d)" }} />
       </div>
       <p className="text-xs text-amber-600 mt-1">הוסף ₪{gap + 1} כדי לחזור לראש</p>
     </div>
@@ -453,7 +453,7 @@ export default function AuctionDetail() {
 
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
     </div>
   );
 
@@ -462,7 +462,7 @@ export default function AuctionDetail() {
       <div className="text-center">
         <p className="text-5xl mb-4">😕</p>
         <h2 className="text-xl font-bold text-gray-800 mb-2">מוצר לא נמצא</h2>
-        <button onClick={() => navigate("/auctions")} className="text-sm" style={{ color: "#f700ff" }}>לכל המכרזים</button>
+        <button onClick={() => navigate("/auctions")} className="text-sm" style={{ color: "#e5893d" }}>לכל המכרזים</button>
       </div>
     </div>
   );
@@ -497,7 +497,7 @@ export default function AuctionDetail() {
                 <div className="absolute top-3 right-3">
                   {isLeading
                     ? <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #00c853, #00e676)", boxShadow: "0 0 12px #00c85366" }}>🏆 אתה מוביל!</span>
-                    : myLastBid && <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #ff6600, #f700ff)", boxShadow: "0 0 12px #ff660066" }}>⚠️ עקפו אותך</span>
+                    : myLastBid && <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ background: "linear-gradient(135deg, #ff6600, #e5893d)", boxShadow: "0 0 12px #ff660066" }}>⚠️ עקפו אותך</span>
                     }
                     </div>
                     )}
@@ -513,7 +513,7 @@ export default function AuctionDetail() {
             <div>
               {product.category && (
                 <span className="text-xs px-2.5 py-1 rounded-full font-semibold mb-2 inline-block"
-                  style={{ background: "#f700ff15", color: "#f700ff" }}>{product.category}</span>
+                  style={{ background: "#e5893d15", color: "#e5893d" }}>{product.category}</span>
               )}
               <h1 className="text-2xl font-black text-gray-900 mt-1">{product.title}</h1>
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
@@ -521,7 +521,7 @@ export default function AuctionDetail() {
               {isMyAuction && !ended && (
                 <button type="button" onClick={() => setShowEdit(true)}
                   className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all"
-                  style={{ borderColor: "#9d00ff44", color: "#9d00ff", background: "#9d00ff08" }}>
+                  style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
                   <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> עריכת פרטי המכרז
                 </button>
               )}
@@ -530,7 +530,7 @@ export default function AuctionDetail() {
               <button type="button" onClick={toggleFavorite}
                 className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"
                 style={favSaved
-                  ? { background: "#f700ff15", borderColor: "#f700ff", color: "#f700ff" }
+                  ? { background: "#e5893d15", borderColor: "#e5893d", color: "#e5893d" }
                   : { background: "white", borderColor: "#e5e7eb", color: "#6b7280" }}>
                 <Heart className={`h-4 w-4 ${favSaved ? "fill-current" : ""}`} />
                 {favSaved ? "נשמר למועדפים ♥" : "שמור למועדפים"}
@@ -549,8 +549,8 @@ export default function AuctionDetail() {
 
             {/* Price */}
             <div className="p-4 rounded-2xl transition-all duration-500"
-              style={{ background: isLeading ? "linear-gradient(135deg, #00c85308, #00e67605)" : "linear-gradient(135deg, #f700ff08, #9d00ff05)",
-                border: isLeading ? "1px solid #00c85333" : "1px solid #f700ff22" }}>
+              style={{ background: isLeading ? "linear-gradient(135deg, #00c85308, #00e67605)" : "linear-gradient(135deg, #e5893d08, #3e6b8a05)",
+                border: isLeading ? "1px solid #00c85333" : "1px solid #e5893d22" }}>
               <div className="flex items-end justify-between mb-1">
                 <div>
                   <p className="text-xs text-gray-400">מחיר נוכחי</p>
@@ -560,7 +560,7 @@ export default function AuctionDetail() {
                 </div>
                 <div className="text-left">
                   {product.highest_bidder && (
-                    <p className="text-xs font-semibold" style={{ color: isLeading ? "#00c853" : "#9d00ff" }}>
+                    <p className="text-xs font-semibold" style={{ color: isLeading ? "#00c853" : "#3e6b8a" }}>
                       {isLeading ? "🏆 אתה מוביל!" : `מוביל: ${product.highest_bidder}`}
                     </p>
                   )}
@@ -583,13 +583,13 @@ export default function AuctionDetail() {
                   <label className="block text-sm font-semibold text-gray-700 mb-1">שמך (אופציונלי)</label>
                   <input value={bidderName} onChange={e => setBidderName(e.target.value)}
                     placeholder="הכנס שם"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" />
+                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">סכום הצעתך (₪)</label>
                   <input type="number" min={minBid} step="1" value={bidAmount} onChange={e => setBidAmount(e.target.value)}
                     placeholder={`מינימום ₪${minBid}`}
-                    className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right" />
+                    className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right" />
                 </div>
 
                 {/* Quick bid buttons */}
@@ -597,7 +597,7 @@ export default function AuctionDetail() {
                   {[minBid, minBid + 50, minBid + 100].map(amt => (
                     <button key={amt} type="button" onClick={() => setBidAmount(String(amt))}
                       className="flex-1 text-xs py-2 rounded-xl border font-bold transition-all hover:scale-105"
-                      style={{ borderColor: "#f700ff44", color: "#f700ff", background: "#f700ff08" }}>
+                      style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
                       ₪{amt.toLocaleString()}
                     </button>
                   ))}
@@ -618,7 +618,7 @@ export default function AuctionDetail() {
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold transition-all border"
                   style={notifEnabled
                     ? { background: "#00c85310", borderColor: "#00c85344", color: "#00c853" }
-                    : { background: "#f700ff08", borderColor: "#f700ff33", color: "#f700ff" }}>
+                    : { background: "#e5893d08", borderColor: "#e5893d33", color: "#e5893d" }}>
                   {notifEnabled
                     ? <><Bell className="h-3.5 w-3.5" /> התראות מופעלות ✓ — לחץ לעדכון פרטים</>
                     : <><BellOff className="h-3.5 w-3.5" /> הפעל התראות — קבל/י מייל/ווצאפ אם יעקפו אותך</>}
@@ -630,7 +630,7 @@ export default function AuctionDetail() {
                   <Award className="h-6 w-6 mx-auto mb-2 text-gray-400" />
                   {product.highest_bidder
                     ? <><p className="font-bold text-gray-800">הזוכה: {product.highest_bidder}</p>
-                       <p className="text-lg font-black mt-1" style={{ color: "#f700ff" }}>₪{(product.current_price || 0).toLocaleString()}</p></>
+                       <p className="text-lg font-black mt-1" style={{ color: "#e5893d" }}>₪{(product.current_price || 0).toLocaleString()}</p></>
                     : <p className="text-sm text-gray-500">לא הוגשו הצעות</p>}
                 </div>
                 {product.highest_bidder && (
@@ -645,7 +645,7 @@ export default function AuctionDetail() {
                   <div className="p-3 border-t border-gray-100">
                     <button type="button" onClick={handleRepublish}
                       className="w-full text-white text-sm py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
-                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+                      style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
                       <RotateCcw className="h-4 w-4" aria-hidden="true" /> פרסום חוזר — עריכה מחדש של המכרז
                     </button>
                     <p className="text-xs text-gray-400 text-center mt-1.5">כל הפרטים והתמונות יועתקו לטופס הפרסום וניתן לערוך אותם לפני הפרסום מחדש</p>
@@ -666,7 +666,7 @@ export default function AuctionDetail() {
                   <User className="h-4 w-4" />
                   {product.seller_email ? (
                     <Link to={`/seller/${encodeURIComponent(product.seller_email)}`}
-                      className="font-semibold hover:text-[#f700ff] transition-colors underline decoration-transparent hover:decoration-[#f700ff]">
+                      className="font-semibold hover:text-[#e5893d] transition-colors underline decoration-transparent hover:decoration-[#e5893d]">
                       מוכר: {product.seller_name}
                     </Link>
                   ) : (

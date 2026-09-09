@@ -56,7 +56,7 @@ function EscrowRow({ escrow, onAction }) {
           <p className="text-gray-400">סכום כולל</p>
         </div>
         <div className="p-2 bg-gray-50 rounded-xl">
-          <p className="font-black" style={{ color: "#f700ff" }}>₪{(escrow.commission_amount || 0).toLocaleString()}</p>
+          <p className="font-black" style={{ color: "#e5893d" }}>₪{(escrow.commission_amount || 0).toLocaleString()}</p>
           <p className="text-gray-400">עמלת פלטפורמה</p>
         </div>
         <div className="p-2 bg-gray-50 rounded-xl">
@@ -125,7 +125,7 @@ export default function AdminDispute() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
     </div>
   );
 
@@ -157,7 +157,7 @@ export default function AdminDispute() {
           <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600">
             <ArrowRight className="h-5 w-5 rotate-180" />
           </button>
-          <ShieldAlert className="h-5 w-5" style={{ color: "#f700ff" }} />
+          <ShieldAlert className="h-5 w-5" style={{ color: "#e5893d" }} />
           <div className="flex-1">
             <h1 className="text-lg font-black text-gray-900">לוח בקרה — ניהול סכסוכים</h1>
             <p className="text-xs text-gray-400">גישת מנהל בלבד</p>
@@ -175,7 +175,7 @@ export default function AdminDispute() {
             { label: "כספים מוקפאים", value: stats.frozen, color: "#2563eb" },
             { label: "סכסוכים פתוחים", value: stats.disputed, color: "#dc2626" },
             { label: "שוחררו", value: stats.released, color: "#16a34a" },
-            { label: "ס\"כ מוקפא (₪)", value: stats.totalFrozen.toLocaleString(), color: "#f700ff" },
+            { label: "ס\"כ מוקפא (₪)", value: stats.totalFrozen.toLocaleString(), color: "#e5893d" },
           ].map(s => (
             <div key={s.label} className="bg-white rounded-2xl p-4 border border-gray-100 text-center">
               <p className="text-xl font-black" style={{ color: s.color }}>{s.value}</p>

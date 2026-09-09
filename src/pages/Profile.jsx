@@ -30,7 +30,7 @@ function MiniTimer({ endsAt }) {
   if (!left) return <span className="text-xs text-gray-400">הסתיים</span>;
   const urgent = left.h === 0 && left.m < 30;
   return (
-    <span className="text-xs font-mono font-bold" style={{ color: urgent ? "#f700ff" : "#0088ff" }}>
+    <span className="text-xs font-mono font-bold" style={{ color: urgent ? "#e5893d" : "#2d4f68" }}>
       {String(left.h).padStart(2,"0")}:{String(left.m).padStart(2,"0")}:{String(left.s).padStart(2,"0")}
     </span>
   );
@@ -38,8 +38,8 @@ function MiniTimer({ endsAt }) {
 
 const STATUS_CONFIG = {
   active: { label: "מוביל", color: "#22c55e", bg: "#22c55e15", icon: TrendingUp },
-  outbid: { label: "הוצעת", color: "#f700ff", bg: "#f700ff15", icon: XCircle },
-  won:    { label: "זכית!", color: "#9d00ff", bg: "#9d00ff15", icon: Trophy },
+  outbid: { label: "הוצעת", color: "#e5893d", bg: "#e5893d15", icon: XCircle },
+  won:    { label: "זכית!", color: "#3e6b8a", bg: "#3e6b8a15", icon: Trophy },
   lost:   { label: "לא זכית", color: "#9ca3af", bg: "#f3f4f6", icon: XCircle },
 };
 
@@ -62,7 +62,7 @@ function BidRow({ bid, product, onReload }) {
             : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
         </div>
         <div className="flex-1 min-w-0" dir="rtl">
-          <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#f700ff] transition-colors">
+          <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#e5893d] transition-colors">
             {bid.product_title}
           </p>
           <div className="flex items-center gap-2 mt-0.5">
@@ -97,7 +97,7 @@ function BidRow({ bid, product, onReload }) {
         <div className="px-3 pb-3 pt-1 border-t border-gray-50" dir="rtl">
           <Link to="/my-orders"
             className="block text-center text-xs py-2.5 rounded-xl font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+            style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
             להשלמת התשלום בהעברה →
           </Link>
         </div>
@@ -171,14 +171,14 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-2xl mx-auto">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
             <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
           </button>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
-              style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
               👤
             </div>
             <div className="flex-1">
@@ -186,7 +186,7 @@ export default function Profile() {
               {localStorage.getItem("bidder_email") && <p className="text-sm text-gray-400">{localStorage.getItem("bidder_email")}</p>}
             </div>
             <button onClick={() => setEditingProfile(true)}
-              className="text-xs px-3 py-2 rounded-xl border border-gray-200 text-gray-500 hover:border-[#f700ff66] hover:text-[#f700ff] transition-all">
+              className="text-xs px-3 py-2 rounded-xl border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
               עריכת פרופיל
             </button>
           </div>
@@ -202,18 +202,18 @@ export default function Profile() {
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">שם</label>
                   <input value={name} onChange={e => setName(e.target.value)} placeholder="השם שלך"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" />
+                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">אימייל</label>
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all" dir="ltr" />
+                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all" dir="ltr" />
                 </div>
               </div>
               <p className="text-xs text-gray-400 mb-4">הזן את אותם פרטים שהשתמשת בהם בהצעות כדי לראות את ההיסטוריה שלך.</p>
               <div className="flex gap-2">
                 <button onClick={saveProfile} className="flex-1 text-white text-sm py-2.5 rounded-xl font-bold"
-                  style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>שמור</button>
+                  style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>שמור</button>
                 <button onClick={() => setEditingProfile(false)}
                   className="flex-1 text-gray-600 text-sm py-2.5 rounded-xl font-semibold border border-gray-200">ביטול</button>
               </div>
@@ -229,7 +229,7 @@ export default function Profile() {
             <h2 className="text-lg font-bold text-gray-800 mb-2">הגדר את הפרופיל שלך</h2>
             <p className="text-sm text-gray-400 mb-6">הזן את השם והאימייל שבהם אתה משתמש בהצעות כדי לראות את ההיסטוריה שלך</p>
             <button onClick={() => setEditingProfile(true)} className="text-white text-sm px-6 py-2.5 rounded-xl font-bold"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               הגדר פרופיל
             </button>
           </div>
@@ -239,10 +239,10 @@ export default function Profile() {
           <>
             <Link to="/my-orders"
               className="flex items-center gap-3 p-3.5 rounded-2xl border mb-6 transition-all hover:shadow-md"
-              style={{ borderColor: "#9d00ff33", background: "linear-gradient(135deg, #9d00ff08, #f700ff05)" }}>
+              style={{ borderColor: "#3e6b8a33", background: "linear-gradient(135deg, #3e6b8a08, #e5893d05)" }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #9d00ff22, #f700ff11)", border: "1px solid #9d00ff33" }}>
-                <Package className="h-5 w-5" style={{ color: "#9d00ff" }} />
+                style={{ background: "linear-gradient(135deg, #3e6b8a22, #e5893d11)", border: "1px solid #3e6b8a33" }}>
+                <Package className="h-5 w-5" style={{ color: "#3e6b8a" }} />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-gray-900">ההזמנות שלי</p>
@@ -253,10 +253,10 @@ export default function Profile() {
 
             <Link to="/favorites"
               className="flex items-center gap-3 p-3.5 rounded-2xl border mb-6 transition-all hover:shadow-md"
-              style={{ borderColor: "#f700ff33", background: "linear-gradient(135deg, #f700ff08, #9d00ff05)" }}>
+              style={{ borderColor: "#e5893d33", background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
-                <Heart className="h-5 w-5" style={{ color: "#f700ff" }} />
+                style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
+                <Heart className="h-5 w-5" style={{ color: "#e5893d" }} />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-gray-900">המועדפים שלי</p>
@@ -269,9 +269,9 @@ export default function Profile() {
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
-                { label: "הצעות פעילות", value: activeBids.length, color: "#0088ff", icon: Clock },
+                { label: "הצעות פעילות", value: activeBids.length, color: "#2d4f68", icon: Clock },
                 { label: "מוביל", value: leadingBids.length, color: "#22c55e", icon: TrendingUp },
-                { label: "זכיות", value: wonBids.length, color: "#9d00ff", icon: Trophy },
+                { label: "זכיות", value: wonBids.length, color: "#3e6b8a", icon: Trophy },
               ].map(({ label, value, color, icon: Icon }) => (
                 <div key={label} className="p-3 rounded-2xl border border-gray-100 text-center" style={{ background: color + "06" }}>
                   <Icon className="h-5 w-5 mx-auto mb-1" style={{ color }} />
@@ -297,7 +297,7 @@ export default function Profile() {
 
             {loading ? (
               <div className="flex justify-center py-12">
-                <div className="w-7 h-7 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+                <div className="w-7 h-7 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
               </div>
             ) : filteredBids.length === 0 ? (
               <div className="text-center py-12">
@@ -307,7 +307,7 @@ export default function Profile() {
                 </p>
                 {activeTab === "all" && (
                   <Link to="/auctions" className="inline-block mt-4 text-white text-sm px-5 py-2 rounded-xl font-bold"
-                    style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                    style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
                     לכל המכרזים
                   </Link>
                 )}

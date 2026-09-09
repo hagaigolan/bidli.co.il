@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-950 text-white" dir="rtl">
       {/* Neon top border */}
-      <div className="h-px" style={{ background: "linear-gradient(to right, #f700ff, #9d00ff, #00f7ff, #0088ff)" }} />
+      <div className="h-px" style={{ background: "linear-gradient(to right, #e5893d, #3e6b8a, #6aa3cd, #2d4f68)" }} />
 
       {/* App banner */}
       <div className="py-8 border-b border-white/10">
@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
                 <Smartphone className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -22,12 +22,12 @@ export default function Footer() {
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold border border-[#f700ff55] text-white hover:bg-[#f700ff15] transition-colors">
+              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold border border-[#e5893d55] text-white hover:bg-[#e5893d15] transition-colors">
                 <span className="group-hover:hidden">App Store</span>
                 <span className="hidden group-hover:inline">עובדים על זה</span>
               </a>
               <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold text-gray-950 font-bold transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
                 <span className="group-hover:hidden">Google Play</span>
                 <span className="hidden group-hover:inline">עובדים על זה</span>
               </a>
@@ -56,7 +56,7 @@ export default function Footer() {
                 <Mail className="h-3 w-3" />
                 <a href="mailto:info@bidli.co.il" className="hover:text-white/70 transition-colors">info@bidli.co.il</a>
               </div>
-              <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#f700ff" }}>
+              <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#e5893d" }}>
                 צור קשר <ArrowRight className="h-3 w-3 rotate-180" />
               </Link>
             </div>
@@ -96,7 +96,7 @@ export default function Footer() {
               </nav>
               <div className="border-t border-white/10 pt-4">
                 <p className="text-xs text-white/40 mb-1">יש לך משהו למכור?</p>
-                <a href="#" className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "#00f7ff" }}>
+                <a href="#" className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "#6aa3cd" }}>
                   צור קשר עם בתי המכרזים <ArrowRight className="h-3 w-3 rotate-180" />
                 </a>
               </div>

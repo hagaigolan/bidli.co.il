@@ -38,12 +38,12 @@ export default function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-2 px-2 h-9 rounded-xl border border-gray-200 bg-white hover:border-[#f700ff66] hover:bg-pink-50/40 transition-all"
+          className="flex items-center gap-2 px-2 h-9 rounded-xl border border-gray-200 bg-white hover:border-[#e5893d66] hover:bg-orange-50/40 transition-all"
           dir="rtl"
         >
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}
+            style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}
           >
             {getInitial(user.full_name, user.email)}
           </span>
@@ -65,7 +65,7 @@ export default function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
-            <UserIcon className="h-4 w-4 text-[#f700ff]" />
+            <UserIcon className="h-4 w-4 text-[#e5893d]" />
             <span>עריכת פרופיל</span>
           </Link>
         </DropdownMenuItem>

@@ -13,7 +13,7 @@ export default function ArticleDetail() {
         <div className="text-center">
           <p className="text-5xl mb-4">😕</p>
           <h2 className="text-xl font-bold text-gray-800 mb-2">המאמר לא נמצא</h2>
-          <Link to="/articles" className="text-sm" style={{ color: "#f700ff" }}>חזרה לכל המאמרים</Link>
+          <Link to="/articles" className="text-sm" style={{ color: "#e5893d" }}>חזרה לכל המאמרים</Link>
         </div>
       </div>
     );
@@ -22,7 +22,7 @@ export default function ArticleDetail() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
-      <div className="border-b border-gray-100 py-6 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)" }}>
+      <div className="border-b border-gray-100 py-6 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
         <div className="max-w-4xl mx-auto">
           <Link to="/articles" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
             <ArrowRight className="h-4 w-4 rotate-180" />
@@ -32,7 +32,7 @@ export default function ArticleDetail() {
           <div className="flex items-center gap-2 mb-4">
             {article.tags.map(tag => (
               <span key={tag} className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                style={{ background: "#f700ff10", color: "#f700ff" }}>{tag}</span>
+                style={{ background: "#e5893d10", color: "#e5893d" }}>{tag}</span>
             ))}
           </div>
           
@@ -68,7 +68,7 @@ export default function ArticleDetail() {
               ul: ({node, ...props}) => <ul className="list-disc list-inside text-gray-600 mb-4 mr-4" {...props} />,
               ol: ({node, ...props}) => <ol className="list-decimal list-inside text-gray-600 mb-4 mr-4" {...props} />,
               li: ({node, ...props}) => <li className="mb-1" {...props} />,
-              a: ({node, ...props}) => <a className="text-[#f700ff] hover:underline" {...props} />,
+              a: ({node, ...props}) => <a className="text-[#e5893d] hover:underline" {...props} />,
               strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
             }}
           >
@@ -83,7 +83,7 @@ export default function ArticleDetail() {
             <span className="text-sm font-semibold text-gray-700">תגיות:</span>
             {article.tags.map(tag => (
               <span key={tag} className="text-xs px-2 py-0.5 rounded-full"
-                style={{ background: "#f700ff10", color: "#f700ff" }}>{tag}</span>
+                style={{ background: "#e5893d10", color: "#e5893d" }}>{tag}</span>
             ))}
           </div>
         </div>
@@ -94,8 +94,8 @@ export default function ArticleDetail() {
           <div className="grid md:grid-cols-2 gap-4">
             {ARTICLES.filter(a => a.id !== id).slice(0, 4).map(related => (
               <Link key={related.id} to={`/articles/${related.id}`}
-                className="p-4 border border-gray-100 rounded-xl hover:border-[#f700ff33] transition-all group">
-                <h3 className="font-bold text-gray-900 mb-2 group-hover:text-[#f700ff] transition-colors">{related.title}</h3>
+                className="p-4 border border-gray-100 rounded-xl hover:border-[#e5893d33] transition-all group">
+                <h3 className="font-bold text-gray-900 mb-2 group-hover:text-[#e5893d] transition-colors">{related.title}</h3>
                 <p className="text-sm text-gray-500">{related.excerpt}</p>
               </Link>
             ))}

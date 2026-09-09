@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import { TrendingUp, Gavel, CheckCircle, XCircle, DollarSign, Users, ShieldAlert, Lock } from "lucide-react";
 
-const NEON_COLORS = ["#f700ff", "#9d00ff", "#00f7ff", "#0088ff", "#00c853", "#ff6600"];
+const NEON_COLORS = ["#e5893d", "#3e6b8a", "#6aa3cd", "#2d4f68", "#00c853", "#ff6600"];
 
 function StatCard({ icon: Icon, label, value, sub, color }) {
   return (
@@ -135,9 +135,9 @@ export default function AdminDashboard() {
       setOutcomeData([
         { name: "הסתיים עם זוכה", value: withWinner, color: "#00c853" },
         { name: "ללא מציעים", value: noWinner, color: "#9ca3af" },
-        { name: "בוטל", value: cancelled, color: "#f700ff" },
+        { name: "בוטל", value: cancelled, color: "#e5893d" },
         { name: "סכסוך", value: disputed, color: "#ff6600" },
-        { name: "פעיל", value: active, color: "#0088ff" },
+        { name: "פעיל", value: active, color: "#2d4f68" },
       ].filter(d => d.value > 0));
 
     } catch (e) {
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
           <div className="rounded-2xl border border-white/10 p-8 text-center"
             style={{ background: "linear-gradient(135deg, #0a0014, #0d0020)" }}>
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 24px #f700ff55" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 24px #e5893d55" }}>
               <Lock className="h-7 w-7 text-white" />
             </div>
             <h1 className="text-xl font-black text-white mb-1">דשבורד ניהול</h1>
@@ -169,11 +169,11 @@ export default function AdminDashboard() {
               onChange={e => setPinInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && checkPin()}
               placeholder="••••"
-              className={`w-full text-center text-2xl font-mono tracking-widest px-4 py-3 rounded-xl border bg-white/5 text-white outline-none transition-all mb-4 ${pinError ? "border-red-500 animate-pulse" : "border-white/10 focus:border-[#f700ff88]"}`}
+              className={`w-full text-center text-2xl font-mono tracking-widest px-4 py-3 rounded-xl border bg-white/5 text-white outline-none transition-all mb-4 ${pinError ? "border-red-500 animate-pulse" : "border-white/10 focus:border-[#e5893d88]"}`}
             />
             <button onClick={checkPin}
               className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all hover:opacity-90"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
               כניסה
             </button>
             {pinError && <p className="text-red-400 text-xs mt-3">קוד שגוי, נסה שנית</p>}
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-white/10 border-t-[#f700ff] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-white/10 border-t-[#e5893d] rounded-full animate-spin" />
     </div>
   );
 
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               <TrendingUp className="h-4 w-4 text-white" />
             </div>
             <div>
@@ -215,15 +215,15 @@ export default function AdminDashboard() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={Gavel} label="מכרזים פעילים" value={stats.activeAuctions} sub={`מתוך ${stats.totalProducts} סה״כ`} color="#0088ff" />
+          <StatCard icon={Gavel} label="מכרזים פעילים" value={stats.activeAuctions} sub={`מתוך ${stats.totalProducts} סה״כ`} color="#2d4f68" />
           <StatCard icon={CheckCircle} label="אחוז הצלחה" value={`${successRate}%`} sub={`${stats.endedWithWinner} מכרזים הסתיימו עם זוכה`} color="#00c853" />
           <StatCard icon={ShieldAlert} label="כספים מוקפאים" value={`₪${Math.round(stats.frozenEscrow).toLocaleString()}`} sub="ב-Escrow כרגע" color="#ff6600" />
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={TrendingUp} label="סך הצעות מחיר" value={stats.totalBids.toLocaleString()} color="#9d00ff" />
+          <StatCard icon={TrendingUp} label="סך הצעות מחיר" value={stats.totalBids.toLocaleString()} color="#3e6b8a" />
           <StatCard icon={CheckCircle} label="מכרזים עם זוכה" value={stats.endedWithWinner} color="#00c853" />
-          <StatCard icon={XCircle} label="בוטלו / ללא זוכה" value={stats.cancelled + stats.endedNoWinner} color="#f700ff" />
+          <StatCard icon={XCircle} label="בוטלו / ללא זוכה" value={stats.cancelled + stats.endedNoWinner} color="#e5893d" />
           <StatCard icon={ShieldAlert} label="סכסוכים פתוחים" value={stats.disputed} color="#ff6600" />
         </div>
 
@@ -292,7 +292,7 @@ export default function AdminDashboard() {
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} />
               <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} allowDecimals={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="מכרזים" fill="#9d00ff" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="מכרזים" fill="#3e6b8a" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

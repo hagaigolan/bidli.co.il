@@ -22,7 +22,7 @@ export default function ShareButton({ product }) {
         <MessageCircle className="h-4 w-4" /> שתף בוואטסאפ
       </a>
       <button type="button" onClick={copyLink}
-        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-500 hover:border-[#f700ff66] hover:text-[#f700ff] transition-all">
+        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
         {copied ? <><Check className="h-4 w-4" /> הוקדם</> : <><Link2 className="h-4 w-4" /> העתק קישור</>}
       </button>
     </div>

@@ -48,11 +48,11 @@ export default function DealsEndingSoon({ products }) {
   if (!deals.length) return null;
 
   return (
-    <section className="py-8 border-b border-gray-100" style={{ background: "linear-gradient(135deg, #ff220008, #f700ff0a)" }} dir="rtl">
+    <section className="py-8 border-b border-gray-100" style={{ background: "linear-gradient(135deg, #ff220008, #e5893d0a)" }} dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #ff2200, #f700ff)", boxShadow: "0 0 12px #ff220033" }}>
+            style={{ background: "linear-gradient(135deg, #ff2200, #e5893d)", boxShadow: "0 0 12px #ff220033" }}>
             <Flame className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -70,7 +70,7 @@ export default function DealsEndingSoon({ products }) {
                   ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
                 <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
-                  style={{ background: "linear-gradient(135deg, #ff2200, #f700ff)" }}>מציאה</span>
+                  style={{ background: "linear-gradient(135deg, #ff2200, #e5893d)" }}>מציאה</span>
               </div>
               <div className="p-2.5">
                 <p className="font-bold text-gray-900 text-xs leading-snug line-clamp-1 mb-1">{p.title}</p>

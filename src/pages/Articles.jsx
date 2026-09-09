@@ -6,7 +6,7 @@ export default function Articles() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)" }}>
+      <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
         <div className="max-w-5xl mx-auto">
           <a href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
             <ArrowRight className="h-4 w-4 rotate-180" />
@@ -31,10 +31,10 @@ export default function Articles() {
                   <div className="flex items-center gap-2 mb-3">
                     {article.tags.slice(0, 3).map(tag => (
                       <span key={tag} className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                        style={{ background: "#f700ff10", color: "#f700ff" }}>{tag}</span>
+                        style={{ background: "#e5893d10", color: "#e5893d" }}>{tag}</span>
                     ))}
                   </div>
-                  <h2 className="text-xl font-black text-gray-900 mb-2 group-hover:text-[#f700ff] transition-colors">{article.title}</h2>
+                  <h2 className="text-xl font-black text-gray-900 mb-2 group-hover:text-[#e5893d] transition-colors">{article.title}</h2>
                   <p className="text-gray-500 text-sm mb-4">{article.excerpt}</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs text-gray-400">

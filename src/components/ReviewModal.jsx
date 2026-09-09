@@ -89,11 +89,11 @@ export default function ReviewModal({ product, reviewerName, reviewerEmail, onCl
             <textarea value={comment} onChange={e => setComment(e.target.value)}
               placeholder="ספר על החוויה שלך (אופציונלי)..."
               rows={3}
-              className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right resize-none mb-4" />
+              className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right resize-none mb-4" />
 
             <button onClick={handleSubmit} disabled={submitting || !rating}
               className="w-full text-white py-3 rounded-xl font-bold disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               {submitting ? "שולח..." : "שלח דירוג"}
             </button>
           </>

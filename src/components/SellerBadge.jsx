@@ -82,7 +82,7 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
       {/* Seller identity */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg"
-          style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
+          style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
           {(sellerName || sellerEmail || "?")[0].toUpperCase()}
         </div>
         <div>
@@ -194,7 +194,7 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                        style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                        style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
                         {(r.reviewer_name || "א")[0]}
                       </div>
                       <span className="text-xs font-semibold text-gray-700">{r.reviewer_name || "אנונימי"}</span>

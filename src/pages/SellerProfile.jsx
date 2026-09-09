@@ -24,7 +24,7 @@ function CardTimer({ endsAt }) {
   }
   const critical = left.total < 60 * 60 * 1000;
   const urgent = left.total < 3 * 60 * 60 * 1000;
-  const bg = critical ? "#ef4444" : urgent ? "#f97316" : "#0088ff";
+  const bg = critical ? "#ef4444" : urgent ? "#f97316" : "#2d4f68";
   const time = left.h > 0
     ? `${String(left.h).padStart(2, "0")}:${String(left.m).padStart(2, "0")}:${String(left.s).padStart(2, "0")}`
     : `${String(left.m).padStart(2, "0")}:${String(left.s).padStart(2, "0")}`;
@@ -91,10 +91,10 @@ export default function SellerProfile() {
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-5xl mx-auto flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black"
-            style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
+            style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
             {(sellerName || email || "?")[0].toUpperCase()}
           </div>
           <div>
@@ -122,7 +122,7 @@ export default function SellerProfile() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
           </div>
         ) : shown.length === 0 ? (
           <div className="text-center py-16">

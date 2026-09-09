@@ -159,7 +159,7 @@ export default function ImageSlider({ images = [], alt = "", children }) {
         <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide">
           {imgs.map((src, i) => (
             <button key={i} type="button" onClick={() => openLightboxAt(i)}
-              className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === index ? "border-[#f700ff] shadow-md" : "border-gray-200 hover:border-gray-300 opacity-75 hover:opacity-100"}`}>
+              className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === index ? "border-[#e5893d] shadow-md" : "border-gray-200 hover:border-gray-300 opacity-75 hover:opacity-100"}`}>
               <img src={src} alt={`${alt} ${i + 1}`} className="w-full h-full object-cover" />
             </button>
           ))}

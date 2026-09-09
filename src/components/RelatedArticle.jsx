@@ -32,19 +32,19 @@ export default function RelatedArticle({ category }) {
     <div className="mt-6" dir="rtl">
       <Link to={`/articles/${article.id}`}
         className="block rounded-2xl overflow-hidden border transition-all duration-300 hover:shadow-md group"
-        style={{ background: "linear-gradient(135deg, #9d00ff08, #00f7ff05)", borderColor: "#9d00ff33" }}>
+        style={{ background: "linear-gradient(135deg, #3e6b8a08, #6aa3cd05)", borderColor: "#3e6b8a33" }}>
         <div className="flex flex-col sm:flex-row">
           <div className="sm:w-40 h-32 sm:h-auto flex-shrink-0 overflow-hidden bg-gray-100">
             <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="p-4 flex flex-col justify-center flex-1">
             <div className="flex items-center gap-2 mb-1.5">
-              <BookOpen className="h-3.5 w-3.5" style={{ color: "#9d00ff" }} />
-              <span className="text-xs font-bold" style={{ color: "#9d00ff" }}>מאמר מומלץ לקטגוריית {category}</span>
+              <BookOpen className="h-3.5 w-3.5" style={{ color: "#3e6b8a" }} />
+              <span className="text-xs font-bold" style={{ color: "#3e6b8a" }}>מאמר מומלץ לקטגוריית {category}</span>
             </div>
-            <h3 className="font-black text-gray-900 text-sm mb-1 group-hover:text-[#9d00ff] transition-colors">{article.title}</h3>
+            <h3 className="font-black text-gray-900 text-sm mb-1 group-hover:text-[#3e6b8a] transition-colors">{article.title}</h3>
             <p className="text-xs text-gray-500 line-clamp-2 mb-2">{article.excerpt}</p>
-            <span className="text-xs font-bold flex items-center gap-1" style={{ color: "#9d00ff" }}>
+            <span className="text-xs font-bold flex items-center gap-1" style={{ color: "#3e6b8a" }}>
               קרא עכשיו <ArrowLeft className="h-3 w-3" />
             </span>
           </div>

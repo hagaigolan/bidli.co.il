@@ -21,9 +21,9 @@ export function SellerFomoBanner() {
 
   return (
     <div className="mb-2 rounded-2xl p-4" dir="rtl"
-      style={{ background: "linear-gradient(135deg, #f700ff12, #9d00ff08)", border: "1px solid #f700ff33" }}>
+      style={{ background: "linear-gradient(135deg, #e5893d12, #3e6b8a08)", border: "1px solid #e5893d33" }}>
       <div className="flex items-center gap-2 mb-1">
-        <Flame className="h-4 w-4 flex-shrink-0" style={{ color: "#f700ff" }} />
+        <Flame className="h-4 w-4 flex-shrink-0" style={{ color: "#e5893d" }} />
         <p className="text-sm font-black text-gray-900">
           אחרים כבר פרסמו היום{todayCount !== null ? ` — ${todayCount} מכרזים חדשים` : ""}
         </p>
@@ -41,7 +41,7 @@ export function SellerFomoBanner() {
 export function SellerFomoBlock() {
   return (
     <div className="flex items-start gap-3 p-4 rounded-2xl" dir="rtl"
-      style={{ background: "linear-gradient(135deg, #ff660010, #f700ff08)", border: "1px solid #ff660033" }}>
+      style={{ background: "linear-gradient(135deg, #ff660010, #e5893d08)", border: "1px solid #ff660033" }}>
       <TrendingUp className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: "#ff6600" }} />
       <div>
         <p className="text-sm font-bold text-gray-800">פרסום לוקח 2 דקות ועולה 0 ₪</p>

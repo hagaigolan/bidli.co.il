@@ -32,7 +32,7 @@ function MiniCard({ product }) {
           ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-50 to-gray-100">🏺</div>}
         <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1"
-          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#f700ff,#9d00ff)", color: ended ? "#6b7280" : "white" }}>
+          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#e5893d,#3e6b8a)", color: ended ? "#6b7280" : "white" }}>
           <Clock className="h-3 w-3" />
           {ended ? "הסתיים" : left ? `${String(left.h).padStart(2,"0")}:${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}` : ""}
         </div>
@@ -71,7 +71,7 @@ export default function RelatedProducts({ category, excludeId }) {
   return (
     <div className="mt-10 pt-6 border-t border-gray-100" dir="rtl">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="h-4 w-4" style={{ color: "#f700ff" }} />
+        <Sparkles className="h-4 w-4" style={{ color: "#e5893d" }} />
         <h2 className="text-sm font-black text-gray-900">עוד מכרזים בקטגוריית {category}</h2>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

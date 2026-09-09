@@ -88,7 +88,7 @@ export default function OrderPaymentFlow({ product, onDone }) {
         </>
       ) : !confirmed ? (
         <div className="flex items-center gap-2 p-3 rounded-xl text-xs font-semibold"
-          style={{ background: "#0088ff10", color: "#0088ff", border: "1px solid #0088ff33" }}>
+          style={{ background: "#2d4f6810", color: "#2d4f68", border: "1px solid #2d4f6833" }}>
           <Hourglass className="h-4 w-4 flex-shrink-0" />
           <span>הדיווח נשלח למוכר — ההזמנה תסומן כשולמה לאחר שיאשר את קבלת הכסף. מומלץ לתאם מסירה ישירות איתו{product.seller_phone ? ` (${product.seller_phone})` : ""}.</span>
         </div>

@@ -18,9 +18,9 @@ function getOrderStatus(product) {
   if (product.status === "paid" || product.payment_status === "released")
     return { label: "שולם ואושר ✓", color: "#22c55e", bg: "#22c55e15", icon: ShieldCheck };
   if (product.status === "transfer_reported")
-    return { label: "העברה דווחה — ממתין לאישור המוכר", color: "#0088ff", bg: "#0088ff15", icon: Hourglass };
+    return { label: "העברה דווחה — ממתין לאישור המוכר", color: "#2d4f68", bg: "#2d4f6815", icon: Hourglass };
   if (product.status === "awaiting_payment" || product.payment_status === "unpaid")
-    return { label: "ממתין להעברה", color: "#f700ff", bg: "#f700ff15", icon: Hourglass };
+    return { label: "ממתין להעברה", color: "#e5893d", bg: "#e5893d15", icon: Hourglass };
   return { label: "בטיפול", color: "#f97316", bg: "#f9731615", icon: Hourglass };
 }
 
@@ -40,7 +40,7 @@ function OrderRow({ product, feeRate, onReload }) {
             : <div className="w-full h-full flex items-center justify-center text-2xl">🏺</div>}
         </div>
         <div className="flex-1 min-w-0" dir="rtl">
-          <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#f700ff] transition-colors">
+          <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#e5893d] transition-colors">
             {product.title}
           </p>
           <div className="flex items-center gap-2 mt-0.5">
@@ -61,7 +61,7 @@ function OrderRow({ product, feeRate, onReload }) {
           </div>
           <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowBreakdown(s => !s); }}
             className="flex items-center gap-0.5 text-xs font-semibold transition-colors"
-            style={{ color: showBreakdown ? "#9d00ff" : "#9ca3af" }}>
+            style={{ color: showBreakdown ? "#3e6b8a" : "#9ca3af" }}>
             <Receipt className="h-3.5 w-3.5" />
             פירוט
             <ChevronDown className={`h-3 w-3 transition-transform ${showBreakdown ? "rotate-180" : ""}`} />
@@ -81,7 +81,7 @@ function OrderRow({ product, feeRate, onReload }) {
           </div>
           <div className="flex justify-between items-center text-sm py-1.5 border-t border-gray-200 mt-1">
             <span className="font-bold text-gray-800">סה"כ שולם</span>
-            <span className="font-black" style={{ color: "#9d00ff" }}>₪{total.toLocaleString()}</span>
+            <span className="font-black" style={{ color: "#3e6b8a" }}>₪{total.toLocaleString()}</span>
           </div>
         </div>
       )}
@@ -128,15 +128,15 @@ export default function MyOrders() {
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #9d00ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #3e6b8a08, #ffffff)" }}>
         <div className="max-w-2xl mx-auto">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
             <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
           </button>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #9d00ff22, #f700ff11)", border: "1px solid #9d00ff33" }}>
-              <Package className="h-7 w-7" style={{ color: "#9d00ff" }} />
+              style={{ background: "linear-gradient(135deg, #3e6b8a22, #e5893d11)", border: "1px solid #3e6b8a33" }}>
+              <Package className="h-7 w-7" style={{ color: "#3e6b8a" }} />
             </div>
             <div>
               <h1 className="text-xl font-black text-gray-900">ההזמנות שלי</h1>
@@ -153,20 +153,20 @@ export default function MyOrders() {
             <h2 className="text-lg font-bold text-gray-800 mb-2">הגדר את הפרופיל שלך</h2>
             <p className="text-sm text-gray-400 mb-6">כדי לראות את ההזמנות שלך, הגדר שם ואימייל באזור האישי</p>
             <Link to="/profile" className="text-white text-sm px-6 py-2.5 rounded-xl font-bold inline-block"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לאזור האישי
             </Link>
           </div>
         ) : loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-7 h-7 border-4 border-gray-100 border-t-[#9d00ff] rounded-full animate-spin" />
+            <div className="w-7 h-7 border-4 border-gray-100 border-t-[#3e6b8a] rounded-full animate-spin" />
           </div>
         ) : (
           <>
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
-                { label: "זכיות בסה\"כ", value: orders.length, color: "#9d00ff", icon: Trophy },
-                { label: "ממתין לאישור", value: reportedCount, color: "#0088ff", icon: Hourglass },
+                { label: "זכיות בסה\"כ", value: orders.length, color: "#3e6b8a", icon: Trophy },
+                { label: "ממתין לאישור", value: reportedCount, color: "#2d4f68", icon: Hourglass },
                 { label: "שולם ואושר", value: paidCount, color: "#22c55e", icon: ShieldCheck },
               ].map(({ label, value, color, icon: Icon }) => (
                 <div key={label} className="p-3 rounded-2xl border border-gray-100 text-center" style={{ background: color + "06" }}>
@@ -182,7 +182,7 @@ export default function MyOrders() {
                 <Package className="h-10 w-10 mx-auto mb-3 text-gray-200" />
                 <p className="text-sm text-gray-400">טרם זכית במכרזים</p>
                 <Link to="/auctions" className="inline-block mt-4 text-white text-sm px-5 py-2 rounded-xl font-bold"
-                  style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+                  style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
                   לכל המכרזים
                 </Link>
               </div>

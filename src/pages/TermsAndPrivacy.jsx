@@ -228,7 +228,7 @@ export default function TermsAndPrivacy() {
             <ArrowRight className="h-5 w-5 rotate-180" />
           </button>
           <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5" style={{ color: "#f700ff" }} />
+            <Shield className="h-5 w-5" style={{ color: "#e5893d" }} />
             <h1 className="text-lg font-black text-gray-900">מסמכים משפטיים — {PLATFORM_NAME}</h1>
           </div>
         </div>
@@ -255,7 +255,7 @@ export default function TermsAndPrivacy() {
           <>
             {/* Preamble */}
             <div className="rounded-2xl p-5 mb-6"
-              style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)", border: "1px solid #f700ff22" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)", border: "1px solid #e5893d22" }}>
               <p className="text-xs text-gray-500 leading-relaxed">
                 <span className="font-bold text-gray-700">תנאי שימוש — {PLATFORM_NAME}</span><br />
                 מסמך זה מהווה חוזה משפטי מחייב. קריאתו המלאה מחויבת טרם שימוש בפלטפורמה.<br />
@@ -274,7 +274,7 @@ export default function TermsAndPrivacy() {
         {activeDoc === "privacy" && (
           <>
             <div className="rounded-2xl p-5 mb-6"
-              style={{ background: "linear-gradient(135deg, #9d00ff08, #f700ff05)", border: "1px solid #9d00ff22" }}>
+              style={{ background: "linear-gradient(135deg, #3e6b8a08, #e5893d05)", border: "1px solid #3e6b8a22" }}>
               <p className="text-xs text-gray-500 leading-relaxed">
                 <span className="font-bold text-gray-700">מדיניות פרטיות — {PLATFORM_NAME}</span><br />
                 מסמך זה מתאר כיצד אנו אוספים, מעבדים ומגנים על המידע האישי שלך.<br />
@@ -295,7 +295,7 @@ export default function TermsAndPrivacy() {
         <div className="mt-8 p-4 rounded-2xl bg-gray-50 border border-gray-100 text-center">
           <p className="text-xs text-gray-400">
             לשאלות משפטיות או בקשות פרטיות פנה אל:{" "}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold" style={{ color: "#f700ff" }}>
+            <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold" style={{ color: "#e5893d" }}>
               {CONTACT_EMAIL}
             </a>
           </p>

@@ -30,7 +30,7 @@ function CountdownBadge({ endsAt, small }) {
   const urgent = left.total < 3600000;
   return (
     <span className={`font-mono font-bold ${small ? "text-xs" : "text-sm"}`}
-      style={{ color: urgent ? "#f700ff" : "#0088ff" }}>
+      style={{ color: urgent ? "#e5893d" : "#2d4f68" }}>
       {String(left.h).padStart(2,"0")}:{String(left.m).padStart(2,"0")}:{String(left.s).padStart(2,"0")}
     </span>
   );
@@ -46,7 +46,7 @@ function AuctionCard({ product }) {
           ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-50 to-gray-100">🏺</div>}
         <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
-          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#f700ff,#9d00ff)", color: ended ? "#6b7280" : "white" }}>
+          style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#e5893d,#3e6b8a)", color: ended ? "#6b7280" : "white" }}>
           <Clock className="h-3 w-3" />
           {ended ? "הסתיים" : <CountdownBadge endsAt={product.ends_at} small />}
         </div>
@@ -93,7 +93,7 @@ export default function Auctions() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-black text-gray-900">{ARCHIVE_MODE ? "ארכיון מכרזים" : "כל המכרזים"}</h1>
@@ -101,7 +101,7 @@ export default function Auctions() {
           </div>
           <button onClick={() => navigate("/upload-product")}
             className="flex items-center gap-2 text-white text-sm px-5 py-2.5 rounded-xl font-bold flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 16px #f700ff44" }}>
+            style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
             <Plus className="h-4 w-4" />
             פרסם מכרז
           </button>
@@ -113,7 +113,7 @@ export default function Auctions() {
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-20">
@@ -122,7 +122,7 @@ export default function Auctions() {
             <p className="text-sm text-gray-400 mb-6">היה הראשון לפרסם מוצר!</p>
             <button onClick={() => navigate("/upload-product")}
               className="text-white text-sm px-6 py-2.5 rounded-xl font-bold"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               פרסם מכרז
             </button>
           </div>

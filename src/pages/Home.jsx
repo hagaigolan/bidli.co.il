@@ -59,17 +59,17 @@ function HeroSection() {
         </div>
       ))}
       <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255, 255, 255, 0.85)" }} />
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 20% 50%, #f700ff10 0%, transparent 70%)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 20% 50%, #e5893d10 0%, transparent 70%)" }} />
       <div className="absolute inset-0 pointer-events-none opacity-30" style={{
-        backgroundImage: "linear-gradient(#f700ff08 1px, transparent 1px), linear-gradient(90deg, #f700ff08 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(#e5893d08 1px, transparent 1px), linear-gradient(90deg, #e5893d08 1px, transparent 1px)",
         backgroundSize: "60px 60px"
       }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#f700ff33] bg-[#f700ff0a] mb-6">
-            <Zap className="h-3 w-3" style={{ color: "#f700ff" }} />
-            <span className="text-xs font-semibold" style={{ color: "#f700ff" }}>מכרזים חיים • פורטל המכרזים מספר 1 בישראל</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a] mb-6">
+            <Zap className="h-3 w-3" style={{ color: "#e5893d" }} />
+            <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים מספר 1 בישראל</span>
           </div>
 
           <h1 className="text-5xl sm:text-7xl font-black text-gray-900 mb-4 leading-none tracking-tight">
@@ -88,7 +88,7 @@ function HeroSection() {
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                 placeholder="חפש פריטים, קטלוגים, בתי מכרזים..."
-                className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right shadow-sm"
+                className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right shadow-sm"
               />
             </div>
             <button type="button" onClick={doSearch} className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
@@ -98,7 +98,7 @@ function HeroSection() {
 
           <div className="flex flex-wrap gap-2 justify-center">
             {["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים", "עיצוב הבית"].map((tag, i) => {
-              const colors = ["#f700ff", "#9d00ff", "#00f7ff", "#0088ff", "#f700ff", "#9d00ff"];
+              const colors = ["#e5893d", "#3e6b8a", "#6aa3cd", "#2d4f68", "#e5893d", "#3e6b8a"];
               return (
                 <Link key={tag} to={`/category/${encodeURIComponent(tag)}`} className="px-3 py-1 rounded-full text-xs font-medium border transition-all hover:scale-105"
                   style={{ borderColor: colors[i] + "55", color: colors[i], background: colors[i] + "0f" }}>
@@ -114,14 +114,14 @@ function HeroSection() {
         {carouselImages.map((_, i) => (
           <button key={i} onClick={() => setCurrentSlide(i)}
             className="rounded-full transition-all duration-300"
-            style={{ width: i === currentSlide ? 24 : 8, height: 8, background: i === currentSlide ? "#f700ff" : "#d1d5db" }} />
+            style={{ width: i === currentSlide ? 24 : 8, height: 8, background: i === currentSlide ? "#e5893d" : "#d1d5db" }} />
         ))}
       </div>
     </section>
   );
 }
 
-function SectionHeader({ title, color = "#f700ff", icon: Icon }) {
+function SectionHeader({ title, color = "#e5893d", icon: Icon }) {
   return (
     <AnimatedElement>
       <div className="flex items-center gap-3 mb-6" dir="rtl">
@@ -138,7 +138,7 @@ function SectionHeader({ title, color = "#f700ff", icon: Icon }) {
   );
 }
 
-function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accentColor = "#f700ff" }) {
+function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accentColor = "#e5893d" }) {
   return (
     <AnimatedElement delay={index * 50}>
       <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon"
@@ -152,7 +152,7 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
           />
           {auction.part && (
             <div className="absolute top-2 right-2 text-white text-xs px-2 py-0.5 rounded-full font-bold"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               חלק {auction.part}
             </div>
           )}
@@ -175,7 +175,7 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
           )}
           <a href={auction.id ? `/auction/${auction.id}` : (auction.view_url || "#")}
             className="block w-full text-center text-white text-xs py-2 rounded-xl font-semibold transition-all duration-200 hover:opacity-90 hover:-translate-y-px"
-            style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor === "#f700ff" ? "#9d00ff" : "#0088ff"})` }}>
+            style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor === "#e5893d" ? "#3e6b8a" : "#2d4f68"})` }}>
             {buttonLabel}
           </a>
         </div>
@@ -191,18 +191,18 @@ function FeaturedBanner() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex items-center gap-3 p-3 rounded-2xl border cursor-pointer hover:shadow-md transition-all"
-              style={{ borderColor: "#f700ff33", background: "linear-gradient(135deg, #f700ff08, #9d00ff05)" }}>
+              style={{ borderColor: "#e5893d33", background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
               <img src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/846ba5fb9_res_cloudinary_com_portal_AuctionHouse_53a9d826e4b032e680e986fe_EXTERNAL_AD_3316416d.png"
                 alt="מכרז מיוחד" className="w-16 h-12 object-cover rounded-lg flex-shrink-0" />
               <div>
                 <div className="font-bold text-gray-900 text-sm">מכרז אמנות ישראלית</div>
-                <div className="text-xs font-medium" style={{ color: "#f700ff" }}>מכרז גדול — 28 ביוני</div>
+                <div className="text-xs font-medium" style={{ color: "#e5893d" }}>מכרז גדול — 28 ביוני</div>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer hover:shadow-md transition-all flex-shrink-0"
-              style={{ borderColor: "#00f7ff33", background: "linear-gradient(135deg, #00f7ff08, #0088ff05)" }}>
+              style={{ borderColor: "#6aa3cd33", background: "linear-gradient(135deg, #6aa3cd08, #2d4f6805)" }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #00f7ff, #0088ff)" }}>
+                style={{ background: "linear-gradient(135deg, #6aa3cd, #2d4f68)" }}>
                 <Zap className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -242,7 +242,7 @@ function AuctionCountdown({ endsAt }) {
   const critical = left.total < 60 * 60 * 1000;       // < 1 hour — red + blink
   const urgent   = left.total < 3 * 60 * 60 * 1000;   // < 3 hours — orange
 
-  const bg = critical ? "#ef4444" : urgent ? "#f97316" : "#0088ff";
+  const bg = critical ? "#ef4444" : urgent ? "#f97316" : "#2d4f68";
   const time = left.h > 0
     ? `${String(left.h).padStart(2,"0")}:${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`
     : `${String(left.m).padStart(2,"0")}:${String(left.s).padStart(2,"0")}`;
@@ -266,7 +266,7 @@ function UpcomingAuctionsSection({ products }) {
   return (
     <section className="bg-white py-10" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="מכרזים קרובים" color="#f700ff" icon={Zap} />
+        <SectionHeader title="מכרזים קרובים" color="#e5893d" icon={Zap} />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {upcoming.map((product, index) => (
             <AnimatedElement key={product.id} delay={index * 50}>
@@ -307,15 +307,15 @@ function ShopsSection({ shops }) {
   return (
     <section className="py-10" style={{ background: "linear-gradient(180deg, #fafafa, #fff)" }} dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="רכישה ישירה — חנויות" color="#9d00ff" icon={Store} />
+        <SectionHeader title="רכישה ישירה — חנויות" color="#3e6b8a" icon={Store} />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {shops.map((shop, index) => (
             <AnimatedElement key={shop.id || index} delay={index * 70}>
               <div className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col gap-3 group hover:border-transparent transition-all duration-300 card-neon-cyan h-full"
                 style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.05)" }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg, #9d00ff22, #f700ff11)", border: "1px solid #9d00ff33" }}>
-                  <Store className="h-5 w-5" style={{ color: "#9d00ff" }} />
+                  style={{ background: "linear-gradient(135deg, #3e6b8a22, #e5893d11)", border: "1px solid #3e6b8a33" }}>
+                  <Store className="h-5 w-5" style={{ color: "#3e6b8a" }} />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-gray-900 text-sm mb-1">{shop.name}</h3>
@@ -329,7 +329,7 @@ function ShopsSection({ shops }) {
                 </div>
                 <a href={shop.shop_url || "#"}
                   className="block w-full text-center text-white text-xs py-2 rounded-xl font-semibold transition-all hover:opacity-90"
-                  style={{ background: "linear-gradient(135deg, #9d00ff, #f700ff)" }}>
+                  style={{ background: "linear-gradient(135deg, #3e6b8a, #e5893d)" }}>
                   לחנות
                 </a>
               </div>

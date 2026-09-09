@@ -19,7 +19,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const inputCls = "w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right";
+  const inputCls = "w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right";
 
   const save = async () => {
     if (!form.title.trim()) { setError("יש למלא כותרת"); return; }
@@ -112,7 +112,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
           <div className="flex gap-2 pt-1">
             <button onClick={save} disabled={busy}
               className="flex-1 flex items-center justify-center gap-2 text-white text-sm py-2.5 rounded-xl font-bold disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Save className="h-4 w-4" aria-hidden="true" />}
               שמור שינויים
             </button>

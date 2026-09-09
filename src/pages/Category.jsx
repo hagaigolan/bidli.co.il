@@ -106,7 +106,7 @@ export default function Category() {
         <div className="text-center">
           <p className="text-5xl mb-4">😕</p>
           <h2 className="text-xl font-bold text-gray-800 mb-2">קטגוריה לא נמצאה</h2>
-          <a href="/" className="text-sm" style={{ color: "#f700ff" }}>חזרה לדף הבית</a>
+          <a href="/" className="text-sm" style={{ color: "#e5893d" }}>חזרה לדף הבית</a>
         </div>
       </div>
     );
@@ -193,7 +193,7 @@ export default function Category() {
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-sm text-gray-900">₪{item.current_price?.toLocaleString() || item.starting_price?.toLocaleString()}</span>
                       <span className="text-white text-xs px-3 py-1.5 rounded-xl font-semibold"
-                        style={{ background: `linear-gradient(135deg, ${cat.color}, #9d00ff)` }}>
+                        style={{ background: `linear-gradient(135deg, ${cat.color}, #3e6b8a)` }}>
                         הצע
                       </span>
                     </div>

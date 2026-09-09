@@ -17,15 +17,15 @@
     --popover-foreground: 220 15% 12%;
 
     /* Neon pink/magenta as primary */
-    --primary: 315 100% 54%;
+    --primary: 27 76% 57%;
     --primary-foreground: 0 0% 100%;
 
     /* Neon cyan as secondary */
-    --secondary: 185 100% 50%;
+    --secondary: 205 50% 61%;
     --secondary-foreground: 220 15% 12%;
 
     /* Neon purple/violet as accent */
-    --accent: 270 100% 65%;
+    --accent: 205 38% 39%;
     --accent-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
@@ -36,7 +36,7 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 315 100% 54%;
+    --ring: 27 76% 57%;
 
     --radius: 0.75rem;
 
@@ -55,40 +55,40 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 
 /* ── Neon glow utilities ── */
 .neon-pink {
-  box-shadow: 0 0 8px #f700ff88, 0 0 24px #f700ff44;
+  box-shadow: 0 0 8px #e5893d88, 0 0 24px #e5893d44;
 }
 .neon-cyan {
-  box-shadow: 0 0 8px #00f7ff88, 0 0 24px #00f7ff44;
+  box-shadow: 0 0 8px #6aa3cd88, 0 0 24px #6aa3cd44;
 }
 .neon-purple {
-  box-shadow: 0 0 8px #9d00ff88, 0 0 24px #9d00ff44;
+  box-shadow: 0 0 8px #3e6b8a88, 0 0 24px #3e6b8a44;
 }
 .neon-text-pink {
-  color: #f700ff;
-  text-shadow: 0 0 8px #f700ff99, 0 0 20px #f700ff55;
+  color: #e5893d;
+  text-shadow: 0 0 8px #e5893d99, 0 0 20px #e5893d55;
 }
 .neon-text-cyan {
-  color: #00f7ff;
-  text-shadow: 0 0 8px #00f7ff99, 0 0 20px #00f7ff55;
+  color: #6aa3cd;
+  text-shadow: 0 0 8px #6aa3cd99, 0 0 20px #6aa3cd55;
 }
 .neon-text-purple {
-  color: #9d00ff;
-  text-shadow: 0 0 8px #9d00ff99, 0 0 20px #9d00ff55;
+  color: #3e6b8a;
+  text-shadow: 0 0 8px #3e6b8a99, 0 0 20px #3e6b8a55;
 }
 
 /* Card hover neon border */
 .card-neon:hover {
-  border-color: #f700ff66 !important;
-  box-shadow: 0 0 0 1px #f700ff33, 0 4px 24px #f700ff18;
+  border-color: #e5893d66 !important;
+  box-shadow: 0 0 0 1px #e5893d33, 0 4px 24px #e5893d18;
 }
 .card-neon-cyan:hover {
-  border-color: #00f7ff66 !important;
-  box-shadow: 0 0 0 1px #00f7ff33, 0 4px 24px #00f7ff18;
+  border-color: #6aa3cd66 !important;
+  box-shadow: 0 0 0 1px #6aa3cd33, 0 4px 24px #6aa3cd18;
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #f700ff, #9d00ff, #00f7ff);
+  background: linear-gradient(135deg, #e5893d, #3e6b8a, #6aa3cd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,23 +96,23 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 
 /* Neon button */
 .btn-neon {
-  background: linear-gradient(135deg, #f700ff, #9d00ff);
+  background: linear-gradient(135deg, #e5893d, #3e6b8a);
   color: white;
-  box-shadow: 0 0 16px #f700ff55, 0 2px 8px #9d00ff44;
+  box-shadow: 0 0 16px #e5893d55, 0 2px 8px #3e6b8a44;
   transition: all 0.2s ease;
 }
 .btn-neon:hover {
-  box-shadow: 0 0 28px #f700ff88, 0 4px 16px #9d00ff66;
+  box-shadow: 0 0 28px #e5893d88, 0 4px 16px #3e6b8a66;
   transform: translateY(-1px);
 }
 .btn-neon-cyan {
-  background: linear-gradient(135deg, #00f7ff, #0088ff);
+  background: linear-gradient(135deg, #6aa3cd, #2d4f68);
   color: #0a0a14;
-  box-shadow: 0 0 16px #00f7ff55, 0 2px 8px #0088ff44;
+  box-shadow: 0 0 16px #6aa3cd55, 0 2px 8px #2d4f6844;
   transition: all 0.2s ease;
 }
 .btn-neon-cyan:hover {
-  box-shadow: 0 0 28px #00f7ff88, 0 4px 16px #0088ff66;
+  box-shadow: 0 0 28px #6aa3cd88, 0 4px 16px #2d4f6866;
   transform: translateY(-1px);
 }
 
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 
 /* ── Accessibility: visible keyboard focus ── */
 :focus-visible {
-  outline: 2px solid #9d00ff;
+  outline: 2px solid #3e6b8a;
   outline-offset: 2px;
   border-radius: 4px;
 }

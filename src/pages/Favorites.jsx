@@ -37,7 +37,7 @@ function FavCard({ fav, onRemove }) {
           {fav.product_ends_at && (
             <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1"
               style={{
-                background: ended ? "#f3f4f6" : "linear-gradient(135deg,#f700ff,#9d00ff)",
+                background: ended ? "#f3f4f6" : "linear-gradient(135deg,#e5893d,#3e6b8a)",
                 color: ended ? "#6b7280" : "white"
               }}>
               {ended ? "הסתיים" : left
@@ -84,15 +84,15 @@ export default function Favorites() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
-      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #f700ff08, #ffffff)" }}>
+      <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
             <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
           </button>
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "1px solid #f700ff33" }}>
-              <Heart className="h-5 w-5" style={{ color: "#f700ff" }} />
+              style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
+              <Heart className="h-5 w-5" style={{ color: "#e5893d" }} />
             </div>
             <div>
               <h1 className="text-2xl font-black text-gray-900">המועדפים שלי</h1>
@@ -105,7 +105,7 @@ export default function Favorites() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#f700ff] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />
           </div>
         ) : favs.length === 0 ? (
           <div className="text-center py-20">
@@ -113,7 +113,7 @@ export default function Favorites() {
             <h2 className="text-lg font-bold text-gray-700 mb-2">אין עדיין מועדפים</h2>
             <p className="text-sm text-gray-400 mb-6">היכנס למוצר ולחץ על "שמור למועדפים" כדי לעקוב אחריו</p>
             <Link to="/auctions" className="text-white text-sm px-6 py-2.5 rounded-xl font-bold inline-block"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </Link>
           </div>

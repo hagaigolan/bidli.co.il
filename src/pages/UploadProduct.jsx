@@ -59,7 +59,7 @@ export default function UploadProduct() {
   if (!authChecked) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#f700ff] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#e5893d] rounded-full animate-spin" />
       </div>
     );
   }
@@ -130,8 +130,8 @@ export default function UploadProduct() {
         <div className="max-w-md w-full">
           <div className="text-center mb-5">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "linear-gradient(135deg, #f700ff22, #9d00ff11)", border: "2px solid #f700ff44" }}>
-              <CheckCircle className="h-8 w-8" style={{ color: "#f700ff" }} />
+              style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "2px solid #e5893d44" }}>
+              <CheckCircle className="h-8 w-8" style={{ color: "#e5893d" }} />
             </div>
             <h2 className="text-2xl font-black text-gray-900 mb-2">המוצר פורסם!</h2>
             <p className="text-gray-500 text-sm mb-5">המכרז יפתח מיידית ויסתיים בעוד 24 שעות. ההצעה הגבוהה ביותר תזכה.</p>
@@ -146,7 +146,7 @@ export default function UploadProduct() {
           <div className="flex gap-3 justify-center">
             <button onClick={() => navigate("/auctions")}
               className="text-white text-sm px-6 py-2.5 rounded-xl font-semibold"
-              style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
+              style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
             <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"" }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
@@ -180,7 +180,7 @@ export default function UploadProduct() {
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <SellerFomoBanner />
         {isRepublish && (
-          <div className="p-4 rounded-2xl" style={{ background: "#f700ff08", border: "1px solid #f700ff33" }} dir="rtl">
+          <div className="p-4 rounded-2xl" style={{ background: "#e5893d08", border: "1px solid #e5893d33" }} dir="rtl">
             <p className="text-sm font-bold text-gray-800 mb-0.5">🔄 מכרז חוזר</p>
             <p className="text-xs text-gray-500">כל פרטי המכרז הקודם הועתקו לטופס — ערוך את הפרטים ופרסם מחדש.</p>
           </div>
@@ -203,7 +203,7 @@ export default function UploadProduct() {
                   </button>
                   {i === 0 && (
                     <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold"
-                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>ראשית</span>
+                      style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>ראשית</span>
                   )}
                 </div>
               ))}
@@ -217,19 +217,19 @@ export default function UploadProduct() {
                   </button>
                   {existingImages.length === 0 && i === 0 && (
                     <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold"
-                      style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>ראשית</span>
+                      style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>ראשית</span>
                   )}
                 </div>
               ))}
               {imageFiles.length + existingImages.length < 8 && (
-                <label className="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 cursor-pointer hover:border-[#f700ff66] hover:text-[#f700ff] transition-all bg-gray-50">
+                <label className="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 cursor-pointer hover:border-[#e5893d66] hover:text-[#e5893d] transition-all bg-gray-50">
                   <Plus className="h-6 w-6" />
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleImage} />
                 </label>
               )}
             </div>
           ) : (
-            <label className="relative flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-[#f700ff66] transition-all bg-gray-50 overflow-hidden">
+            <label className="relative flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-[#e5893d66] transition-all bg-gray-50 overflow-hidden">
               <div className="flex flex-col items-center gap-2 text-gray-400">
                 <Image className="h-10 w-10" />
                 <p className="text-sm">לחץ להעלאת תמונות</p>
@@ -246,7 +246,7 @@ export default function UploadProduct() {
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">כותרת המוצר *</label>
             <input value={form.title} onChange={e => set("title", e.target.value)}
               placeholder="לדוגמה: ציור שמן מקורי של אמן ישראלי"
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right" />
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right" />
           </div>
 
           <div>
@@ -254,14 +254,14 @@ export default function UploadProduct() {
             <textarea value={form.description} onChange={e => set("description", e.target.value)}
               placeholder="תאר את המוצר בפירוט — מצב, גיל, מידות, היסטוריה..."
               rows={4}
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right resize-none" />
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right resize-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">קטגוריה</label>
               <select value={form.category} onChange={e => set("category", e.target.value)}
-                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right">
+                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right">
                 <option value="">בחר קטגוריה</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -269,7 +269,7 @@ export default function UploadProduct() {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">מצב המוצר</label>
               <select value={form.condition} onChange={e => set("condition", e.target.value)}
-                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right">
+                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right">
                 {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -277,41 +277,41 @@ export default function UploadProduct() {
         </div>
 
         {/* Price */}
-        <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #f700ff08, #9d00ff05)", border: "1px solid #f700ff22" }}>
+        <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)", border: "1px solid #e5893d22" }}>
           <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
-            <DollarSign className="h-4 w-4" style={{ color: "#f700ff" }} />
+            <DollarSign className="h-4 w-4" style={{ color: "#e5893d" }} />
             מחיר התחלתי (₪) *
           </label>
           <input type="number" min="1" value={form.starting_price} onChange={e => set("starting_price", e.target.value)}
             placeholder="0"
-            className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right" />
+            className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right" />
           <p className="text-xs text-gray-400 mt-2">המכרז יפתח במחיר זה ויימשך 24 שעות. ההצעה הגבוהה ביותר בסיום תזכה.</p>
         </div>
 
         {/* Seller Info */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            פרטי המוכר <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#f700ff15", color: "#f700ff" }}>חובה לפרסום</span>
+            פרטי המוכר <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#e5893d15", color: "#e5893d" }}>חובה לפרסום</span>
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs text-gray-500 mb-1">שם מלא *</label>
               <input value={form.seller_name} onChange={e => set("seller_name", e.target.value)}
                 placeholder="שם מלא"
-                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" />
+                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
             </div>
             <div>
               <label className="block text-xs text-gray-500 mb-1">אימייל *</label>
               <input type="email" value={form.seller_email} onChange={e => set("seller_email", e.target.value)}
                 placeholder="email@example.com"
-                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" dir="ltr" />
+                className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" dir="ltr" />
             </div>
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1">טלפון *</label>
             <input type="tel" value={form.seller_phone} onChange={e => set("seller_phone", e.target.value)}
               placeholder="050-1234567"
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" dir="ltr" />
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" dir="ltr" />
           </div>
           {/* אמצעי תשלום לקבלת הכסף */}
           <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #00c85308, #00e67605)", border: "1px solid #00c85322" }}>
@@ -350,7 +350,7 @@ export default function UploadProduct() {
             <label className="block text-xs text-gray-500 mb-1">מיקום</label>
             <input value={form.location} onChange={e => set("location", e.target.value)}
               placeholder="עיר / אזור"
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#f700ff88] transition-all text-right" />
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
           </div>
         </div>
 
@@ -363,7 +363,7 @@ export default function UploadProduct() {
         {/* Timer info */}
         <div className="flex items-start gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-100">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-            style={{ background: "linear-gradient(135deg, #00f7ff, #0088ff)" }}>
+            style={{ background: "linear-gradient(135deg, #6aa3cd, #2d4f68)" }}>
             <span className="text-white text-xs font-bold">24</span>
           </div>
           <div>
@@ -380,7 +380,7 @@ export default function UploadProduct() {
 
         <button type="submit" disabled={loading}
           className="w-full text-white text-sm py-3.5 rounded-xl font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)", boxShadow: "0 0 20px #f700ff44" }}>
+          style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 20px #e5893d44" }}>
           {loading ? (
             <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> מפרסם...</>
           ) : (

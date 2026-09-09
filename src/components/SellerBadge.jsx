@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { ShieldCheck, Star, Award, BadgeCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { ShieldCheck, Star, Award, BadgeCheck, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from "lucide-react";
 
 // Renders star rating visually
 export function StarRating({ rating, size = "sm" }) {
@@ -28,9 +28,20 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
     base44.entities.Review.filter({ seller_email: sellerEmail }, "-created_date", 100)
       .then(reviews => {
         setReviews(reviews);
-        if (!reviews.length) { setStats({ count: 0, avg: 0 }); return; }
+        if (!reviews.length) { setStats({ count: 0, avg: 0, positive: 0, negative: 0, neutral: 0, positivePct: 0, negativePct: 0 }); return; }
         const avg = reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length;
-        setStats({ count: reviews.length, avg: parseFloat(avg.toFixed(1)) });
+        const positive = reviews.filter(r => (r.rating || 0) >= 4).length;
+        const negative = reviews.filter(r => (r.rating || 0) <= 2).length;
+        const neutral = reviews.length - positive - negative;
+        setStats({
+          count: reviews.length,
+          avg: parseFloat(avg.toFixed(1)),
+          positive,
+          negative,
+          neutral,
+          positivePct: Math.round((positive / reviews.length) * 100),
+          negativePct: Math.round((negative / reviews.length) * 100),
+        });
       }).catch(() => {});
   }, [sellerEmail]);
 
@@ -110,6 +121,41 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
           <StarRating rating={stats.avg} size="md" />
           <span className="text-sm font-black text-gray-800">{stats.avg}</span>
           <span className="text-xs text-gray-400">מתוך {stats.count} עסקאות</span>
+        </div>
+      )}
+
+      {/* Positive / negative summary */}
+      {stats.count > 0 && (
+        <div className="p-3 rounded-xl bg-white border border-gray-100" dir="rtl">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-1.5">
+              <ThumbsUp className="h-4 w-4" style={{ color: "#16a34a" }} aria-hidden="true" />
+              <span className="text-xs font-bold text-gray-700">חיוביים</span>
+              <span className="text-xs font-black" style={{ color: "#16a34a" }}>{stats.positive}</span>
+              <span className="text-xs font-bold" style={{ color: "#16a34a" }}>({stats.positivePct}%)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-gray-400">ניטרליים: {stats.neutral}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold" style={{ color: "#dc2626" }}>({stats.negativePct}%)</span>
+              <span className="text-xs font-black" style={{ color: "#dc2626" }}>{stats.negative}</span>
+              <span className="text-xs font-bold text-gray-700">שליליים</span>
+              <ThumbsDown className="h-4 w-4" style={{ color: "#dc2626" }} aria-hidden="true" />
+            </div>
+          </div>
+          {/* Proportion bar: positive vs negative vs neutral */}
+          <div className="w-full h-2.5 rounded-full overflow-hidden flex" role="img"
+            aria-label={`${stats.positivePct}% דירוגים חיוביים, ${stats.negativePct}% שליליים`}>
+            <div style={{ width: `${stats.positivePct}%`, background: "#22c55e" }} />
+            <div style={{ width: `${Math.max(0, 100 - stats.positivePct - stats.negativePct)}%`, background: "#d1d5db" }} />
+            <div style={{ width: `${stats.negativePct}%`, background: "#ef4444" }} />
+          </div>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            {stats.positive + stats.negative > 0
+              ? `${stats.positivePct}% חיובי מול ${stats.negativePct}% שלילי מתוך סך הדירוגים`
+              : "כל הדירוגים ניטרליים"}
+          </p>
         </div>
       )}
 

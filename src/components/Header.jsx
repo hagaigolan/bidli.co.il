@@ -68,7 +68,7 @@ export default function Header() {
               <img
                 src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
                 alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
-                className="h-11 w-auto rounded-lg bg-gray-950 px-2.5 py-1 object-contain"
+                className="h-11 w-auto object-contain"
               />
             </Link>
 

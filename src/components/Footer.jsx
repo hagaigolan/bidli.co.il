@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Smartphone, ArrowRight } from "lucide-react";
-import logoWordmark from "@/assets/logo-wordmark.png";
+import logoWordmarkDark from "@/assets/logo-wordmark-dark.png";
 
 export default function Footer() {
   return (
@@ -45,7 +45,7 @@ export default function Footer() {
             <div>
               <Link to="/" className="flex flex-col items-center gap-1.5 mb-4" aria-label="bidli.co.il — דף הבית">
                 <img
-                  src={logoWordmark}
+                  src={logoWordmarkDark}
                   alt="bidli.co.il"
                   className="h-[96px] w-auto object-contain"
                 />

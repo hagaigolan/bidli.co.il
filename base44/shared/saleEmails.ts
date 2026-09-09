@@ -53,7 +53,7 @@ export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl,
           <a href="${ctaUrl || APP_URL + "/auctions"}" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#e5893d,#3e6b8a);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">${ctaLabel || "צפה במכרז ב-bidli →"}</a>
         </td></tr>
         <tr><td style="padding:20px 32px 28px;border-top:1px solid #f4f4f5;">
-          <p style="margin:0;font-size:12px;color:#a1a1aa;text-align:center;line-height:1.6;">bidli — פלטפורמת מכרזים לאמנות, יודאיקה ואספנות<br>הודעה זו נשלחה אוטומטית, אין להשיב.</p>
+          <p style="margin:0;font-size:12px;color:#a1a1aa;text-align:center;line-height:1.6;">bidli — הבית של פלטפורמת מכרזים שלך<br>הודעה זו נשלחה אוטומטית, אין להשיב.</p>
         </td></tr>
       </table>
     </td></tr>

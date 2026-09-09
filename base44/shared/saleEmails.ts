@@ -31,7 +31,7 @@ function stepsBox(stepsHtml) {
   </table>`;
 }
 
-function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
+export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -61,7 +61,7 @@ function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLab
 </body></html>`;
 }
 
-function productCard(product, productUrl) {
+export function productCard(product, productUrl) {
   const price = (product.current_price ?? product.starting_price ?? 0).toLocaleString("he-IL");
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:18px 0;">
     <tr>

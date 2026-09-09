@@ -1,0 +1,92 @@
+// Designed HTML email builders for tracking notifications:
+// - seller publish confirmation (on product publish)
+// - new-bid alerts to the seller and to the platform admin
+
+import { shell, productCard, APP_BASE_URL } from "./saleEmails.ts";
+
+function priceHtml(amount) {
+  return (amount ?? 0).toLocaleString("he-IL");
+}
+
+// ── Seller: auction published ──
+export function sellerPublishEmail(product) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המכרז שלך פורסם בהצלחה והוא כעת פעיל באתר bidli! 🎉 המכרז יימשך <strong style="color:#e5893d;">24 שעות</strong>, ובסיומו ההצעה הגבוהה ביותר תזכה במוצר.</p>
+    ${productCard(product, productUrl)}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:16px 0;">
+      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#3f3f46;">
+        מחיר פתיחה: <strong>₪${priceHtml(product.starting_price)}</strong><br>
+        משך המכרז: <strong>24 שעות מרגע הפרסום</strong><br>
+        התשלום יתקבל בהעברה ישירה — ללא כרטיס אשראי וללא עמלות
+      </td></tr>
+    </table>
+    <p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:#71717a;">מעכשיו תקבל מייל בכל פעם שתוגש הצעה חדשה על המוצר, כדי שתוכל לעקוב אחרי המכרז בזמן אמת.</p>`;
+  return {
+    subject: `🎉 המכרז שלך פורסם: ${product.title}`,
+    html: shell({
+      title: "המכרז שלך פורסם!",
+      heroColor: "#3e6b8a",
+      heroEmoji: "🎉",
+      heroLine: "המכרז פעיל למשך 24 שעות",
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "צפה במכרז שלך →",
+    }),
+    text: `שלום ${product.seller_name || "מוכר"},\n\nהמכרז שלך פורסם בהצלחה באתר bidli!\n\nמוצר: ${product.title}\nמחיר פתיחה: ₪${priceHtml(product.starting_price)}\nמשך המכרז: 24 שעות מרגע הפרסום\n\nקישור למכרז: ${productUrl}\n\nתקבל מייל בכל פעם שתוגש הצעה חדשה על המוצר.`,
+  };
+}
+
+// ── Seller: new bid on their auction ──
+export function sellerBidEmail(product, bid) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה על המוצר שלך! 🚀</p>
+    <p style="margin:0 0 14px;font-size:34px;font-weight:900;color:#e5893d;text-align:center;">₪${priceHtml(bid.amount)}</p>
+    ${productCard(product, productUrl)}
+    <p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:#71717a;">סך ההצעות על המוצר עד כה: <strong>${product.bid_count ?? "—"}</strong>. המשך לעקוב — תקבל עדכון בכל הצעה חדשה.</p>`;
+  return {
+    subject: `🚀 הצעה חדשה על "${product.title}" — ₪${priceHtml(bid.amount)}`,
+    html: shell({
+      title: "הצעה חדשה במכרז שלך!",
+      heroColor: "#e5893d",
+      heroEmoji: "🚀",
+      heroLine: "מישהו הציע על המוצר שלך",
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "צפה במכרז שלך →",
+    }),
+    text: `שלום ${product.seller_name || "מוכר"},\n\nהתקבלה הצעה חדשה על המוצר שלך:\n\nמוצר: ${product.title}\nהצעה חדשה: ₪${priceHtml(bid.amount)}\nסך ההצעות: ${product.bid_count ?? "—"}\n\nקישור למכרז: ${productUrl}`,
+  };
+}
+
+// ── Admin: real-time tracking update on every bid ──
+export function adminBidEmail(product, bid) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const body = `
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה במכרז <strong>${product.title}</strong>:</p>
+    <p style="margin:0 0 14px;font-size:34px;font-weight:900;color:#e5893d;text-align:center;">₪${priceHtml(bid.amount)}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:16px 0;">
+      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#3f3f46;">
+        מציע: <strong>${bid.bidder_name || "אנונימי"}</strong>${bid.bidder_email ? ` (${bid.bidder_email})` : ""}<br>
+        מוכר: <strong>${product.seller_name || "—"}</strong>${product.seller_email ? ` (${product.seller_email})` : ""}<br>
+        סך ההצעות: <strong>${product.bid_count ?? "—"}</strong>
+      </td></tr>
+    </table>
+    ${productCard(product, productUrl)}`;
+  return {
+    subject: `הצעה חדשה: ${product.title} — ₪${priceHtml(bid.amount)}`,
+    html: shell({
+      title: "עדכון הצעה חדשה",
+      heroColor: "#3e6b8a",
+      heroEmoji: "📊",
+      heroLine: "מעקב מכרזים בזמן אמת",
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "צפה במכרז →",
+    }),
+    text: `התקבלה הצעה חדשה במכרז "${product.title}"\n\nהצעה: ₪${priceHtml(bid.amount)}\nמציע: ${bid.bidder_name || "אנונימי"}${bid.bidder_email ? ` (${bid.bidder_email})` : ""}\nמוכר: ${product.seller_name || "—"} (${product.seller_email || "—"})\nסך ההצעות: ${product.bid_count ?? "—"}\n\nקישור: ${productUrl}`,
+  };
+}

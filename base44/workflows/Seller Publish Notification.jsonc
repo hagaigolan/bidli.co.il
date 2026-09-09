@@ -1,0 +1,40 @@
+{
+  "description": "\u05e9\u05d5\u05dc\u05d7 \u05dc\u05de\u05d5\u05db\u05e8 \u05de\u05d9\u05d9\u05dc \u05de\u05e2\u05d5\u05e6\u05d1 \u05e2\u05dd \u05d0\u05d9\u05e9\u05d5\u05e8 \u05e4\u05e8\u05e1\u05d5\u05dd \u05d1\u05e8\u05d2\u05e2 \u05e9\u05d4\u05d5\u05d0 \u05de\u05e2\u05dc\u05d4 \u05de\u05d5\u05e6\u05e8 \u05d7\u05d3\u05e9 \u05dc\u05de\u05db\u05e8\u05d6",
+  "name": "Seller Publish Notification",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "seller_publish_notification",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "notify_publish": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "notifySellerPublish",
+            "args": {
+              "product_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "\u05e9\u05dc\u05d9\u05d7\u05ea \u05d0\u05d9\u05e9\u05d5\u05e8 \u05e4\u05e8\u05e1\u05d5\u05dd \u05dc\u05de\u05d5\u05db\u05e8",
+            "description": "\u05de\u05d9\u05d9\u05dc \u05de\u05e2\u05d5\u05e6\u05d1 \u05dc\u05de\u05d5\u05db\u05e8"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Product"
+    }
+  }
+}

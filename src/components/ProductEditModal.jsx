@@ -13,6 +13,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
     condition: product.condition || CONDITIONS[1],
     location: product.location || "",
     starting_price: String(product.starting_price ?? ""),
+    is_stock: !!product.is_stock,
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -34,6 +35,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
         category: form.category,
         condition: form.condition,
         location: form.location,
+        is_stock: form.is_stock,
       };
       if (noBids) {
         const price = parseFloat(form.starting_price);
@@ -85,6 +87,18 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
               </select>
             </div>
           </div>
+
+          <button type="button" onClick={() => set("is_stock", !form.is_stock)} aria-pressed={form.is_stock}
+            className="w-full flex items-center justify-between gap-3 p-3 rounded-xl border transition-all"
+            style={form.is_stock
+              ? { borderColor: "#e5893d", background: "#e5893d0f" }
+              : { borderColor: "#e5e7eb", background: "white" }}>
+            <span className="text-sm font-semibold text-gray-700">פרסום בעמוד הסטוקים</span>
+            <span className="w-10 h-6 rounded-full flex items-center flex-shrink-0 transition-all p-0.5"
+              style={{ background: form.is_stock ? "#e5893d" : "#d1d5db", justifyContent: form.is_stock ? "flex-end" : "flex-start" }}>
+              <span className="w-5 h-5 rounded-full bg-white shadow-sm" />
+            </span>
+          </button>
 
           <div>
             <label htmlFor="edit-location" className="block text-xs text-gray-500 mb-1">מיקום</label>

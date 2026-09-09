@@ -40,7 +40,7 @@ export default function Stocks() {
 
   useEffect(() => {
     base44.entities.Product.filter({ status: "active" }, "-created_date", 50)
-      .then(setProducts)
+      .then(items => setProducts(items.filter(p => p.is_stock)))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

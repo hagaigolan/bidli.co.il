@@ -13,6 +13,7 @@ export default function UploadProduct() {
     title: "", description: "", category: "", condition: "מצב מעולה",
     starting_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
     seller_payment_method: "", seller_payme_phone: "", seller_bank_details: "",
+    is_stock: false,
   });
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -149,7 +150,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"" }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -274,6 +275,22 @@ export default function UploadProduct() {
               </select>
             </div>
           </div>
+
+          {/* סימון כסטוק */}
+          <button type="button" onClick={() => set("is_stock", !form.is_stock)} aria-pressed={form.is_stock}
+            className="w-full flex items-center justify-between gap-3 p-3.5 rounded-xl border transition-all"
+            style={form.is_stock
+              ? { borderColor: "#e5893d", background: "#e5893d0f" }
+              : { borderColor: "#e5e7eb", background: "white" }}>
+            <span className="text-right">
+              <span className="block text-sm font-semibold text-gray-700">פרסום בעמוד הסטוקים</span>
+              <span className="block text-xs text-gray-400 mt-0.5">המוצר יוצג בעמוד הסטוקים למכירה מהירה</span>
+            </span>
+            <span className="w-10 h-6 rounded-full flex items-center flex-shrink-0 transition-all p-0.5"
+              style={{ background: form.is_stock ? "#e5893d" : "#d1d5db", justifyContent: form.is_stock ? "flex-end" : "flex-start" }}>
+              <span className="w-5 h-5 rounded-full bg-white shadow-sm" />
+            </span>
+          </button>
         </div>
 
         {/* Price */}

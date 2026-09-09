@@ -21,6 +21,10 @@
         "\u05dc\u05d0 \u05ea\u05e7\u05d9\u05df"
       ]
     },
+    "is_stock": {
+      "type": "boolean",
+      "default": false
+    },
     "starting_price": {
       "type": "number"
     },

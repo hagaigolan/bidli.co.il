@@ -77,7 +77,7 @@ function HeroSection() {
             <span className="gradient-text">bidli</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 font-light mb-10 max-w-xl mx-auto">
-            השער שלך לזירת בתי המכרזים
+            גלה יצירות נדירות, הצע בזמן אמת וזכה — המכרזים המהירים בישראל, פתוחים רק 24 שעות
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mb-10">

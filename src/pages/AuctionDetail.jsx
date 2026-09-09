@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
@@ -238,6 +238,7 @@ export default function AuctionDetail() {
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
   // ── 7. notifications opt-in ──
@@ -281,6 +282,20 @@ export default function AuctionDetail() {
       }
     } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
   };
+
+  // בדיקה אם המשתמש כבר דירג את המוכר במכרז זה
+  useEffect(() => {
+    if (!id) return;
+    const myEmail = (localStorage.getItem("bidder_email") || "").trim().toLowerCase();
+    const myName = localStorage.getItem("bidder_name");
+    if (!myEmail && !myName) return;
+    base44.entities.Review.filter({ product_id: id })
+      .then(reviews => {
+        setAlreadyReviewed(reviews.some(r =>
+          (myEmail && (r.reviewer_email || "").trim().toLowerCase() === myEmail) ||
+          (myName && r.reviewer_name === myName)));
+      }).catch(() => {});
+  }, [id]);
 
   // Load bid history
   useEffect(() => {
@@ -666,14 +681,20 @@ export default function AuctionDetail() {
             )}
 
             {/* ── RATE SELLER (after auction ended, for any participant) ── */}
-            {ended && product.highest_bidder && (
+            {ended && product.highest_bidder && (alreadyReviewed ? (
+              <div className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border"
+                style={{ borderColor: "#22c55e44", color: "#16a34a", background: "#22c55e08" }}>
+                <Star className="h-4 w-4" aria-hidden="true" />
+                כבר דירגת את המוכר במכרז זה ✓
+              </div>
+            ) : (
               <button onClick={() => setShowReviewModal(true)}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
                 style={{ borderColor: "#f59e0b66", color: "#b45309", background: "#f59e0b08" }}>
                 <MessageSquare className="h-4 w-4" />
                 {myName === product.highest_bidder ? "דרג את המוכר — עזור לקהילה 🏆" : "דרג את המוכר"}
               </button>
-            )}
+            ))}
           </div>
         </div>
       </div>
@@ -712,6 +733,7 @@ export default function AuctionDetail() {
           reviewerName={myName}
           reviewerEmail={localStorage.getItem("bidder_email")}
           onClose={() => setShowReviewModal(false)}
+          onDone={() => setAlreadyReviewed(true)}
         />
       )}
 

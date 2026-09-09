@@ -2,17 +2,30 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Star, X, CheckCircle } from "lucide-react";
 
-export default function ReviewModal({ product, reviewerName, reviewerEmail, onClose }) {
+export default function ReviewModal({ product, reviewerName, reviewerEmail, onClose, onDone }) {
   const [rating, setRating] = useState(5);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [already, setAlready] = useState(false);
 
   const handleSubmit = async () => {
     if (!rating) return;
     setSubmitting(true);
     try {
+      // דירוג אחד בלבד לכל מכרז
+      const existing = await base44.entities.Review.filter({ product_id: product.id });
+      const myEmail = (reviewerEmail || "").trim().toLowerCase();
+      const dup = existing.some(r =>
+        (myEmail && (r.reviewer_email || "").trim().toLowerCase() === myEmail) ||
+        (reviewerName && r.reviewer_name === reviewerName));
+      if (dup) {
+        setAlready(true);
+        onDone?.();
+        setTimeout(onClose, 1500);
+        return;
+      }
       await base44.entities.Review.create({
         product_id: product.id,
         product_title: product.title,
@@ -24,6 +37,7 @@ export default function ReviewModal({ product, reviewerName, reviewerEmail, onCl
         comment,
       });
       setDone(true);
+      onDone?.();
       setTimeout(onClose, 2000);
     } catch {
       setSubmitting(false);
@@ -38,9 +52,15 @@ export default function ReviewModal({ product, reviewerName, reviewerEmail, onCl
           <button onClick={onClose}><X className="h-5 w-5 text-gray-400" /></button>
         </div>
 
-        {done ? (
+        {already ? (
           <div className="text-center py-6">
-            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
+            <Star className="h-12 w-12 mx-auto mb-3" style={{ color: "#f59e0b" }} aria-hidden="true" />
+            <p className="font-bold text-gray-800">כבר דירגת את המוכר במכרז זה</p>
+            <p className="text-sm text-gray-400 mt-1">ניתן לדרג פעם אחת בלבד בכל מכרז</p>
+          </div>
+        ) : done ? (
+          <div className="text-center py-6">
+            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" aria-hidden="true" />
             <p className="font-bold text-gray-800">תודה על הדירוג!</p>
             <p className="text-sm text-gray-400 mt-1">הדירוג שלך עוזר לקהילה</p>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Send, Loader2, Phone } from "lucide-react";
+import { getProductFaqs } from "@/lib/productFaq";
 
 // מספר הוואטסאפ של הנהלת המכירה — החלף כאן (פורמט בינלאומי ללא +, למשל 972501234567).
 // אם ריק, נשלחת ברירת מחדל לטלפון המוכר של הפריט.
@@ -65,6 +66,11 @@ export default function ProductChat({ product }) {
     }
   };
 
+  const faqs = getProductFaqs(product);
+  const askFaq = (faq) => {
+    setMessages(m => [...m, { from: "user", text: faq.q }, { from: "bot", text: faq.a }]);
+  };
+
   const waNumber = toIntl(SALES_WHATSAPP || product.seller_phone);
   const waUrl = waNumber
     ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`שלום, יש לי שאלה לגבי המכרז "${product.title}" (${window.location.href})`)}`
@@ -110,6 +116,15 @@ export default function ProductChat({ product }) {
               <Phone className="h-3.5 w-3.5" /> שאלה מורכבת? דבר עם צוות המכירה בוואטסאפ
             </a>
           )}
+
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide px-3 py-2 border-t border-gray-50 bg-white" dir="rtl">
+            {faqs.map(f => (
+              <button key={f.q} type="button" onClick={() => askFaq(f)}
+                className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold border border-gray-200 text-gray-500 hover:border-[#f700ff66] hover:text-[#f700ff] transition-all whitespace-nowrap">
+                {f.q}
+              </button>
+            ))}
+          </div>
 
           <form onSubmit={send} className="p-3 flex gap-2">
             <input value={input} onChange={e => setInput(e.target.value)}

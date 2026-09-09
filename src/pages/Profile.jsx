@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import SalesManager from "@/components/SalesManager";
+import SellerAuctionEditor from "@/components/SellerAuctionEditor";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
   Trophy, XCircle, RefreshCw
@@ -261,6 +262,8 @@ export default function Profile() {
               </div>
               <ChevronLeft className="h-4 w-4 text-gray-300" />
             </Link>
+
+            <SellerAuctionEditor />
 
             <SalesManager />
 

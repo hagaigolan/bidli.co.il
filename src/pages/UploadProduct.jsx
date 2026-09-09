@@ -4,8 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 
-const CATEGORIES = ["אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "מטבעות", "בולים", "תכשיטים", "שעונים", "עיצוב הבית", "אופנה", "ספרים", "כלי נגינה", "יין ואלכוהול", "אלקטרוניקה", "רכבים", 'נדל"ן', "אחר"];
-const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
+import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
 const PAYMENT_METHOD_LABELS = { kashcash: "קשקאש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {

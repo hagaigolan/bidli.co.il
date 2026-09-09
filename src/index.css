@@ -149,6 +149,18 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
   border-radius: 4px;
 }
 
+/* ── Accessibility widget: user toggles (persisted) ── */
+html.a11y-large-text body { font-size: 17px !important; }
+html.a11y-large-text h1, html.a11y-large-text h2, html.a11y-large-text h3 { font-size: 1.1em !important; }
+html.a11y-high-contrast { filter: contrast(1.2); }
+html.a11y-high-contrast body { color: #000000; }
+html.a11y-reduce-motion *, html.a11y-reduce-motion *::before, html.a11y-reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html.a11y-underline-links a { text-decoration: underline !important; text-underline-offset: 3px; }
+
 /* ── Accessibility: respect reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

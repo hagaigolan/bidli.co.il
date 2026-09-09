@@ -78,6 +78,8 @@ export default function Header() {
               <div className="relative w-full">
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
+                  type="search"
+                  aria-label="חיפוש באתר"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
@@ -88,7 +90,7 @@ export default function Header() {
             </div>
 
             {/* Nav links */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
               <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#f700ff] bg-pink-50" : "text-gray-600 hover:text-[#f700ff] hover:bg-pink-50"}`}>דף הבית</Link>
               <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">מכרזים פעילים</Link>
               <Link to="/auctions?view=archive" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#f700ff] hover:bg-pink-50 rounded-lg transition-colors">ארכיון מכרזים</Link>
@@ -99,8 +101,8 @@ export default function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
-                <Bell className="h-4 w-4" />
+              <Button variant="ghost" size="icon" aria-label="התראות" className="h-9 w-9 text-gray-500 hover:text-[#f700ff] hidden sm:flex rounded-xl">
+                <Bell className="h-4 w-4" aria-hidden="true" />
               </Button>
               <UserMenu />
               <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
@@ -110,8 +112,8 @@ export default function Header() {
               {/* Mobile menu */}
               <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild className="sm:hidden">
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" aria-label="פתח תפריט" className="h-9 w-9 rounded-xl">
+                    <Menu className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 bg-white">

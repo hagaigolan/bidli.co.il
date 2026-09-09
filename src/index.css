@@ -141,3 +141,20 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 .animate-gradient-x { animation: gradient-x 5s ease infinite; background-size: 200% auto; }
 .animate-neon-pulse { animation: neon-pulse 2s ease-in-out infinite; }
 .animate-float { animation: float 3s ease-in-out infinite; }
+
+/* ── Accessibility: visible keyboard focus ── */
+:focus-visible {
+  outline: 2px solid #9d00ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Accessibility: respect reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

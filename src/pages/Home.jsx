@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 import DealsEndingSoon from "@/components/DealsEndingSoon";
+import TrustSection from "@/components/TrustSection";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -364,6 +365,7 @@ export default function Home() {
       <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
       <ShopsSection shops={shops} />
-    </div>
+      <TrustSection />
+      </div>
   );
 }

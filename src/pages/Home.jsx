@@ -258,14 +258,16 @@ function AuctionCountdown({ endsAt }) {
 }
 
 function UpcomingAuctionsSection({ products }) {
-  if (products.length === 0) return null;
+  const now = Date.now();
+  const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now);
+  if (upcoming.length === 0) return null;
 
   return (
     <section className="bg-white py-10" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeader title="מכרזים קרובים" color="#f700ff" icon={Zap} />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {products.map((product, index) => (
+          {upcoming.map((product, index) => (
             <AnimatedElement key={product.id} delay={index * 50}>
               <a href={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
                 <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">

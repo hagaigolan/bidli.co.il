@@ -62,13 +62,13 @@ export default function Header() {
       {/* Main bar */}
       <div className="border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className="flex items-center justify-between min-h-16 py-3 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
               <img
                 src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
                 alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
-                className="h-11 w-auto object-contain"
+                className="h-[132px] w-auto object-contain"
               />
             </Link>
 

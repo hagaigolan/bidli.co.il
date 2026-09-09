@@ -46,7 +46,7 @@ export default function Footer() {
                 <img
                   src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
                   alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
-                  className="h-14 w-auto object-contain"
+                  className="h-[168px] w-auto object-contain"
                 />
               </Link>
               <p className="text-white/40 text-xs mb-4 leading-relaxed">

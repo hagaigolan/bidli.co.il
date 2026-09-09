@@ -506,6 +506,11 @@ export default function AuctionDetail() {
             <div className="mt-4">
               <BidFeed bids={bids} flashNew={flashNew} />
             </div>
+
+            {/* ── LIVE CHAT — שאלות למוכר ── */}
+            <div className="mt-4">
+              <ProductChat product={product} inline />
+            </div>
           </div>
 
           {/* Details */}
@@ -745,7 +750,6 @@ export default function AuctionDetail() {
         />
       )}
 
-      <ProductChat product={product} />
     </div>
   );
 }

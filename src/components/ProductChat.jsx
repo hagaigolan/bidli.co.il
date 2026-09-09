@@ -36,7 +36,7 @@ ${details}
 שאלת הקונה: ${question}`;
 }
 
-export default function ProductChat({ product }) {
+export default function ProductChat({ product, inline = false }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
     { from: "bot", text: "שלום! 👋 זה הצ'אט החי של bidli. שאל כל שאלה על הפריט — אענה מיד, וכל שאלה תישלח גם למוכר במייל כדי שתקבל תשובה מהירה." },
@@ -100,19 +100,22 @@ export default function ProductChat({ product }) {
     ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`שלום, יש לי שאלה לגבי המכרז "${product.title}" (${window.location.href})`)}`
     : null;
 
-  return (
-    <>
-      {open && (
-        <div className="fixed bottom-20 left-4 right-4 sm:right-auto sm:w-[360px] z-50 rounded-2xl border border-gray-100 bg-white shadow-2xl overflow-hidden" dir="rtl">
+  const chatPanel = (
+    <div className={inline
+        ? "rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden"
+        : "fixed bottom-20 left-4 right-4 sm:right-auto sm:w-[360px] z-50 rounded-2xl border border-gray-100 bg-white shadow-2xl overflow-hidden"}
+      dir="rtl">
           <div className="px-4 py-3 flex items-center gap-2" style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
             <MessageCircle className="h-4 w-4 text-white" />
             <div className="flex-1">
               <p className="text-sm font-bold text-white">שאלות על הפריט</p>
               <p className="text-xs text-white/80">צ'אט חי · כל שאלה נשלחת למוכר במיידי</p>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">
-              <X className="h-4 w-4" />
-            </button>
+            {!inline && (
+              <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
           <div ref={listRef} className="h-64 overflow-y-auto p-3 space-y-2 bg-gray-50">
@@ -171,8 +174,14 @@ export default function ProductChat({ product }) {
               {typing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 -scale-x-100" />}
             </button>
           </form>
-        </div>
-      )}
+    </div>
+  );
+
+  if (inline) return chatPanel;
+
+  return (
+    <>
+      {open && chatPanel}
 
       <button onClick={() => setOpen(o => !o)}
         className="fixed bottom-4 left-4 z-50 w-14 h-14 rounded-full flex items-center justify-center text-white transition-all hover:scale-105"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Search, Bell, Gavel } from "lucide-react";
+import { Menu, ChevronDown, Search, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
@@ -64,13 +64,12 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f700ff, #9d00ff)' }}>
-                <Gavel className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-extrabold text-xl tracking-tight text-gray-900">
-                bid-<span className="neon-text-pink">it</span>
-              </span>
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
+              <img
+                src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
+                alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
+                className="h-11 w-auto rounded-lg bg-gray-950 px-2.5 py-1 object-contain"
+              />
             </Link>
 
             {/* Search bar */}

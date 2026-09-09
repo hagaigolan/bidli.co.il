@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Smartphone, ArrowRight, Gavel } from "lucide-react";
+import { Mail, Smartphone, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -42,11 +42,12 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
             {/* Brand */}
             <div>
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #f700ff, #9d00ff)" }}>
-                  <Gavel className="h-4 w-4 text-white" />
-                </div>
-                <span className="font-extrabold text-lg text-white">bid-<span style={{ color: "#f700ff", textShadow: "0 0 8px #f700ff99" }}>it</span></span>
+              <Link to="/" className="flex items-center gap-2 mb-4" aria-label="bidli.co.il — דף הבית">
+                <img
+                  src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/354aca3b3_1c5e02c2-30a1-49cf-9777-424481e6d3e7_removalai_preview.png"
+                  alt="bidli.co.il — האתר למכירות המהירות והמנוהלות ביותר בישראל"
+                  className="h-14 w-auto object-contain"
+                />
               </Link>
               <p className="text-white/40 text-xs mb-4 leading-relaxed">
                 נשמח לשמוע ממך! שלח לנו שאלות, הערות או רעיונות.

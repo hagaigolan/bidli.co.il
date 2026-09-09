@@ -221,6 +221,8 @@ export default function Profile() {
           </div>
         )}
 
+        <SellerAuctionEditor />
+
         {!hasProfile && !editingProfile && (
           <div className="text-center py-12">
             <div className="text-5xl mb-4">👤</div>
@@ -262,8 +264,6 @@ export default function Profile() {
               </div>
               <ChevronLeft className="h-4 w-4 text-gray-300" />
             </Link>
-
-            <SellerAuctionEditor />
 
             <SalesManager />
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
@@ -12,6 +12,7 @@ import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 import ProductChat from "@/components/ProductChat";
 import ShareButton from "@/components/ShareButton";
+import ProductEditModal from "@/components/ProductEditModal";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -236,6 +237,7 @@ export default function AuctionDetail() {
   const [myLastBid, setMyLastBid] = useState(null);
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
   // ── 7. notifications opt-in ──
@@ -343,6 +345,9 @@ export default function AuctionDetail() {
     return unsub;
   }, [id, product, notifEnabled]);
 
+  const mySellerEmail = (localStorage.getItem("seller_email") || localStorage.getItem("bidder_email") || "").trim().toLowerCase();
+  const isMyAuction = !!(product && product.seller_email && mySellerEmail &&
+    mySellerEmail === product.seller_email.trim().toLowerCase());
   const ended = product && new Date(product.ends_at) <= new Date();
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
@@ -476,6 +481,14 @@ export default function AuctionDetail() {
               )}
               <h1 className="text-2xl font-black text-gray-900 mt-1">{product.title}</h1>
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
+
+              {isMyAuction && !ended && (
+                <button type="button" onClick={() => setShowEdit(true)}
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all"
+                  style={{ borderColor: "#9d00ff44", color: "#9d00ff", background: "#9d00ff08" }}>
+                  <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> עריכת פרטי המכרז
+                </button>
+              )}
 
               {/* ── FAVORITES TOGGLE ── */}
               <button type="button" onClick={toggleFavorite}
@@ -646,6 +659,19 @@ export default function AuctionDetail() {
         <OutbidNotificationModal
           onClose={() => setShowNotifModal(false)}
           onSave={handleNotifSave}
+        />
+      )}
+
+      {showEdit && !ended && isMyAuction && (
+        <ProductEditModal
+          product={product}
+          onClose={() => setShowEdit(false)}
+          onSaved={() => {
+            setShowEdit(false);
+            base44.entities.Product.filter({ id }).then(items => {
+              if (items.length) setProduct(items[0]);
+            }).catch(() => {});
+          }}
         />
       )}
 

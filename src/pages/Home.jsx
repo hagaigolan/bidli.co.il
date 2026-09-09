@@ -54,12 +54,11 @@ function HeroSection() {
     <section className="relative overflow-hidden bg-white" style={{ minHeight: 480 }} dir="rtl">
       {carouselImages.map((img, i) => (
         <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ${i === currentSlide ? "opacity-100" : "opacity-0"}`}>
-          <img src={img.src} alt={img.alt} className="w-full h-full object-cover" style={{ filter: "brightness(0.18) saturate(0.6)" }} />
+          <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
         </div>
       ))}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 20% 50%, #f700ff18 0%, transparent 70%)" }} />
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 50% at 80% 50%, #00f7ff14 0%, transparent 70%)" }} />
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 80% at 50% 100%, #9d00ff10 0%, transparent 60%)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255, 255, 255, 0.85)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 20% 50%, #f700ff10 0%, transparent 70%)" }} />
       <div className="absolute inset-0 pointer-events-none opacity-30" style={{
         backgroundImage: "linear-gradient(#f700ff08 1px, transparent 1px), linear-gradient(90deg, #f700ff08 1px, transparent 1px)",
         backgroundSize: "60px 60px"
@@ -72,11 +71,11 @@ function HeroSection() {
             <span className="text-xs font-semibold" style={{ color: "#f700ff" }}>מכרזים חיים • פורטל המכרזים מספר 1 בישראל</span>
           </div>
 
-          <h1 className="text-5xl sm:text-7xl font-black text-white mb-4 leading-none tracking-tight">
+          <h1 className="text-5xl sm:text-7xl font-black text-gray-900 mb-4 leading-none tracking-tight">
             ברוכים הבאים ל-{" "}
             <span className="gradient-text">bid-it</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-300 font-light mb-10 max-w-xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-500 font-light mb-10 max-w-xl mx-auto">
             השער שלך לזירת בתי המכרזים
           </p>
 
@@ -88,7 +87,7 @@ function HeroSection() {
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                 placeholder="חפש פריטים, קטלוגים, בתי מכרזים..."
-                className="w-full pr-10 pl-4 py-3 text-sm bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff33] transition-all text-right"
+                className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f700ff88] focus:ring-2 focus:ring-[#f700ff22] transition-all text-right shadow-sm"
               />
             </div>
             <button type="button" onClick={doSearch} className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
@@ -114,7 +113,7 @@ function HeroSection() {
         {carouselImages.map((_, i) => (
           <button key={i} onClick={() => setCurrentSlide(i)}
             className="rounded-full transition-all duration-300"
-            style={{ width: i === currentSlide ? 24 : 8, height: 8, background: i === currentSlide ? "#f700ff" : "#ffffff40" }} />
+            style={{ width: i === currentSlide ? 24 : 8, height: 8, background: i === currentSlide ? "#f700ff" : "#d1d5db" }} />
         ))}
       </div>
     </section>

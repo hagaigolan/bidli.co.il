@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { MessageCircle, X, Send, Loader2, Phone } from "lucide-react";
 import { getProductFaqs } from "@/lib/productFaq";
-import { forwardQuestionToSeller } from "@/functions/forwardQuestionToSeller";
 
 // מספר הוואטסאפ של הנהלת המכירה — החלף כאן (פורמט בינלאומי ללא +, למשל 972501234567).
 // אם ריק, נשלחת ברירת מחדל לטלפון המוכר של הפריט.
@@ -63,6 +62,18 @@ export default function ProductChat({ product, inline = false }) {
     });
   }, []);
 
+  // העברת שאלה למייל המוכר בזמן אמת — כל שאלה שנשאלת בצ'אט מגיעה למוכר
+  const forwardToSeller = (question) => {
+    base44.functions.invoke("forwardQuestionToSeller", {
+      product_id: product.id,
+      question,
+      asker_name: askerName,
+      asker_contact: askerContact,
+    })
+      .then(() => setMessages(m => [...m, { from: "bot", text: "📩 השאלה נשלחה למוכר במייל — הוא יענה בהקדם." }]))
+      .catch(() => setMessages(m => [...m, { from: "bot", text: "⚠️ שליחת השאלה למוכר נכשלה — נסה שוב בעוד רגע." }]));
+  };
+
   const send = async (e) => {
     e.preventDefault();
     const question = input.trim();
@@ -70,15 +81,7 @@ export default function ProductChat({ product, inline = false }) {
     setInput("");
     setMessages(m => [...m, { from: "user", text: question }]);
     setTyping(true);
-    // העברת השאלה למייל המוכר בזמן אמת, במקביל למענה המיידי
-    forwardQuestionToSeller({
-      product_id: product.id,
-      question,
-      asker_name: askerName,
-      asker_contact: askerContact,
-    })
-      .then(() => setMessages(m => [...m, { from: "bot", text: "📩 השאלה נשלחה למוכר במייל — הוא יענה בהקדם." }]))
-      .catch(() => {});
+    forwardToSeller(question);
     try {
       const res = await base44.integrations.Core.InvokeLLM({ prompt: buildPrompt(product, question) });
       const answer = typeof res === "string" ? res : res?.response ?? res?.message ?? res?.data ?? "";
@@ -93,6 +96,7 @@ export default function ProductChat({ product, inline = false }) {
   const faqs = getProductFaqs(product);
   const askFaq = (faq) => {
     setMessages(m => [...m, { from: "user", text: faq.q }, { from: "bot", text: faq.a }]);
+    forwardToSeller(faq.q);
   };
 
   const waNumber = toIntl(SALES_WHATSAPP || product.seller_phone);

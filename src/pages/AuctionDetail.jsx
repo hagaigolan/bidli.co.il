@@ -10,6 +10,7 @@ import RelatedArticle from "@/components/RelatedArticle";
 import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
+import ProductChat from "@/components/ProductChat";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -651,6 +652,8 @@ export default function AuctionDetail() {
           onClose={() => setShowReviewModal(false)}
         />
       )}
+
+      <ProductChat product={product} />
     </div>
   );
 }

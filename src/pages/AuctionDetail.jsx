@@ -11,6 +11,7 @@ import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 import ProductChat from "@/components/ProductChat";
+import ShareButton from "@/components/ShareButton";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -271,6 +272,8 @@ export default function AuctionDetail() {
           product_image_url: product.image_url || "",
           product_ends_at: product.ends_at,
           owner_key: getOwnerKey(),
+          notify_email: localStorage.getItem("notif_email") || localStorage.getItem("bidder_email") || "",
+          notify_phone: localStorage.getItem("notif_phone") || "",
         });
         setFavSaved(true);
       }
@@ -483,6 +486,7 @@ export default function AuctionDetail() {
                 {favSaved ? "נשמר למועדפים ♥" : "שמור למועדפים"}
               </button>
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
+              <ShareButton product={product} />
             </div>
 
             {/* ── FOMO BANNER ── */}

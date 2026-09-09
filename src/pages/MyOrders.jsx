@@ -5,7 +5,8 @@ import {
   ArrowRight, Package, RefreshCw, Trophy, Wallet,
   Hourglass, ShieldCheck, ShieldAlert, XCircle, Lock, Undo2, ChevronDown, Receipt
 } from "lucide-react";
-import { HANDLING_FEE_RATE, getFeeBreakdown } from "@/lib/handlingFee";
+import { getFeeBreakdown } from "@/lib/handlingFee";
+import { getFeeConfig } from "@/functions/getFeeConfig";
 
 // Payment / order status derived from product.status + payment_status
 function getOrderStatus(product) {
@@ -25,11 +26,11 @@ function getOrderStatus(product) {
   return { label: "בטיפול", color: "#f97316", bg: "#f9731615", icon: Hourglass };
 }
 
-function OrderRow({ product }) {
+function OrderRow({ product, feeRate }) {
   const cfg = getOrderStatus(product);
   const Icon = cfg.icon;
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const { base, fee, total } = getFeeBreakdown(product.current_price || product.starting_price || 0);
+  const { base, fee, total } = getFeeBreakdown(product.current_price || product.starting_price || 0, feeRate);
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white overflow-hidden">
@@ -77,8 +78,8 @@ function OrderRow({ product }) {
             <span className="font-semibold text-gray-700">₪{base.toLocaleString()}</span>
           </div>
           <div className="flex justify-between items-center text-xs py-1">
-            <span className="text-gray-500">דמי טיפול ({Math.round(HANDLING_FEE_RATE * 100)}%)</span>
-            <span className="font-semibold text-gray-700">₪{fee.toLocaleString()}</span>
+            <span className="text-gray-500">דמי טיפול {fee > 0 ? `(${Math.round((feeRate || 0) * 100)}%)` : ""}</span>
+            <span className="font-semibold text-gray-700">{fee > 0 ? `₪${fee.toLocaleString()}` : "₪0 — ללא עלות נסתרת ✓"}</span>
           </div>
           <div className="flex justify-between items-center text-sm py-1.5 border-t border-gray-200 mt-1">
             <span className="font-bold text-gray-800">סה"כ שולם</span>
@@ -93,12 +94,14 @@ function OrderRow({ product }) {
 export default function MyOrders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  const [feeRate, setFeeRate] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const storedName = localStorage.getItem("bidder_name");
   const storedEmail = localStorage.getItem("bidder_email");
 
   const loadOrders = async () => {
+    getFeeConfig().then(r => setFeeRate(r?.data?.buyer_handling_rate ?? 0)).catch(() => {});
     if (!storedName && !storedEmail) { setLoading(false); return; }
     setLoading(true);
     try {
@@ -183,7 +186,7 @@ export default function MyOrders() {
               </div>
             ) : (
               <div className="space-y-2">
-                {orders.map(p => <OrderRow key={p.id} product={p} />)}
+                {orders.map(p => <OrderRow key={p.id} product={p} feeRate={feeRate} />)}
               </div>
             )}
 

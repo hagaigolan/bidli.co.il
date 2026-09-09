@@ -1,4 +1,5 @@
 import { secrets } from "base44:runtime";
+import { computeFees } from "./fees.ts";
 
 const STRIPE_VERSION = "2025-10-29.clover";
 const API = "https://api.stripe.com/v1";
@@ -65,6 +66,7 @@ export async function ensureEscrowFrozen(base44: any, productId: string, pi: any
   const releaseAfter = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
   const escrows = await base44.asServiceRole.entities.Escrow.filter({ product_id: productId });
+  const fees = computeFees(product.current_price || product.starting_price || 0);
   if (!escrows.length) {
     await base44.asServiceRole.entities.Escrow.create({
       product_id: productId,
@@ -73,7 +75,9 @@ export async function ensureEscrowFrozen(base44: any, productId: string, pi: any
       buyer_email: product.highest_bidder_email || "",
       seller_name: product.seller_name || "",
       seller_email: product.seller_email || "",
-      amount: product.current_price || product.starting_price || 0,
+      amount: fees.buyerTotal,
+      commission_amount: fees.commission,
+      seller_payout: fees.sellerPayout,
       status: "frozen",
       paid_at: now.toISOString(),
       release_after: releaseAfter,

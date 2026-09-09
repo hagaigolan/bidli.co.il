@@ -6,6 +6,7 @@ import {
   appMetadata,
   stripePublishableKey,
 } from '../../shared/stripe.ts';
+import { computeFees, SELLER_COMMISSION_RATE } from '../../shared/fees.ts';
 
 // Creates (or reuses) a Stripe PaymentIntent in MANUAL capture mode for a won auction.
 // The buyer's card is authorized (funds held) at winning; the actual charge (capture)
@@ -35,8 +36,9 @@ export default async function(req: Request): Promise<Response> {
 
     if (!piId) {
       const customerId = product.stripe_customer_id || await getOrCreateCustomer(winnerEmail, product.highest_bidder);
+      const fees = computeFees(product.current_price || product.starting_price || 0);
       const params = new URLSearchParams();
-      params.set('amount', String(toMinorUnits(product.current_price || product.starting_price || 0)));
+      params.set('amount', String(toMinorUnits(fees.buyerTotal)));
       params.set('currency', 'ils');
       params.set('customer', customerId);
       params.set('capture_method', 'manual');
@@ -52,6 +54,9 @@ export default async function(req: Request): Promise<Response> {
         stripe_customer_id: customerId,
         stripe_payment_intent_id: piId,
         stripe_payment_intent_client_secret: clientSecret,
+        commission_rate: SELLER_COMMISSION_RATE,
+        commission_amount: fees.commission,
+        escrow_amount: fees.buyerTotal,
       });
     }
 

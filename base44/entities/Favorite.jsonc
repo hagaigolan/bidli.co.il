@@ -16,6 +16,16 @@
     },
     "owner_key": {
       "type": "string"
+    },
+    "notify_email": {
+      "type": "string"
+    },
+    "notify_phone": {
+      "type": "string"
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

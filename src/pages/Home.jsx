@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
+import DealsEndingSoon from "@/components/DealsEndingSoon";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -359,6 +360,7 @@ export default function Home() {
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection />
       <FeaturedBanner />
+      <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
       <ShopsSection shops={shops} />
     </div>

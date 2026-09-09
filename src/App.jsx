@@ -26,6 +26,7 @@ import Search from './pages/Search';
 import MyOrders from './pages/MyOrders';
 import Favorites from './pages/Favorites';
 import Contact from './pages/Contact';
+import SellerProfile from './pages/SellerProfile';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/seller/:email" element={<SellerProfile />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
@@ -663,7 +663,15 @@ export default function AuctionDetail() {
               )}
               {product.seller_name && (
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <User className="h-4 w-4" /><span>מוכר: {product.seller_name}</span>
+                  <User className="h-4 w-4" />
+                  {product.seller_email ? (
+                    <Link to={`/seller/${encodeURIComponent(product.seller_email)}`}
+                      className="font-semibold hover:text-[#f700ff] transition-colors underline decoration-transparent hover:decoration-[#f700ff]">
+                      מוכר: {product.seller_name}
+                    </Link>
+                  ) : (
+                    <span>מוכר: {product.seller_name}</span>
+                  )}
                 </div>
               )}
             </div>

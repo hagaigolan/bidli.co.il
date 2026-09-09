@@ -42,7 +42,7 @@ export default async function(req: Request): Promise<Response> {
       params.set('currency', 'ils');
       params.set('customer', customerId);
       params.set('capture_method', 'manual');
-      params.set('description', `bid-it auction: ${product.title}`);
+      params.set('description', `bidli auction: ${product.title}`);
       params.set('metadata[product_id]', product_id);
       for (const [k, v] of Object.entries(appMetadata(product_id))) {
         if (v) params.set(`metadata[${k}]`, v);

@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
-const APP_URL = 'https://bid-it-now-app.base44.app';
+const APP_URL = 'https://bidli.co.il';
 
 // Scheduled by the "Favorite Reminder" workflow (every 15 minutes):
 // emails users who favorited an item whose auction closes within the next hour.
@@ -36,7 +36,7 @@ export default async function(req: Request): Promise<Response> {
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: email,
             subject: `⏰ שעה אחרונה! המכרז "${product.title}" נסגר בקרוב`,
-            body: `שלום,\n\nהמכרז ששמרת למועדפים "${product.title}" נסגר בעוד כ-${mins} דקות!\nמחיר נוכחי: ₪${price}\n\nאל תפסיד את המציאה — הגש הצעה עכשיו:\n${link}\n\nבהצלחה!\nצוות bid-it`,
+            body: `שלום,\n\nהמכרז ששמרת למועדפים "${product.title}" נסגר בעוד כ-${mins} דקות!\nמחיר נוכחי: ₪${price}\n\nאל תפסיד את המציאה — הגש הצעה עכשיו:\n${link}\n\nבהצלחה!\nצוות bidli`,
           });
           sent++;
         } catch (e) {

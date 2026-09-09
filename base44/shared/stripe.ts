@@ -97,14 +97,14 @@ export async function ensureEscrowFrozen(base44: any, productId: string, pi: any
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: product.highest_bidder_email,
         subject: `✅ תשלום אושר עבור ${product.title}`,
-        body: `שלום ${product.highest_bidder},\n\nהתשלום עבור "${product.title}" בסך ₪${(product.current_price || 0).toLocaleString()} אושר ומוחזק באסקרו.\nהכסף יועבר למוכר תוך 3 ימים או לאחר שתאשר/י קבלת המוצר באזור האישי.\n\nצוות bid-it`,
+        body: `שלום ${product.highest_bidder},\n\nהתשלום עבור "${product.title}" בסך ₪${(product.current_price || 0).toLocaleString()} אושר ומוחזק באסקרו.\nהכסף יועבר למוכר תוך 3 ימים או לאחר שתאשר/י קבלת המוצר באזור האישי.\n\nצוות bidli`,
       });
     }
     if (product.seller_email) {
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: product.seller_email,
         subject: `💰 תשלום התקבל עבור ${product.title}`,
-        body: `שלום ${product.seller_name || ""},\n\nהקונה שילם עבור "${product.title}" בסך ₪${(product.current_price || 0).toLocaleString()}.\nהכסף מוחזק באסקרו ויועבר אליך תוך 3 ימים או לאחר שהקונה יאשר קבלת המוצר.\nיש לשלוח את המוצר בהקדם.\n\nצוות bid-it`,
+        body: `שלום ${product.seller_name || ""},\n\nהקונה שילם עבור "${product.title}" בסך ₪${(product.current_price || 0).toLocaleString()}.\nהכסף מוחזק באסקרו ויועבר אליך תוך 3 ימים או לאחר שהקונה יאשר קבלת המוצר.\nיש לשלוח את המוצר בהקדם.\n\nצוות bidli`,
       });
     }
   } catch {}

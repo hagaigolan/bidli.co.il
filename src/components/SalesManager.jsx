@@ -40,7 +40,7 @@ export default function SalesManager() {
         base44.integrations.Core.SendEmail({
           to: product.highest_bidder_email,
           subject: `✅ התשלום אושר — ${product.title}`,
-          body: `שלום ${product.highest_bidder || ""},\n\nהמוכר אישר שההעברה עבור "${product.title}" התקבלה, וההזמנה סומנה כשולמה.\nמעכשיו תתואם המסירה ישירות מול המוכר.\n\nצוות bid-it`,
+          body: `שלום ${product.highest_bidder || ""},\n\nהמוכר אישר שההעברה עבור "${product.title}" התקבלה, וההזמנה סומנה כשולמה.\nמעכשיו תתואם המסירה ישירות מול המוכר.\n\nצוות bidli`,
         }).catch(() => {});
       }
       await load();

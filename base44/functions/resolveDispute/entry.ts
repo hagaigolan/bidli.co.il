@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
         : `הסכסוך ב-"${escrow.product_title}" הוכרע. הכסף שוחרר למוכר.`;
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: escrow.buyer_email,
-        subject: `bid-it — עדכון סכסוך: ${escrow.product_title}`,
+        subject: `bidli — עדכון סכסוך: ${escrow.product_title}`,
         body: msg,
       });
     }

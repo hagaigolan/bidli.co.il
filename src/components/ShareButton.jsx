@@ -5,7 +5,7 @@ export default function ShareButton({ product }) {
   const [copied, setCopied] = useState(false);
   const url = `${window.location.origin}/auction/${product.id}`;
   const price = (product.current_price || product.starting_price || 0).toLocaleString();
-  const shareText = encodeURIComponent(`🔥 מכרז חי ב-bid-it: "${product.title}" — מחיר נוכחי ₪${price}. הצע הצעה עכשיו: ${url}`);
+  const shareText = encodeURIComponent(`🔥 מכרז חי ב-bidli: "${product.title}" — מחיר נוכחי ₪${price}. הצע הצעה עכשיו: ${url}`);
 
   const copyLink = async () => {
     try {

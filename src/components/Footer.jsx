@@ -17,7 +17,7 @@ export default function Footer() {
                 <Smartphone className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="font-bold text-white text-sm">הורד את אפליקציית bid-it</p>
+                <p className="font-bold text-white text-sm">הורד את אפליקציית bidli</p>
                 <p className="text-white/50 text-xs">הצע הצעות בזמן אמת מכל מקום, קבל התראות מיידיות</p>
               </div>
             </div>
@@ -53,7 +53,7 @@ export default function Footer() {
               </p>
               <div className="flex items-center gap-2 text-xs text-white/40 mb-2">
                 <Mail className="h-3 w-3" />
-                <a href="mailto:info@bid-it.co.il" className="hover:text-white/70 transition-colors">info@bid-it.co.il</a>
+                <a href="mailto:info@bidli.co.il" className="hover:text-white/70 transition-colors">info@bidli.co.il</a>
               </div>
               <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#f700ff" }}>
                 צור קשר <ArrowRight className="h-3 w-3 rotate-180" />
@@ -107,7 +107,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/25">
-          <p>© bid-it. כל הזכויות שמורות.</p>
+          <p>© bidli. כל הזכויות שמורות.</p>
           <div className="flex gap-4">
             <Link to="/terms?tab=terms" className="hover:text-white/50 transition-colors">תנאי שימוש</Link>
             <Link to="/terms?tab=privacy" className="hover:text-white/50 transition-colors">מדיניות פרטיות</Link>

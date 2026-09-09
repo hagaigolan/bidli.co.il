@@ -93,7 +93,7 @@ export default function PaymentPanel({ product, bidderEmail, onPaid }) {
       <div className="px-3 pb-3 pt-2 border-t border-gray-50 text-xs text-gray-500 text-center" dir="rtl">
         🔒 התשלום זמין רק באפליקציה המפורסמת.
         <a
-          href="https://bid-it-now-app.base44.app/profile"
+          href="https://bidli.co.il/profile"
           target="_blank"
           rel="noreferrer"
           className="block mt-1 font-bold"

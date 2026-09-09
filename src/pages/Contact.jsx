@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
 
-const CONTACT_EMAIL = "info@bid-it.co.il";
+const CONTACT_EMAIL = "info@bidli.co.il";
 const TOPICS = ["שאלה כללית", "מכירת פריט בפלטפורמה", "תמיכה בהזמנה קיימת", "שיתוף פעולה עסקי"];
 
 export default function Contact() {

@@ -201,7 +201,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h1 className="text-base font-black text-gray-900">דשבורד ניהול</h1>
-              <p className="text-xs text-gray-400">bid-it — נתונים בזמן אמת</p>
+              <p className="text-xs text-gray-400">bidli — נתונים בזמן אמת</p>
             </div>
           </div>
           <button onClick={() => navigate(-1)}

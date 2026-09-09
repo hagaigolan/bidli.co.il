@@ -25,7 +25,7 @@ function buildPrompt(product, question) {
     product.seller_name && `מוכר: ${product.seller_name}`,
   ].filter(Boolean).join("\n");
 
-  return `אתה עוזר השירות של פלטפורמת המכירות bid-it. ענה בעברית, בקצרה ובידידות, על שאלת הקונה.
+  return `אתה עוזר השירות של פלטפורמת המכירות bidli. ענה בעברית, בקצרה ובידידות, על שאלת הקונה.
 ענה אך ורק על סמך נתוני המכרז הבאים. אם מידע מבוקש לא קיים בנתונים — ציין זאת בכנות והצע לפנות לצוות המכירה בוואטסאפ.
 אל תמציא פרטים, מידות או הערכות שלא נמסרו, ואין לתת הערכת שווי מחייבת.
 
@@ -38,7 +38,7 @@ ${details}
 export default function ProductChat({ product }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { from: "bot", text: "שלום! 👋 אני עוזר השירות של bid-it. שאל אותי כל שאלה על הפריט, מצבו או תנאי המכרז." },
+    { from: "bot", text: "שלום! 👋 אני עוזר השירות של bidli. שאל אותי כל שאלה על הפריט, מצבו או תנאי המכרז." },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -84,7 +84,7 @@ export default function ProductChat({ product }) {
             <MessageCircle className="h-4 w-4 text-white" />
             <div className="flex-1">
               <p className="text-sm font-bold text-white">שאלות על הפריט</p>
-              <p className="text-xs text-white/80">עוזר bid-it · מענה מיידי</p>
+              <p className="text-xs text-white/80">עוזר bidli · מענה מיידי</p>
             </div>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">
               <X className="h-4 w-4" />

@@ -99,7 +99,7 @@ export default function SellerProfile() {
           </div>
           <div>
             <h1 className="text-xl font-black text-gray-900">{sellerName || email}</h1>
-            <p className="text-sm text-gray-400">כל המכירות של המוכר ב-bid-it</p>
+            <p className="text-sm text-gray-400">כל המכירות של המוכר ב-bidli</p>
           </div>
         </div>
       </div>

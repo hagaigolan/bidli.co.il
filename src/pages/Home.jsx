@@ -74,7 +74,7 @@ function HeroSection() {
 
           <h1 className="text-5xl sm:text-7xl font-black text-gray-900 mb-4 leading-none tracking-tight">
             ברוכים הבאים ל-{" "}
-            <span className="gradient-text">bid-it</span>
+            <span className="gradient-text">bidli</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 font-light mb-10 max-w-xl mx-auto">
             השער שלך לזירת בתי המכרזים
@@ -206,7 +206,7 @@ function FeaturedBanner() {
                 <Zap className="h-5 w-5 text-white" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 text-sm">אפליקציית bid-it</div>
+                <div className="font-bold text-gray-900 text-sm">אפליקציית bidli</div>
                 <div className="text-xs text-gray-400">הצע הצעות חיות מהטלפון</div>
               </div>
             </div>

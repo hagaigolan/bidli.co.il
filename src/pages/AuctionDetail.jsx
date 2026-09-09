@@ -340,7 +340,7 @@ export default function AuctionDetail() {
               base44.integrations.Core.SendEmail({
                 to: notifEmail,
                 subject: `הוצאת מהמשחק! עקפו אותך על "${productTitle}"`,
-                body: `שלום ${myName},\n\n${newLeader} הגיש הצעה גבוהה יותר (₪${(newPrice||0).toLocaleString()}) על הפריט "${productTitle}".\n\nלחץ כאן כדי לחזור ולהגיש הצעה גבוהה יותר:\n${pageUrl}\n\nבהצלחה!\nצוות bid-it`
+                body: `שלום ${myName},\n\n${newLeader} הגיש הצעה גבוהה יותר (₪${(newPrice||0).toLocaleString()}) על הפריט "${productTitle}".\n\nלחץ כאן כדי לחזור ולהגיש הצעה גבוהה יותר:\n${pageUrl}\n\nבהצלחה!\nצוות bidli`
               }).catch(() => {});
             }
 

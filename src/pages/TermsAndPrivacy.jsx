@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp } from "lucide-react";
 
 const LAST_UPDATED = "9 בספטמבר 2026";
-const PLATFORM_NAME = "bid-it";
-const COMPANY_NAME = "bid-it בע\"מ";
-const CONTACT_EMAIL = "legal@bid-it.co.il";
+const PLATFORM_NAME = "bidli";
+const COMPANY_NAME = "bidli בע\"מ";
+const CONTACT_EMAIL = "legal@bidli.co.il";
 
 const sections = [
   {

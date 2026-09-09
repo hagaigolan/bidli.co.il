@@ -87,7 +87,7 @@ export function SellerTrustBadge({ sellerEmail, sellerName, compact = false }) {
         </div>
         <div>
           <p className="font-bold text-sm text-gray-900">{sellerName || sellerEmail}</p>
-          <p className="text-xs text-gray-400">מוכר ב-bid-it</p>
+          <p className="text-xs text-gray-400">מוכר ב-bidli</p>
         </div>
         {isTopSeller && (
           <div className="mr-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black"

@@ -56,7 +56,7 @@ export default function Footer() {
               </p>
               <div className="flex items-center gap-2 text-xs text-white/40 mb-2">
                 <Mail className="h-3 w-3" />
-                <a href="mailto:info@bidli.co.il" className="hover:text-white/70 transition-colors">info@bidli.co.il</a>
+                <a href="mailto:mitugplus@gmail.com" className="hover:text-white/70 transition-colors">mitugplus@gmail.com</a>
               </div>
               <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#e5893d" }}>
                 צור קשר <ArrowRight className="h-3 w-3 rotate-180" />

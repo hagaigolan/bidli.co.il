@@ -55,9 +55,9 @@ export default function Footer() {
                 <Mail className="h-3 w-3" />
                 <a href="mailto:info@bid-it.co.il" className="hover:text-white/70 transition-colors">info@bid-it.co.il</a>
               </div>
-              <a href="#" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#f700ff" }}>
+              <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#f700ff" }}>
                 צור קשר <ArrowRight className="h-3 w-3 rotate-180" />
-              </a>
+              </Link>
             </div>
 
             {/* Navigation */}
@@ -86,7 +86,8 @@ export default function Footer() {
               <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">חברה</h3>
               <nav className="flex flex-col gap-2 mb-6">
                 <Link to="/articles" className="text-xs text-white/40 hover:text-white transition-colors">מאמרים</Link>
-                {["אודות","צור קשר","המוצר","בתי מכרזים","White-Label"].map(l => (
+                <Link to="/contact" className="text-xs text-white/40 hover:text-white transition-colors">צור קשר</Link>
+                {["אודות","המוצר","בתי מכרזים","White-Label"].map(l => (
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
 

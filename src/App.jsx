@@ -25,6 +25,7 @@ import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
 import MyOrders from './pages/MyOrders';
 import Favorites from './pages/Favorites';
+import Contact from './pages/Contact';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/contact" element={<Contact />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

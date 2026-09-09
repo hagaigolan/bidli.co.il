@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
@@ -23,6 +23,8 @@ export default function UploadProduct() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
+  const [agreedCopyright, setAgreedCopyright] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
 
   useEffect(() => {
     base44.auth.isAuthenticated().then((isAuth) => {
@@ -94,6 +96,12 @@ export default function UploadProduct() {
     }
     if (form.seller_payment_method === "bank" && !form.seller_bank_details) {
       setError("יש להזין פרטי חשבון בנק לקבלת ההעברה"); return;
+    }
+    if (!agreedCopyright) {
+      setError("יש לאשר את ההצהרה על זכויות יוצרים בתמונות ובתיאור המוצר"); return;
+    }
+    if (!agreedTerms) {
+      setError("יש לאשר את תנאי השימוש ומדיניות הפרטיות"); return;
     }
     setLoading(true);
     setError("");
@@ -168,7 +176,7 @@ export default function UploadProduct() {
       {/* Header */}
       <div className="border-b border-gray-100 px-4 py-5">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={() => navigate(-1)} aria-label="חזרה לעמוד הקודם" className="text-gray-400 hover:text-gray-600 transition-colors">
             <ArrowRight className="h-5 w-5 rotate-180" />
           </button>
           <div>
@@ -391,8 +399,25 @@ export default function UploadProduct() {
 
         <SellerFomoBlock />
 
+        {/* הצהרות הסכמה חובה לפרסום */}
+        <div className="space-y-3">
+          <label className="flex items-start gap-2.5 text-xs text-gray-500 leading-relaxed cursor-pointer">
+            <input type="checkbox" checked={agreedCopyright} onChange={e => setAgreedCopyright(e.target.checked)}
+              className="mt-0.5 accent-[#e5893d]" />
+            <span>אני מצהיר/ה כי התמונות ותיאור המוצר הינם שלי או שברשותי הזכויות לפרסומם, וכי פרסומם אינו מפר זכויות יוצרים של צד שלישי.</span>
+          </label>
+          <label className="flex items-start gap-2.5 text-xs text-gray-500 leading-relaxed cursor-pointer">
+            <input type="checkbox" checked={agreedTerms} onChange={e => setAgreedTerms(e.target.checked)}
+              className="mt-0.5 accent-[#e5893d]" />
+            <span>קראתי ואני מסכים/ה ל{" "}
+              <Link to="/terms?tab=terms" className="underline font-semibold" style={{ color: "#e5893d" }}>תנאי השימוש</Link>
+              {" "}ול{" "}
+              <Link to="/terms?tab=privacy" className="underline font-semibold" style={{ color: "#e5893d" }}>מדיניות הפרטיות</Link> של bidli.</span>
+          </label>
+        </div>
+
         {error && (
-          <div className="px-4 py-3 rounded-xl text-sm text-red-600 bg-red-50 border border-red-100">{error}</div>
+          <div className="px-4 py-3 rounded-xl text-sm text-red-600 bg-red-50 border border-red-100" role="alert">{error}</div>
         )}
 
         <button type="submit" disabled={loading}

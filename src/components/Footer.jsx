@@ -110,10 +110,17 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/25">
-          <p>© bidli. כל הזכויות שמורות.</p>
-          <div className="flex gap-4">
+          <div className="text-center sm:text-right">
+            <p>© bidli בע"מ. כל הזכויות שמורות.</p>
+            <a href="mailto:mitugplus@gmail.com" className="hover:text-white/50 transition-colors" dir="ltr">mitugplus@gmail.com</a>
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
             <Link to="/terms?tab=terms" className="hover:text-white/50 transition-colors">תנאי שימוש</Link>
             <Link to="/terms?tab=privacy" className="hover:text-white/50 transition-colors">מדיניות פרטיות</Link>
+            <Link to="/terms?tab=cookies" className="hover:text-white/50 transition-colors">מדיניות עוגיות</Link>
+            <Link to="/terms?tab=returns" className="hover:text-white/50 transition-colors">מדיניות החזרים</Link>
+            <Link to="/terms?tab=shipping" className="hover:text-white/50 transition-colors">משלוחים והספקה</Link>
+            <Link to="/terms?tab=accessibility" className="hover:text-white/50 transition-colors">הצהרת נגישות</Link>
           </div>
         </div>
       </div>

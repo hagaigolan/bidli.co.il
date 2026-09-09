@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
 
@@ -12,6 +12,7 @@ export default function Contact() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -19,6 +20,10 @@ export default function Contact() {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       setError("יש למלא שם, אימייל והודעה");
+      return;
+    }
+    if (!consent) {
+      setError("יש לאשר את סעיף ההסכמה לטיפול בפנייה");
       return;
     }
     setBusy(true);
@@ -123,7 +128,14 @@ export default function Contact() {
                   className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right resize-none" />
               </div>
 
-              {error && <p className="text-xs text-red-500">{error}</p>}
+              <label className="flex items-start gap-2 text-xs text-gray-500 leading-relaxed cursor-pointer">
+                <input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)}
+                  className="mt-0.5 accent-[#e5893d]" />
+                <span>אני מסכים/ה שהפרטים שהשארתי ישמשו לטיפול בפנייה בלבד, בהתאם ל{" "}
+                  <Link to="/terms?tab=privacy" className="underline font-semibold" style={{ color: "#e5893d" }}>מדיניות הפרטיות</Link> של האתר.</span>
+              </label>
+
+              {error && <p className="text-xs text-red-500" role="alert">{error}</p>}
 
               <button type="submit" disabled={busy}
                 className="w-full text-white text-sm py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-all"

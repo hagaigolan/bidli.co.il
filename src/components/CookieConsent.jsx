@@ -30,9 +30,9 @@ export default function CookieConsent() {
         <div className="flex-1 text-center sm:text-right">
           <p className="text-sm font-bold text-gray-800">אנחנו משתמשים בעוגיות 🍪</p>
           <p className="text-xs text-gray-500 mt-0.5">
-            העוגיות עוזרות לנו לשמור את ההעדפות שלך ולשפר את חווית הגלישה.
+            העוגיות עוזרות לנו לשמור את ההעדפות שלך ולשפר את חווית הגלישה. אנחנו משתמשים בעוגיות הכרחיות בלבד — אין עוגיות פרסום, מעקב או ניתוח של גורמי צד שלישי.
             לפרטים נוספים ניתן לעיין ב{" "}
-            <RouterLink to="/terms" className="underline font-semibold" style={{ color: "#e5893d" }}>תנאי השימוש ומדיניות הפרטיות</RouterLink>.
+            <RouterLink to="/terms?tab=cookies" className="underline font-semibold" style={{ color: "#e5893d" }}>מדיניות העוגיות</RouterLink>.
           </p>
         </div>
         <button onClick={accept}

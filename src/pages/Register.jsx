@@ -18,12 +18,17 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      return;
+    }
+    if (!agreed) {
+      setError("Please agree to the Terms of Use and Privacy Policy");
       return;
     }
     setLoading(true);
@@ -212,7 +217,22 @@ export default function Register() {
             />
           </div>
         </div>
-        <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
+        <div className="flex items-start space-x-2">
+          <input
+            id="consent"
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-1 h-4 w-4"
+          />
+          <label htmlFor="consent" className="text-xs text-muted-foreground leading-relaxed">
+            I agree to the{" "}
+            <Link to="/terms?tab=terms" className="text-primary font-medium hover:underline">Terms of Use</Link>
+            {" "}and{" "}
+            <Link to="/terms?tab=privacy" className="text-primary font-medium hover:underline">Privacy Policy</Link>, and confirm that I am 18 years of age or older.
+          </label>
+        </div>
+        <Button type="submit" className="w-full h-12 font-medium" disabled={loading || !agreed}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

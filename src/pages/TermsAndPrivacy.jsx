@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp, Cookie, RotateCcw, Truck, Accessibility } from "lucide-react";
+import { COOKIE_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS } from "@/lib/policyDocs";
 
 const LAST_UPDATED = "9 בספטמבר 2026";
 const PLATFORM_NAME = "bidli";
 const COMPANY_NAME = "bidli בע\"מ";
-const CONTACT_EMAIL = "legal@bidli.co.il";
+const CONTACT_EMAIL = "mitugplus@gmail.com";
 
 const sections = [
   {
@@ -83,6 +84,8 @@ ${PLATFORM_NAME} הינה פלטפורמה טכנולוגית בלבד המשמ�
 • תקשורת: פניות לשירות לקוחות, הודעות דוא"ל ותכתובת עם הפלטפורמה;
 • זמני התחברות והתנתקות, משך שהייה, ניסיונות כניסה כושלים.
 
+אנו נוקטים בגישה של "איסוף מינימלי": נאספים אך ורק הנתונים ההכרחיים להפעלת השירות ולמטרות המפורטות להלן, ואיננו אוספים נתונים עודפים שאינם נדרשים.
+
 5.2 מטרות העיבוד
 הנתונים הנאספים משמשים למטרות הבאות:
 (א) הפעלה שוטפת ותחזוקה של שירותי הפלטפורמה;
@@ -134,7 +137,8 @@ ${PLATFORM_NAME} הינה פלטפורמה טכנולוגית בלבד המשמ�
 • שימוש במספר חשבונות לצורך הגשת הצעות על אותו מכרז;
 • הגשת הצעות על מכרז שפרסמת בעצמך (Shill Bidding), במישרין או בעקיפין;
 • הפצת מידע כוזב על מוצרים;
-• הגשת תלונות שנמצאו כזדוניות וחסרות בסיס.
+• הגשת תלונות שנמצאו כזדוניות וחסרות בסיס;
+• כתיבה או הזנה של ביקורות כוזבות על מוכרים — בין בשמך ובין בשם אחר — לרבות ביקורות שנכתבו תמורת תשלום או טובה כלשהי.
 
 7.3 תוצאות ירידה בציון
 • 67 נקודות: אזהרה ראשונה — התראה בדוא"ל, הגבלת פרסום מכרזים חדשים;
@@ -185,6 +189,33 @@ ${PLATFORM_NAME} הינה פלטפורמה טכנולוגית בלבד המשמ�
   }
 ];
 
+const TABS = [
+  { id: "terms", label: "תנאי שימוש", Icon: FileText },
+  { id: "privacy", label: "מדיניות פרטיות", Icon: Shield },
+  { id: "cookies", label: "מדיניות עוגיות", Icon: Cookie },
+  { id: "returns", label: "מדיניות החזרים", Icon: RotateCcw },
+  { id: "shipping", label: "משלוחים והספקה", Icon: Truck },
+  { id: "accessibility", label: "הצהרת נגישות", Icon: Accessibility },
+];
+
+const PRELUDES = {
+  terms: { title: `תנאי שימוש — ${PLATFORM_NAME}`, desc: "מסמך זה מהווה חוזה משפטי מחייב. קריאתו המלאה מחויבת טרם שימוש בפלטפורמה." },
+  privacy: { title: `מדיניות פרטיות — ${PLATFORM_NAME}`, desc: "מסמך זה מתאר כיצד אנו אוספים, מעבדים ומגנים על המידע האישי שלך." },
+  cookies: { title: `מדיניות עוגיות — ${PLATFORM_NAME}`, desc: "האתר משתמש בעוגיות הכרחיות בלבד. אין עוגיות פרסום, מעקב או ניתוח של גורמי צד שלישי." },
+  returns: { title: `מדיניות החזרים וביטולים — ${PLATFORM_NAME}`, desc: "זכויות הביטול וההחזר נקבעות בהתאם לסוג המוכר — עוסק או מוכר פרטי." },
+  shipping: { title: `מדיניות משלוחים והספקה — ${PLATFORM_NAME}`, desc: "המסירה נקבעת ישירות בין הקונה למוכר. הפלטפורמה אינה צד למסירה." },
+  accessibility: { title: `הצהרת נגישות — ${PLATFORM_NAME}`, desc: "אנו פועלים להנגשת האתר בהתאם לתקן הנגישות WCAG 2.1 AA." },
+};
+
+const DOC_SECTIONS = {
+  terms: [0, 1, 2, 3, 5, 6, 7, 8].map(i => sections[i]).filter(Boolean),
+  privacy: [3, 4, 5].map(i => sections[i]).filter(Boolean).concat(sections.slice(7)),
+  cookies: COOKIE_POLICY_SECTIONS,
+  returns: [sections[2], ...RETURNS_POLICY_SECTIONS],
+  shipping: SHIPPING_POLICY_SECTIONS,
+  accessibility: ACCESSIBILITY_POLICY_SECTIONS,
+};
+
 function Section({ section }) {
   const [open, setOpen] = useState(false);
   return (
@@ -211,20 +242,16 @@ function Section({ section }) {
 export default function TermsAndPrivacy() {
   const navigate = useNavigate();
   const [activeDoc, setActiveDoc] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("tab") === "privacy" ? "privacy" : "terms";
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    return DOC_SECTIONS[tab] ? tab : "terms";
   });
-
-  const termsSections = sections.slice(0, 7);
-  const privacySections = sections.slice(4, 6); // data + escrow are shared
-  const legalSections = sections.slice(7);
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
       <div className="border-b border-gray-100 px-4 py-5 sticky top-0 bg-white z-10">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600">
+          <button onClick={() => navigate(-1)} aria-label="חזרה לעמוד הקודם" className="text-gray-400 hover:text-gray-600">
             <ArrowRight className="h-5 w-5 rotate-180" />
           </button>
           <div className="flex items-center gap-2">
@@ -236,60 +263,30 @@ export default function TermsAndPrivacy() {
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Tab switcher */}
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-2xl mb-8">
-          <button
-            onClick={() => setActiveDoc("terms")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${activeDoc === "terms" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
-          >
-            <FileText className="h-4 w-4" /> תנאי שימוש
-          </button>
-          <button
-            onClick={() => setActiveDoc("privacy")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${activeDoc === "privacy" ? "bg-white shadow-sm text-gray-900" : "text-gray-500"}`}
-          >
-            <Shield className="h-4 w-4" /> מדיניות פרטיות
-          </button>
+        <div className="flex gap-1 p-1 bg-gray-100 rounded-2xl mb-8 overflow-x-auto scrollbar-hide" dir="rtl">
+          {TABS.map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveDoc(id)}
+              aria-pressed={activeDoc === id}
+              className={`flex-1 min-w-max flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeDoc === id ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+            >
+              <Icon className="h-4 w-4" /> {label}
+            </button>
+          ))}
         </div>
 
-        {activeDoc === "terms" && (
-          <>
-            {/* Preamble */}
-            <div className="rounded-2xl p-5 mb-6"
-              style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)", border: "1px solid #e5893d22" }}>
-              <p className="text-xs text-gray-500 leading-relaxed">
-                <span className="font-bold text-gray-700">תנאי שימוש — {PLATFORM_NAME}</span><br />
-                מסמך זה מהווה חוזה משפטי מחייב. קריאתו המלאה מחויבת טרם שימוש בפלטפורמה.<br />
-                עודכן לאחרונה: <span className="font-semibold">{LAST_UPDATED}</span>
-              </p>
-            </div>
-
-            <div>
-              {[0, 1, 2, 3, 5, 6, 7, 8].map(i => sections[i] && (
-                <Section key={sections[i].id} section={sections[i]} />
-              ))}
-            </div>
-          </>
-        )}
-
-        {activeDoc === "privacy" && (
-          <>
-            <div className="rounded-2xl p-5 mb-6"
-              style={{ background: "linear-gradient(135deg, #3e6b8a08, #e5893d05)", border: "1px solid #3e6b8a22" }}>
-              <p className="text-xs text-gray-500 leading-relaxed">
-                <span className="font-bold text-gray-700">מדיניות פרטיות — {PLATFORM_NAME}</span><br />
-                מסמך זה מתאר כיצד אנו אוספים, מעבדים ומגנים על המידע האישי שלך.<br />
-                עודכן לאחרונה: <span className="font-semibold">{LAST_UPDATED}</span>
-              </p>
-            </div>
-
-            <div>
-              {[3, 4, 5].map(i => sections[i] && (
-                <Section key={sections[i].id} section={sections[i]} />
-              ))}
-              {legalSections.map(s => <Section key={s.id} section={s} />)}
-            </div>
-          </>
-        )}
+        <div className="rounded-2xl p-5 mb-6"
+          style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)", border: "1px solid #e5893d22" }}>
+          <p className="text-xs text-gray-500 leading-relaxed">
+            <span className="font-bold text-gray-700">{PRELUDES[activeDoc].title}</span><br />
+            {PRELUDES[activeDoc].desc}<br />
+            עודכן לאחרונה: <span className="font-semibold">{LAST_UPDATED}</span>
+          </p>
+        </div>
+        <div>
+          {DOC_SECTIONS[activeDoc].map(s => <Section key={s.id} section={s} />)}
+        </div>
 
         {/* Footer note */}
         <div className="mt-8 p-4 rounded-2xl bg-gray-50 border border-gray-100 text-center">

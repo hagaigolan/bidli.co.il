@@ -149,7 +149,7 @@ export default function Header() {
       </div>
 
       {/* Category strip */}
-      <div className="hidden sm:block border-b border-gray-100 bg-white">
+      <div className="hidden border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}

@@ -148,8 +148,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Category strip — גלוי רק לאחר גלילה למטה */}
-      <div className={`${scrolled ? "block" : "hidden"} border-b border-gray-100 bg-white`}>
+      {/* Category strip — גלוי בראש העמוד, נעלם בגלילה למטה */}
+      <div className={`${scrolled ? "hidden" : "block"} border-b border-gray-100 bg-white`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}

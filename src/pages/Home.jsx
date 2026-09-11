@@ -258,17 +258,63 @@ function AuctionCountdown({ endsAt }) {
   );
 }
 
+const SORT_OPTIONS = [
+  { id: "newest", label: "מכרז חדש יותר" },
+  { id: "oldest", label: "מכרז ישן יותר" },
+  { id: "ending_soon", label: "מסתיים בזמן הקרוב" },
+  { id: "price_low", label: "מחיר: מהנמוך לגבוה" },
+  { id: "price_high", label: "מחיר: מהגבוה לנמוך" },
+  { id: "bids", label: "הכי הרבה הצעות" },
+];
+
+function sortProducts(items, sort) {
+  const price = p => Number(p.current_price || p.starting_price) || 0;
+  switch (sort) {
+    case "newest": return [...items].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    case "oldest": return [...items].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+    case "ending_soon": return [...items].sort((a, b) => new Date(a.ends_at) - new Date(b.ends_at));
+    case "price_low": return [...items].sort((a, b) => price(a) - price(b));
+    case "price_high": return [...items].sort((a, b) => price(b) - price(a));
+    case "bids": return [...items].sort((a, b) => (b.bid_count || 0) - (a.bid_count || 0));
+    default: return items;
+  }
+}
+
+function SortBar({ sort, onChange }) {
+  return (
+    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1 mb-5" dir="rtl">
+      {SORT_OPTIONS.map(opt => (
+        <button
+          key={opt.id}
+          onClick={() => onChange(opt.id)}
+          className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+            sort === opt.id
+              ? "text-white"
+              : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-orange-50 hover:text-[#e5893d]"
+          }`}
+          style={sort === opt.id ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function UpcomingAuctionsSection({ products }) {
+  const [sort, setSort] = useState("newest");
   const now = Date.now();
   const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now);
+  const sorted = sortProducts(upcoming, sort);
   if (upcoming.length === 0) return null;
 
   return (
     <section className="bg-white py-10" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeader title="מכרזים פעילים" color="#e5893d" icon={Zap} />
+        <SortBar sort={sort} onChange={setSort} />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {upcoming.map((product, index) => (
+          {sorted.map((product, index) => (
             <AnimatedElement key={product.id} delay={index * 50}>
               <a href={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
                 <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">

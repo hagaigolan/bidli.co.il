@@ -148,19 +148,24 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Category strip — גלוי בראש העמוד, נעלם בגלילה למטה */}
-      <div className={`${scrolled ? "hidden" : "block"} border-b border-gray-100 bg-white`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
-          {categoryLinks.map((link) => (
-            <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
-              className="flex-shrink-0 flex flex-col items-center gap-1 group">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] group-hover:scale-[3] group-hover:z-20 transition-all duration-300"
-                style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
-                <img src={link.img} alt={link.label} className="w-full h-full object-cover" />
-              </div>
-              <span className="text-xs text-gray-600 group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
-            </Link>
-          ))}
+      {/* Category strip — גלוי בראש העמוד, נעלם בגלילה למטה באנימציה חלקה */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${scrolled ? "max-h-0 opacity-0" : "max-h-56 opacity-100"}`}
+        aria-hidden={scrolled}
+      >
+        <div className="border-b border-gray-100 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
+            {categoryLinks.map((link) => (
+              <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
+                className="flex-shrink-0 flex flex-col items-center gap-1 group">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] group-hover:scale-[3] group-hover:z-20 transition-all duration-300"
+                  style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
+                  <img src={link.img} alt={link.label} className="w-full h-full object-cover" />
+                </div>
+                <span className="text-xs text-gray-600 group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </header>

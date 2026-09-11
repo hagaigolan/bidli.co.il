@@ -266,7 +266,7 @@ function UpcomingAuctionsSection({ products }) {
   return (
     <section className="bg-white py-10" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <SectionHeader title="מכרזים קרובים" color="#e5893d" icon={Zap} />
+        <SectionHeader title="מכרזים פעילים" color="#e5893d" icon={Zap} />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {upcoming.map((product, index) => (
             <AnimatedElement key={product.id} delay={index * 50}>

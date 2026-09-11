@@ -63,15 +63,15 @@ export default function Header() {
       {/* Main bar */}
       <div className="border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between min-h-16 py-3 gap-4">
+          <div className="flex items-center justify-between min-h-16 py-3 gap-2 sm:gap-4">
             {/* Logo */}
-            <Link to="/" className="flex flex-col items-center gap-1.5 flex-shrink-0" aria-label="bidli.co.il — דף הבית">
+            <Link to="/" className="flex flex-col items-center gap-1.5 flex-shrink-0 min-w-0" aria-label="bidli.co.il — דף הבית">
               <img
                 src={logoWordmark}
                 alt="bidli.co.il"
-                className="h-[96px] w-auto object-contain"
+                className="h-10 sm:h-14 lg:h-[96px] w-auto object-contain"
               />
-              <span className="text-sm font-bold text-gray-500 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
+              <span className="hidden lg:block text-sm font-bold text-gray-500 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
             </Link>
 
             {/* Search bar */}
@@ -101,7 +101,7 @@ export default function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Button variant="ghost" size="icon" aria-label="התראות" className="h-9 w-9 text-gray-500 hover:text-[#e5893d] hidden sm:flex rounded-xl">
                 <Bell className="h-4 w-4" aria-hidden="true" />
               </Button>
@@ -119,6 +119,18 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 bg-white">
                   <div className="mt-6 flex flex-col gap-1" dir="rtl">
+                    <div className="relative mb-3 px-3">
+                      <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <input
+                        type="search"
+                        aria-label="חיפוש באתר"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); setOpen(false); } }}
+                        placeholder="חפש מכרזים, פריטים..."
+                        className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
+                      />
+                    </div>
                     <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">דף הבית</Link>
                     <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים</a>
                     <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">חנויות</a>

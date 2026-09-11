@@ -150,7 +150,7 @@ export default function Header() {
 
       {/* Category strip — גלוי בראש העמוד, נעלם בגלילה למטה באנימציה חלקה */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${scrolled ? "max-h-0 opacity-0" : "max-h-56 opacity-100"}`}
+        className={`overflow-hidden transition-all duration-200 ease-out ${scrolled ? "max-h-0 opacity-0" : "max-h-56 opacity-100"}`}
         aria-hidden={scrolled}
       >
         <div className="border-b border-gray-100 bg-white">

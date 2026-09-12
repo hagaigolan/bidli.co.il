@@ -33,7 +33,8 @@
         "active",
         "outbid",
         "won",
-        "lost"
+        "lost",
+        "cancelled"
       ],
       "default": "active"
     }

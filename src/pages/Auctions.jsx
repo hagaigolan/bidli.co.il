@@ -87,7 +87,7 @@ export default function Auctions() {
       .finally(() => setLoading(false));
   }, []);
 
-  const active = products.filter(p => new Date(p.ends_at) > new Date());
+  const active = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date());
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());
 
   return (

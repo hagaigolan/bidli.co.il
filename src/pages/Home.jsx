@@ -270,7 +270,7 @@ function SortBar({ sort, onChange }) {
 function UpcomingAuctionsSection({ products }) {
   const [sort, setSort] = useState("newest");
   const now = Date.now();
-  const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now);
+  const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now && p.status !== "cancelled");
   const sorted = sortProducts(upcoming, sort);
   if (upcoming.length === 0) return null;
 

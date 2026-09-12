@@ -130,3 +130,27 @@ export function sellerQuestionEmail(product, { question, asker_name, asker_conta
     text: `שלום ${product.seller_name || "מוכר"},\n\nנשאלה שאלה חדשה על "${product.title}" בצ'אט החי:\n\n"${question}"\n\nשואל: ${asker}${asker_contact ? ` (${asker_contact})` : ""}\n\nקישור למכרז: ${productUrl}\n\nענה מהר כדי לסגור את המכירה!`,
   };
 }
+
+// ── Bidder: the auction they bid on was cancelled by the seller ──
+export function bidderCancelEmail(product, bidderName) {
+  const auctionsUrl = `${APP_BASE_URL}/auctions`;
+  const name = bidderName || "לקוח bidli";
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(name)},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוכר ביטל את המכרז <strong style="color:#18181b;">${escHtml(product.title)}</strong>, שהצעת בו הצעה. ההצעה שלך בוטלה אוטומטית ולא תחויב בדבר.</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">מצטערים על אי הנוחות 🙏 מכרזים חדשים מתפרסמים באתר כל הזמן — מוזמנים לעיין במכרזים הפעילים ולמצוא פריט מעניין נוסף.</p>
+    ${productCard(product, auctionsUrl)}`;
+  return {
+    subject: `המכרז "${product.title}" בוטל`,
+    html: shell({
+      title: "המכרז בוטל",
+      heroColor: "#6b7280",
+      heroEmoji: "🚫",
+      heroLine: "המוכר ביטל את המכרז",
+      bodyHtml: body,
+      ctaUrl: auctionsUrl,
+      ctaLabel: "לכל המכרזים הפעילים →",
+    }),
+    text: `שלום ${name},\n\nהמוכר ביטל את המכרז "${product.title}" שהצעת בו. ההצעה בוטלה ולא תחויב בדבר.\n\nמכרזים פעילים: ${auctionsUrl}`,
+  };
+}

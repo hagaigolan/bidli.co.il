@@ -65,6 +65,11 @@
     },
     "ban_reason": {
       "type": "string"
+    },
+    "cancelled_with_bids": {
+      "type": "number",
+      "default": 0,
+      "description": "Internal counter of seller-cancelled auctions that had bids \u2014 used for the cancellation quota, not shown publicly"
     }
   },
   "required": [

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star, Ban } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import { parseDbDate } from "@/lib/time";
 import { isAnyEmailBanned } from "@/lib/banCheck";
@@ -17,6 +17,7 @@ import ProductChat from "@/components/ProductChat";
 import ShareButton from "@/components/ShareButton";
 import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
+import CancelAuctionModal from "@/components/CancelAuctionModal";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -247,6 +248,7 @@ export default function AuctionDetail() {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
@@ -377,6 +379,7 @@ export default function AuctionDetail() {
       (product.seller_email && authUser?.email &&
         product.seller_email.trim().toLowerCase() === authUser.email.trim().toLowerCase())));
   const ended = product && new Date(product.ends_at) <= new Date();
+  const cancelled = product?.status === "cancelled";
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;
@@ -439,7 +442,7 @@ export default function AuctionDetail() {
         product_id: product.id, product_title: product.title,
         product_image_url: product.image_url || "",
         product_ends_at: product.ends_at,
-        bidder_name: name, amount: newPrice, status: "active",
+        bidder_name: name, bidder_email: myEmail || "", amount: newPrice, status: "active",
       });
       setProduct(p => ({ ...p, current_price: newPrice, highest_bidder: name, bid_count: (p.bid_count || 0) + 1 }));
       setBids(prev => [{ bidder_name: name, amount: newPrice, id: Date.now() }, ...prev]);
@@ -612,6 +615,15 @@ export default function AuctionDetail() {
                 </button>
               )}
 
+              {/* ── ביטול מכרז עצמי — מוצג למוכר בלבד ── */}
+              {isSellerViewing && !ended && !cancelled && (
+                <button type="button" onClick={() => setShowCancelModal(true)}
+                  className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all hover:bg-red-50"
+                  style={{ borderColor: "#ef444455", color: "#ef4444", background: "#ef44440a" }}>
+                  <Ban className="h-3.5 w-3.5" aria-hidden="true" /> ביטול המכרז
+                </button>
+              )}
+
               {/* ── FAVORITES TOGGLE ── */}
               <button type="button" onClick={toggleFavorite}
                 className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"
@@ -631,7 +643,7 @@ export default function AuctionDetail() {
             <BuyerLiveBlock bidCount={product.bid_count} lastBidTime={lastBidTime} />
 
             {/* ── 1. TIMER ── */}
-            <TimerBlock endsAt={product.ends_at} antiSnipeExtended={antiSnipeExtended} />
+            {!cancelled && <TimerBlock endsAt={product.ends_at} antiSnipeExtended={antiSnipeExtended} />}
 
             {/* Price */}
             <div className="p-4 rounded-2xl transition-all duration-500"
@@ -667,8 +679,14 @@ export default function AuctionDetail() {
               myLastBid={!isLeading ? myLastBid : null}
             />
 
-            {/* Bid Form / Ended */}
-            {!ended ? (
+            {/* Bid Form / Ended / Cancelled */}
+            {cancelled ? (
+              <div className="rounded-2xl border p-5 text-center" style={{ borderColor: "#f3f4f6", background: "#f9fafb" }}>
+                <Ban className="h-8 w-8 mx-auto mb-2 text-gray-400" aria-hidden="true" />
+                <p className="font-bold text-gray-700 text-lg">מכרז זה בוטל על ידי המוכר</p>
+                <p className="text-sm text-gray-400 mt-1">כל ההצעות בוטלו — מוזמנים לעיין במכרזים פעילים אחרים באתר</p>
+              </div>
+            ) : !ended ? (
               <form ref={bidFormRef} onSubmit={handleBid} className="space-y-3">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">שמך (אופציונלי)</label>
@@ -840,6 +858,17 @@ export default function AuctionDetail() {
 
       {showLoginModal && (
         <LoginRequiredModal onClose={() => setShowLoginModal(false)} />
+      )}
+
+      {showCancelModal && product && (
+        <CancelAuctionModal
+          product={product}
+          onClose={() => setShowCancelModal(false)}
+          onDone={() => {
+            setShowCancelModal(false);
+            setProduct(p => (p ? { ...p, status: "cancelled" } : p));
+          }}
+        />
       )}
 
       {showReviewModal && (

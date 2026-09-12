@@ -133,7 +133,7 @@ export default function Search() {
     setShowSuggest(false);
   };
 
-  const active = results.filter((p) => new Date(p.ends_at) > new Date());
+  const active = results.filter((p) => p.status !== "cancelled" && new Date(p.ends_at) > new Date());
   const ended = results.filter((p) => new Date(p.ends_at) <= new Date());
 
   return (

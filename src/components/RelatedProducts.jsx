@@ -60,7 +60,7 @@ export default function RelatedProducts({ category, excludeId }) {
   useEffect(() => {
     if (!category) { setLoading(false); return; }
     base44.entities.Product.filter({ category }, "-created_date", 12)
-      .then(items => setProducts(items.filter(p => p.id !== excludeId).slice(0, 5)))
+      .then(items => setProducts(items.filter(p => p.id !== excludeId && p.status !== "cancelled").slice(0, 5)))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [category, excludeId]);

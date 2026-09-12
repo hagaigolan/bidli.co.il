@@ -44,12 +44,15 @@ const STATUS_CONFIG = {
   outbid: { label: "הוצעת", color: "#e5893d", bg: "#e5893d15", icon: XCircle },
   won:    { label: "זכית!", color: "#3e6b8a", bg: "#3e6b8a15", icon: Trophy },
   lost:   { label: "לא זכית", color: "#9ca3af", bg: "#f3f4f6", icon: XCircle },
+  cancelled: { label: "בוטל", color: "#9ca3af", bg: "#f3f4f6", icon: XCircle },
 };
 
 function BidRow({ bid, product, onReload }) {
   const ended = product ? new Date(product.ends_at) <= new Date() : false;
   const isLeading = !!(product && product.highest_bidder === bid.bidder_name && product.current_price === bid.amount);
-  const status = ended ? (isLeading ? "won" : "lost") : (isLeading ? "active" : "outbid");
+  const status = product?.status === "cancelled"
+    ? "cancelled"
+    : ended ? (isLeading ? "won" : "lost") : (isLeading ? "active" : "outbid");
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.active;
   const Icon = cfg.icon;
   const needsPayment = ended && isLeading && product && product.status === "awaiting_payment";

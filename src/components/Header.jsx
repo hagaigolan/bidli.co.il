@@ -150,7 +150,7 @@ export default function Header() {
 
       {/* Category strip — חלק מהעמוד, גולל כלפי מעלה יחד עם האתר */}
       <div className="border-b border-gray-100 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
               className="flex-shrink-0 flex flex-col items-center gap-1 group">

@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "name": "NotificationPreference",
+  "properties": {
+    "email": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "whatsapp_phone": {
+      "type": "string"
+    },
+    "notify_whatsapp": {
+      "type": "boolean",
+      "default": false
+    },
+    "notify_email": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "email"
+  ]
+}

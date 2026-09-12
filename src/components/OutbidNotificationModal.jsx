@@ -1,5 +1,14 @@
 import { useState } from "react";
+import { base44 } from "@/api/base44Client";
 import { Bell, Mail, MessageCircle, X, Check } from "lucide-react";
+
+const normalizePhone = (raw) => {
+  let d = (raw || "").replace(/[^0-9]/g, "");
+  if (!d) return "";
+  if (d.startsWith("9720")) d = "972" + d.slice(4);
+  else if (d.startsWith("0")) d = "972" + d.slice(1);
+  return d;
+};
 
 export default function OutbidNotificationModal({ onClose, onSave }) {
   const [email, setEmail] = useState(() => localStorage.getItem("notif_email") || localStorage.getItem("bidder_email") || "");
@@ -8,18 +17,38 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
     const saved = localStorage.getItem("notif_channels");
     return saved ? JSON.parse(saved) : { email: true, whatsapp: false };
   });
+  const [saving, setSaving] = useState(false);
 
   const toggle = (ch) => setChannels(prev => ({ ...prev, [ch]: !prev[ch] }));
 
-  const handleSave = () => {
-    if (channels.email && !email) return alert("נא להזין כתובת מייל");
+  const handleSave = async () => {
+    if (!email) return alert("נא להזין כתובת מייל — בה נשתמש לזיהוי ההצעות שלך");
     if (channels.whatsapp && !phone) return alert("נא להזין מספר טלפון");
     if (!channels.email && !channels.whatsapp) return alert("נא לבחור לפחות ערוץ התראה אחד");
 
+    setSaving(true);
+    const emailNorm = email.trim().toLowerCase();
+    const phoneNorm = normalizePhone(phone);
     localStorage.setItem("notif_email", email);
-    localStorage.setItem("notif_phone", phone);
+    localStorage.setItem("notif_phone", phoneNorm);
     localStorage.setItem("notif_channels", JSON.stringify(channels));
-    onSave({ email, phone, channels });
+    // שמירת ההעדפות גם בשרת — כדי שהוואצאפ יישלח גם כשהמשתמש אינו באתר
+    try {
+      const existing = await base44.entities.NotificationPreference.filter({ email: emailNorm });
+      const payload = {
+        email: emailNorm,
+        name: localStorage.getItem("bidder_name") || "",
+        whatsapp_phone: phoneNorm,
+        notify_whatsapp: channels.whatsapp,
+        notify_email: channels.email,
+      };
+      if (existing.length) await base44.entities.NotificationPreference.update(existing[0].id, payload);
+      else await base44.entities.NotificationPreference.create(payload);
+    } catch {
+      alert("ההעדפות נשמרו במחשב זה, אך שמירת ההתראות בשרת נכשלה — הוואצאפ יישלח רק כשהדף פתוח");
+    }
+    setSaving(false);
+    onSave({ email, phone: phoneNorm, channels });
     onClose();
   };
 
@@ -57,18 +86,16 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
         </div>
 
         {/* Email input */}
-        {channels.email && (
-          <div className="mb-3">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">כתובת מייל</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right"
-            />
-          </div>
-        )}
+        <div className="mb-3">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">כתובת מייל</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right"
+          />
+        </div>
 
         {/* Phone input */}
         {channels.whatsapp && (
@@ -81,14 +108,14 @@ export default function OutbidNotificationModal({ onClose, onSave }) {
               placeholder="050-1234567"
               className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-green-400 transition-all text-right"
             />
-            <p className="text-xs text-gray-400 mt-1">כולל קידומת מדינה: 972501234567 או 0501234567</p>
+            <p className="text-xs text-gray-400 mt-1">כולל קידומת מדינה: 972501234567 או 0501234567. ההתראה תישלח ישירות לוואצאפ שלך — גם כשאינך באתר</p>
           </div>
         )}
 
-        <button onClick={handleSave}
-          className="w-full py-3 rounded-xl font-bold text-white text-sm mt-2"
+        <button onClick={handleSave} disabled={saving}
+          className="w-full py-3 rounded-xl font-bold text-white text-sm mt-2 disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)", boxShadow: "0 0 16px #e5893d44" }}>
-          הפעל התראות
+          {saving ? "שומר התראות..." : "הפעל התראות"}
         </button>
       </div>
     </div>

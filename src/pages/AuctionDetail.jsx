@@ -393,7 +393,7 @@ export default function AuctionDetail() {
       return;
     }
     // Anti-shill: block seller from bidding on own auction
-    const myEmail = localStorage.getItem("bidder_email") || "";
+    const myEmail = localStorage.getItem("bidder_email") || authUser?.email || "";
     const knownEmails = [
       myEmail,
       localStorage.getItem("seller_email"),
@@ -477,6 +477,12 @@ export default function AuctionDetail() {
         bid_count: (product.bid_count || 0) + 1,
         ends_at: endsAt,
       };
+      // המוביל הקודם הוצא מההובלה — לשם התראת וואצאפ
+      if (product.highest_bidder && product.highest_bidder !== name) {
+        updateData.second_bidder_name = product.highest_bidder;
+        updateData.second_bidder_email = product.highest_bidder_email || "";
+        updateData.second_bid_amount = product.current_price || 0;
+      }
       await base44.entities.Product.update(product.id, updateData);
       await base44.entities.Bid.create({
         product_id: product.id,

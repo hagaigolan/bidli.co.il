@@ -18,6 +18,10 @@
       "type": "string",
       "description": "Optional display nickname of the user"
     },
+    "photo_url": {
+      "type": "string",
+      "description": "Profile photo of the user, displayed on their auction listings"
+    },
     "seller_rating": {
       "type": "number"
     },

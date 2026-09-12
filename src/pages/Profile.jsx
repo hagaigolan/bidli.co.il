@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import SalesManager from "@/components/SalesManager";
 import SellerAuctionEditor from "@/components/SellerAuctionEditor";
+import ProfileEditModal from "@/components/ProfileEditModal";
+import ProfileStatsCard from "@/components/ProfileStatsCard";
+import { useAuth } from "@/lib/AuthContext";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
   Trophy, XCircle, RefreshCw
@@ -117,12 +120,21 @@ export default function Profile() {
   const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
-  const [name, setName] = useState(() => localStorage.getItem("bidder_name") || "");
-  const [email, setEmail] = useState(() => localStorage.getItem("bidder_email") || "");
   const [editingProfile, setEditingProfile] = useState(false);
+  const [profileMeta, setProfileMeta] = useState(() => ({
+    name: localStorage.getItem("bidder_name") || "",
+    email: localStorage.getItem("bidder_email") || "",
+    photo: localStorage.getItem("profile_photo_url") || "",
+  }));
+  const { user: authUser } = useAuth();
 
   const loadData = async () => {
     setLoading(true);
+    setProfileMeta({
+      name: localStorage.getItem("bidder_name") || "",
+      email: localStorage.getItem("bidder_email") || "",
+      photo: localStorage.getItem("profile_photo_url") || "",
+    });
     try {
       const storedName = localStorage.getItem("bidder_name");
       const storedEmail = localStorage.getItem("bidder_email");
@@ -145,13 +157,6 @@ export default function Profile() {
   };
 
   useEffect(() => { loadData(); }, []);
-
-  const saveProfile = () => {
-    localStorage.setItem("bidder_name", name);
-    localStorage.setItem("bidder_email", email);
-    setEditingProfile(false);
-    loadData();
-  };
 
   const activeBids = bids.filter(b => { const p = products[b.product_id]; return p && new Date(p.ends_at) > new Date(); });
   const wonBids = bids.filter(b => { const p = products[b.product_id]; return p && new Date(p.ends_at) <= new Date() && p.highest_bidder === b.bidder_name && p.current_price === b.amount; });
@@ -177,13 +182,15 @@ export default function Profile() {
             <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
           </button>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
-              style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
-              👤
-            </div>
+            {profileMeta.photo
+              ? <img src={profileMeta.photo} alt={profileMeta.name || "פרופיל"} className="w-14 h-14 rounded-2xl object-cover" style={{ border: "1px solid #e5893d33" }} />
+              : <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
+                style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
+                👤
+              </div>}
             <div className="flex-1">
-              <h1 className="text-xl font-black text-gray-900">{localStorage.getItem("bidder_name") || "האזור האישי שלי"}</h1>
-              {localStorage.getItem("bidder_email") && <p className="text-sm text-gray-400">{localStorage.getItem("bidder_email")}</p>}
+              <h1 className="text-xl font-black text-gray-900">{profileMeta.name || authUser?.full_name || "האזור האישי שלי"}</h1>
+              {(profileMeta.email || authUser?.email) && <p className="text-sm text-gray-400" dir="ltr">{profileMeta.email || authUser?.email}</p>}
             </div>
             <button onClick={() => setEditingProfile(true)}
               className="text-xs px-3 py-2 rounded-xl border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
@@ -195,33 +202,17 @@ export default function Profile() {
 
       <div className="max-w-2xl mx-auto px-4 py-6">
         {editingProfile && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setEditingProfile(false)}>
-            <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-4 shadow-xl" dir="rtl" onClick={e => e.stopPropagation()}>
-              <h2 className="text-lg font-black text-gray-900 mb-4">עריכת פרופיל</h2>
-              <div className="space-y-3 mb-5">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">שם</label>
-                  <input value={name} onChange={e => setName(e.target.value)} placeholder="השם שלך"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">אימייל</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all" dir="ltr" />
-                </div>
-              </div>
-              <p className="text-xs text-gray-400 mb-4">הזן את אותם פרטים שהשתמשת בהם בהצעות כדי לראות את ההיסטוריה שלך.</p>
-              <div className="flex gap-2">
-                <button onClick={saveProfile} className="flex-1 text-white text-sm py-2.5 rounded-xl font-bold"
-                  style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>שמור</button>
-                <button onClick={() => setEditingProfile(false)}
-                  className="flex-1 text-gray-600 text-sm py-2.5 rounded-xl font-semibold border border-gray-200">ביטול</button>
-              </div>
-            </div>
-          </div>
+          <ProfileEditModal
+            onClose={() => setEditingProfile(false)}
+            onSaved={loadData}
+          />
         )}
 
         <SellerAuctionEditor />
+
+        {(profileMeta.email || authUser?.email) && (
+          <ProfileStatsCard email={(profileMeta.email || authUser?.email).trim()} />
+        )}
 
         {!hasProfile && !editingProfile && (
           <div className="text-center py-12">

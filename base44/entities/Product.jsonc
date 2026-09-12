@@ -67,6 +67,9 @@
     "seller_user_id": {
       "type": "string"
     },
+    "seller_photo_url": {
+      "type": "string"
+    },
     "seller_payment_method": {
       "type": "string",
       "enum": [

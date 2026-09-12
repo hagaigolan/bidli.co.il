@@ -60,6 +60,19 @@ export default function UploadProduct() {
     } catch {}
   }, []);
 
+  // איתור אוטומטי של פרטי המוכר מהפרופיל האישי (אין לדרוס פרטים שכבר מולאו — למשל בפרסום חוזר)
+  useEffect(() => {
+    base44.auth.me().then(me => {
+      if (!me) return;
+      setForm(f => ({
+        ...f,
+        seller_name: f.seller_name || localStorage.getItem("bidder_name") || me.full_name || "",
+        seller_email: f.seller_email || me.email || "",
+        seller_phone: f.seller_phone || me.phone || localStorage.getItem("profile_phone") || "",
+      }));
+    }).catch(() => {});
+  }, []);
+
   if (!authChecked) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -131,10 +144,16 @@ export default function UploadProduct() {
       if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
       const startingPrice = parseFloat(form.starting_price);
       let sellerUserId = "";
-      try { sellerUserId = (await base44.auth.me()).id || ""; } catch {}
+      let sellerPhotoUrl = "";
+      try {
+        const me = await base44.auth.me();
+        sellerUserId = me?.id || "";
+        sellerPhotoUrl = me?.photo_url || localStorage.getItem("profile_photo_url") || "";
+      } catch {}
       await base44.entities.Product.create({
         ...form,
         seller_user_id: sellerUserId,
+        seller_photo_url: sellerPhotoUrl,
         starting_price: startingPrice,
         current_price: startingPrice,
         image_url,

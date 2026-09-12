@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { sendBanEmail } from "@/lib/adminEmails";
 import { Mail, ShieldCheck, ShieldOff, Loader2, Ban, RotateCcw } from "lucide-react";
 
 const btnCls = "text-xs font-bold px-3 py-1.5 rounded-xl border transition-all disabled:opacity-50 whitespace-nowrap";
@@ -32,13 +33,7 @@ export default function UsersSection({ onSendEmail }) {
         if (reason === null) return;
         const finalReason = reason.trim() || "הפרת תנאי השימוש";
         await base44.entities.User.update(u.id, { is_banned: true, ban_reason: finalReason });
-        if (u.email) {
-          base44.integrations.Core.SendEmail({
-            to: u.email,
-            subject: "חשבונך הושהה ב-bidli",
-            body: `שלום,\n\nחשבונך הושהה מפעילות בפלטפורמת bidli (הגשת הצעות ופרסום מכרזים).\nסיבה: ${finalReason}\n\nלפניות להנהלה: mitugplus@gmail.com\n\nצוות bidli — הבית של פלטפורמת מכרזים שלך`,
-          }).catch(() => {});
-        }
+        if (u.email) sendBanEmail(u.email, u.full_name || "", finalReason).catch(() => {});
         patchLocal(u.id, { is_banned: true, ban_reason: finalReason });
         setMsg(`${u.email} הושהה ונשלח לו מייל הודעה`);
       }

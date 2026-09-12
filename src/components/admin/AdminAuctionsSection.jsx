@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { sendCancelEmail } from "@/lib/adminEmails";
 import { Mail, Loader2, XCircle, Trash2, Search } from "lucide-react";
 
 const btnCls = "text-xs font-bold px-3 py-1.5 rounded-xl border transition-all disabled:opacity-50 whitespace-nowrap";
@@ -34,13 +35,7 @@ export default function AdminAuctionsSection({ onSendEmail }) {
     try {
       await base44.entities.Product.update(p.id, { status: "cancelled" });
       patchLocal(p.id, { status: "cancelled" });
-      if (p.seller_email) {
-        base44.integrations.Core.SendEmail({
-          to: p.seller_email,
-          subject: `המכרז "${p.title}" בוטל על ידי הנהלת bidli`,
-          body: `שלום${p.seller_name ? " " + p.seller_name : ""},\n\nהמכרז "${p.title}" בוטל על ידי הנהלת bidli.\nסיבה: ${finalReason}\n\nלפניות להנהלה: mitugplus@gmail.com\n\nצוות bidli — הבית של פלטפורמת מכרזים שלך`,
-        }).catch(() => {});
-      }
+      if (p.seller_email) sendCancelEmail(p.seller_email, p.seller_name || "", p.title, finalReason).catch(() => {});
       setMsg(`המכרז "${p.title}" בוטל ונשלח מייל למוכר`);
     } catch {
       setMsg("ביטול המכרז נכשל, נסה שנית");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { sendAdminEmail, escapeHtml } from "@/lib/adminEmails";
 import { X, Mail, Loader2, CheckCircle } from "lucide-react";
 
 // מודאל שליחת מייל מטעם ההנהלה לכל כתובת
@@ -16,11 +16,16 @@ export default function SendEmailModal({ to, onClose }) {
     if (!subject.trim() || !body.trim()) { setError("יש למלא נושא ותוכן"); return; }
     setSending(true); setError("");
     try {
-      await base44.integrations.Core.SendEmail({
+      const bodyHtml = body.trim().split(/\n{2,}/)
+        .map(p => `<p style="margin:0 0 12px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
+        .join("");
+      await sendAdminEmail({
         to,
         subject,
-        body: `${body}\n\n— צוות bidli — הבית של פלטפורמת מכרזים שלך`,
-        from_name: "bidli הנהלה",
+        title: subject,
+        heroLine: "הודעה מהנהלת bidli",
+        bodyHtml,
+        plainText: body,
       });
       setDone(true);
       setTimeout(onClose, 1500);

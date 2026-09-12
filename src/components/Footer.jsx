@@ -90,9 +90,10 @@ export default function Footer() {
               <nav className="flex flex-col gap-2 mb-6">
                 <Link to="/articles" className="text-xs text-white/40 hover:text-white transition-colors">מאמרים</Link>
                 <Link to="/contact" className="text-xs text-white/40 hover:text-white transition-colors">צור קשר</Link>
-                {["אודות","White-Label"].map(l => (
+                {["White-Label"].map(l => (
                   <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
                 ))}
+                <Link to="/about" className="text-xs text-white/40 hover:text-white transition-colors">אודות</Link>
 
 
               </nav>

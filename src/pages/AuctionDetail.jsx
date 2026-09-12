@@ -378,11 +378,15 @@ export default function AuctionDetail() {
     }
     // Anti-shill: block seller from bidding on own auction
     const myEmail = localStorage.getItem("bidder_email") || "";
+    const knownEmails = [
+      myEmail,
+      localStorage.getItem("seller_email"),
+      authUser?.email,
+    ].map(e => (e || "").trim().toLowerCase()).filter(Boolean);
     const myNameTrim = (bidderName || "").trim();
     const authEmail = (authUser?.email || "").trim().toLowerCase();
     const sellerEmail = (product.seller_email || "").trim().toLowerCase();
-    const sameEmail = sellerEmail && (myEmail || authEmail) &&
-      (sellerEmail === myEmail.trim().toLowerCase() || sellerEmail === authEmail);
+    const sameEmail = sellerEmail && knownEmails.includes(sellerEmail);
     const sameName = product.seller_name && myNameTrim &&
       product.seller_name.trim().toLowerCase() === myNameTrim.toLowerCase();
     const sameUser = product.seller_user_id && authUser && product.seller_user_id === authUser.id;

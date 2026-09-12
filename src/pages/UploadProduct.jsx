@@ -115,8 +115,11 @@ export default function UploadProduct() {
       const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
       const startingPrice = parseFloat(form.starting_price);
+      let sellerUserId = "";
+      try { sellerUserId = (await base44.auth.me()).id || ""; } catch {}
       await base44.entities.Product.create({
         ...form,
+        seller_user_id: sellerUserId,
         starting_price: startingPrice,
         current_price: startingPrice,
         image_url,

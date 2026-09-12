@@ -191,15 +191,6 @@ function FeaturedBanner() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex items-center gap-3 p-3 rounded-2xl border cursor-pointer hover:shadow-md transition-all"
-              style={{ borderColor: "#e5893d33", background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
-              <img src="https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/846ba5fb9_res_cloudinary_com_portal_AuctionHouse_53a9d826e4b032e680e986fe_EXTERNAL_AD_3316416d.png"
-                alt="מכרז מיוחד" className="w-16 h-12 object-cover rounded-lg flex-shrink-0" />
-              <div>
-                <div className="font-bold text-gray-900 text-sm">מכרז אמנות ישראלית</div>
-                <div className="text-xs font-medium" style={{ color: "#e5893d" }}>מכרז גדול — 28 ביוני</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-2xl border cursor-pointer hover:shadow-md transition-all flex-shrink-0"
               style={{ borderColor: "#6aa3cd33", background: "linear-gradient(135deg, #6aa3cd08, #2d4f6805)" }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: "linear-gradient(135deg, #6aa3cd, #2d4f68)" }}>

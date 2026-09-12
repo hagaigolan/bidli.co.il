@@ -28,6 +28,9 @@
     "starting_price": {
       "type": "number"
     },
+    "buy_now_price": {
+      "type": "number"
+    },
     "current_price": {
       "type": "number"
     },

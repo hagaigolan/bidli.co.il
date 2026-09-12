@@ -450,6 +450,50 @@ export default function AuctionDetail() {
     finally { setBidding(false); }
   };
 
+  // ── קנה עכשיו — רכישה מיידית במחיר היעד שמסיימת את המכרז ──
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (isSellerViewing) {
+      setBidError("אין אפשרות לרכוש מכרז שפרסמת בעצמך");
+      return;
+    }
+    const myEmail = localStorage.getItem("bidder_email") || authUser?.email || "";
+    if (await isAnyEmailBanned([myEmail, authUser?.email])) {
+      setBidError("חשבונך מושהה — אין אפשרות לבצע רכישה. לפניות: mitugplus@gmail.com");
+      return;
+    }
+    setBidding(true); setBidError("");
+    try {
+      const name = bidderName || localStorage.getItem("bidder_name") || "אנונימי";
+      if (bidderName) localStorage.setItem("bidder_name", bidderName);
+      const endsAt = new Date().toISOString();
+      const updateData = {
+        current_price: product.buy_now_price,
+        highest_bidder: name,
+        highest_bidder_email: myEmail,
+        bid_count: (product.bid_count || 0) + 1,
+        ends_at: endsAt,
+      };
+      await base44.entities.Product.update(product.id, updateData);
+      await base44.entities.Bid.create({
+        product_id: product.id,
+        product_title: product.title,
+        product_image_url: product.image_url || "",
+        product_ends_at: endsAt,
+        bidder_name: name,
+        bidder_email: myEmail,
+        amount: product.buy_now_price,
+        is_winning: true,
+        status: "won",
+      });
+      setProduct(p => ({ ...p, ...updateData }));
+    } catch { setBidError("שגיאה, נסה שנית"); }
+    finally { setBidding(false); }
+  };
+
   // פרסום חוזר של מכרז שלא נמכר — העתקת כל הפרטים לטופס הפרסום
   const handleRepublish = () => {
     const draft = {
@@ -459,6 +503,7 @@ export default function AuctionDetail() {
       condition: product.condition || "",
       location: product.location || "",
       starting_price: product.starting_price,
+      buy_now_price: product.buy_now_price,
       image_url: product.image_url || "",
       image_urls: product.image_urls || [],
     };
@@ -602,6 +647,11 @@ export default function AuctionDetail() {
                 </div>
               </div>
               <p className="text-xs text-gray-400">מחיר התחלתי: ₪{(product.starting_price || 0).toLocaleString()}</p>
+              {product.buy_now_price && (
+                <p className="text-xs font-semibold mt-1" style={{ color: "#00a35c" }}>
+                  ⚡ קנה עכשיו ללא מכרז ב-₪{product.buy_now_price.toLocaleString()}
+                </p>
+              )}
             </div>
 
             {/* ── 6. PRICE GAP PROGRESS ── */}
@@ -647,6 +697,16 @@ export default function AuctionDetail() {
 
                 {/* ── 5. STATUS-AWARE BUTTON ── */}
                 <BidButton isLeading={isLeading} bidding={bidding} />
+
+                {/* ── קנה עכשיו — רכישה מיידית במחיר היעד ── */}
+                {product.buy_now_price && (product.current_price || product.starting_price || 0) < product.buy_now_price && (
+                  <button type="button" onClick={handleBuyNow} disabled={bidding}
+                    className="w-full text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-all hover:scale-[1.01]"
+                    style={{ background: "linear-gradient(135deg, #00c853, #00a3c4)", boxShadow: "0 0 16px #00c85355" }}>
+                    <Zap className="h-4 w-4" aria-hidden="true" />
+                    {bidding ? "מבצע רכישה..." : `קנה עכשיו ב-₪${product.buy_now_price.toLocaleString()}`}
+                  </button>
+                )}
 
                 {/* ── 7. NOTIFICATIONS OPT-IN ── */}
                 <button type="button" onClick={notifEnabled ? () => setShowNotifModal(true) : enableNotifications}

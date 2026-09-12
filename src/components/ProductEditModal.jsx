@@ -13,6 +13,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
     condition: product.condition || CONDITIONS[1],
     location: product.location || "",
     starting_price: String(product.starting_price ?? ""),
+    buy_now_price: product.buy_now_price != null ? String(product.buy_now_price) : "",
     is_stock: !!product.is_stock,
   });
   const [busy, setBusy] = useState(false);
@@ -42,6 +43,7 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
         data.starting_price = price;
         data.current_price = price;
       }
+      data.buy_now_price = form.buy_now_price ? parseFloat(form.buy_now_price) : null;
       await base44.entities.Product.update(product.id, data);
       onSaved();
     } catch { setError("שמירת השינויים נכשלה, נסה שנית"); }
@@ -104,6 +106,16 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
             <label htmlFor="edit-location" className="block text-xs text-gray-500 mb-1">מיקום</label>
             <input id="edit-location" value={form.location} onChange={e => set("location", e.target.value)}
               className={inputCls} placeholder="עיר / אזור" />
+          </div>
+
+          <div>
+            <label htmlFor="edit-buy-now" className="block text-xs text-gray-500 mb-1">
+              מחיר יעד ל"קנה עכשיו" (₪) <span className="text-gray-400">— אופציונלי</span>
+            </label>
+            <input id="edit-buy-now" type="number" min="1" value={form.buy_now_price}
+              onChange={e => set("buy_now_price", e.target.value)}
+              className={inputCls} placeholder="לדוגמה: 1500" dir="ltr" />
+            <p className="text-xs text-gray-400 mt-1">רוכש שילחץ "קנה עכשיו" יזכה במוצר במחיר זה והמכרז יסתיים מיד</p>
           </div>
 
           <div>

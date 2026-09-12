@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
+import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 import { useAuth } from "@/lib/AuthContext";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
@@ -14,7 +14,7 @@ export default function UploadProduct() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "", description: "", category: "", condition: "מצב מעולה",
-    starting_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
+    starting_price: "", buy_now_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
     seller_payment_method: "", seller_payme_phone: "", seller_bank_details: "",
     is_stock: false,
   });
@@ -52,6 +52,7 @@ export default function UploadProduct() {
         condition: d.condition || f.condition,
         location: d.location || "",
         starting_price: d.starting_price != null ? String(d.starting_price) : "",
+        buy_now_price: d.buy_now_price != null ? String(d.buy_now_price) : "",
         ...(d.seller_name ? { seller_name: d.seller_name, seller_email: d.seller_email, seller_phone: d.seller_phone } : {}),
       }));
       const urls = (Array.isArray(d.image_urls) && d.image_urls.length ? d.image_urls : (d.image_url ? [d.image_url] : [])).filter(Boolean);
@@ -104,6 +105,9 @@ export default function UploadProduct() {
       return;
     }
     if (!form.title || !form.starting_price) { setError("יש למלא כותרת ומחיר התחלתי"); return; }
+    if (form.buy_now_price && parseFloat(form.buy_now_price) <= parseFloat(form.starting_price)) {
+      setError("מחיר היעד ל'קנה עכשיו' חייב להיות גבוה מהמחיר ההתחלתי"); return;
+    }
     if (!form.seller_name || !form.seller_email || !form.seller_phone) {
       setError("לצורך פרסום חובה להירשם עם שם, אימייל וטלפון"); return;
     }
@@ -155,6 +159,7 @@ export default function UploadProduct() {
         seller_user_id: sellerUserId,
         seller_photo_url: sellerPhotoUrl,
         starting_price: startingPrice,
+        buy_now_price: form.buy_now_price ? parseFloat(form.buy_now_price) : null,
         current_price: startingPrice,
         image_url,
         image_urls,
@@ -195,7 +200,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -348,6 +353,16 @@ export default function UploadProduct() {
             placeholder="0"
             className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right" />
           <p className="text-xs text-gray-400 mt-2">המכרז יפתח במחיר זה ויימשך 24 שעות. ההצעה הגבוהה ביותר בסיום תזכה.</p>
+
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5 mt-4 flex items-center gap-2">
+            <Zap className="h-4 w-4" style={{ color: "#00c853" }} />
+            מחיר יעד ל"קנה עכשיו" (₪)
+            <span className="text-xs text-gray-400 font-normal">— אופציונלי</span>
+          </label>
+          <input type="number" min="1" value={form.buy_now_price} onChange={e => set("buy_now_price", e.target.value)}
+            placeholder="לדוגמה: 1500"
+            className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#00c85388] focus:ring-2 focus:ring-[#00c85322] transition-all text-right" />
+          <p className="text-xs text-gray-400 mt-2">רכישה מיידית ללא מכרז: רוכש שילחץ "קנה עכשיו" יזכה במוצר במחיר זה, והמכרז יסתיים באופן מיידי.</p>
         </div>
 
         {/* Seller Info */}

@@ -1,19 +1,35 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Star, X, CheckCircle } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function ReviewModal({ product, reviewerName, reviewerEmail, onClose, onDone }) {
+  const { user: authUser } = useAuth();
   const [rating, setRating] = useState(5);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [already, setAlready] = useState(false);
+  const [selfBlocked, setSelfBlocked] = useState(false);
 
   const handleSubmit = async () => {
     if (!rating) return;
     setSubmitting(true);
     try {
+      // חסימת דירוג עצמי — רק מישהו שאינו המוכר יכול לדרג אותו
+      const sellerEmail = (product.seller_email || "").trim().toLowerCase();
+      const sellerName = (product.seller_name || "").trim();
+      const knownEmails = [
+        (reviewerEmail || "").trim().toLowerCase(),
+        (authUser?.email || "").trim().toLowerCase(),
+      ].filter(Boolean);
+      if ((sellerEmail && knownEmails.includes(sellerEmail)) ||
+          (sellerName && reviewerName && sellerName === reviewerName.trim())) {
+        setSelfBlocked(true);
+        setTimeout(onClose, 2000);
+        return;
+      }
       // דירוג אחד בלבד לכל מכרז
       const existing = await base44.entities.Review.filter({ product_id: product.id });
       const myEmail = (reviewerEmail || "").trim().toLowerCase();
@@ -52,7 +68,13 @@ export default function ReviewModal({ product, reviewerName, reviewerEmail, onCl
           <button onClick={onClose}><X className="h-5 w-5 text-gray-400" /></button>
         </div>
 
-        {already ? (
+        {selfBlocked ? (
+          <div className="text-center py-6">
+            <Star className="h-12 w-12 mx-auto mb-3" style={{ color: "#d1d5db" }} aria-hidden="true" />
+            <p className="font-bold text-gray-800">לא ניתן לדרג את עצמך</p>
+            <p className="text-sm text-gray-400 mt-1">רק קונה אחר יכול לדרג את המוכר</p>
+          </div>
+        ) : already ? (
           <div className="text-center py-6">
             <Star className="h-12 w-12 mx-auto mb-3" style={{ color: "#f59e0b" }} aria-hidden="true" />
             <p className="font-bold text-gray-800">כבר דירגת את המוכר במכרז זה</p>

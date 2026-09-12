@@ -369,6 +369,10 @@ export default function AuctionDetail() {
   const mySellerEmail = (localStorage.getItem("seller_email") || localStorage.getItem("bidder_email") || "").trim().toLowerCase();
   const isMyAuction = !!(product && product.seller_email && mySellerEmail &&
     mySellerEmail === product.seller_email.trim().toLowerCase());
+  const isSellerViewing = isMyAuction ||
+    !!(product && ((product.seller_user_id && authUser && product.seller_user_id === authUser.id) ||
+      (product.seller_email && authUser?.email &&
+        product.seller_email.trim().toLowerCase() === authUser.email.trim().toLowerCase())));
   const ended = product && new Date(product.ends_at) <= new Date();
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
@@ -707,7 +711,7 @@ export default function AuctionDetail() {
             )}
 
             {/* ── RATE SELLER (after auction ended, for any participant) ── */}
-            {ended && product.highest_bidder && (alreadyReviewed ? (
+            {ended && product.highest_bidder && !isSellerViewing && (alreadyReviewed ? (
               <div className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border"
                 style={{ borderColor: "#22c55e44", color: "#16a34a", background: "#22c55e08" }}>
                 <Star className="h-4 w-4" aria-hidden="true" />

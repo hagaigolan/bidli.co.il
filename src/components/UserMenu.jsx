@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
-import { ChevronDown, LogOut, MessageCircleQuestion, Package, User as UserIcon } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircleQuestion, Package, Store, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -73,6 +73,12 @@ export default function UserMenu() {
           <Link to="/my-orders" className="flex items-center gap-2 cursor-pointer">
             <Package className="h-4 w-4 text-[#e5893d]" />
             <span>ההזמנות שלי</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/my-sales" className="flex items-center gap-2 cursor-pointer">
+            <Store className="h-4 w-4 text-[#e5893d]" />
+            <span>המכירות שלי</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

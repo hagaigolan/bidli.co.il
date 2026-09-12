@@ -184,31 +184,6 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
   );
 }
 
-function FeaturedBanner() {
-  return (
-    <AnimatedElement>
-      <section className="bg-white border-b border-gray-100 py-4" dir="rtl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex items-center gap-3 p-3 rounded-2xl border cursor-pointer hover:shadow-md transition-all"
-              style={{ borderColor: "#6aa3cd33", background: "linear-gradient(135deg, #6aa3cd08, #2d4f6805)" }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #6aa3cd, #2d4f68)" }}>
-                <Zap className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900 text-sm">אפליקציית bidli</div>
-                <div className="text-xs text-gray-400">הצע הצעות חיות מהטלפון</div>
-              </div>
-            </div>
-          </div>
-          <p className="text-xs text-gray-400 mt-2 pr-1">כל השעות מוצגות לפי אזור הזמן שלך</p>
-        </div>
-      </section>
-    </AnimatedElement>
-  );
-}
-
 function AuctionCountdown({ endsAt }) {
   const calc = () => {
     const diff = new Date(endsAt) - Date.now();
@@ -398,7 +373,6 @@ export default function Home() {
   return (
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection />
-      <FeaturedBanner />
       <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
       <ShopsSection shops={shops} />

@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
+import { useAuth } from "@/lib/AuthContext";
+import LoginRequiredModal from "@/components/LoginRequiredModal";
 
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
 import { isAnyEmailBanned } from "@/lib/banCheck";
@@ -24,18 +26,16 @@ export default function UploadProduct() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [agreedCopyright, setAgreedCopyright] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then((isAuth) => {
-      if (!isAuth) {
-        navigate("/login");
-      } else {
-        setAuthChecked(true);
-      }
-    });
-  }, []);
+    // משתמש שאינו מחובר מנסה לפרסם — פופאפ התחברות במקום העברה שקטה
+    if (!isAuthenticated) setShowLoginModal(true);
+    setAuthChecked(true);
+  }, [isAuthenticated]);
 
   // פרסום חוזר — טעינת פרטי מכרז קודם לעריכה מחדש
   useEffect(() => {
@@ -85,6 +85,11 @@ export default function UploadProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // חסימת פרסום למשתמש שאינו מחובר
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
     if (!form.title || !form.starting_price) { setError("יש למלא כותרת ומחיר התחלתי"); return; }
     if (!form.seller_name || !form.seller_email || !form.seller_phone) {
       setError("לצורך פרסום חובה להירשם עם שם, אימייל וטלפון"); return;
@@ -443,6 +448,10 @@ export default function UploadProduct() {
           )}
         </button>
       </form>
+
+      {showLoginModal && (
+        <LoginRequiredModal action="publish" onClose={() => setShowLoginModal(false)} />
+      )}
     </div>
   );
 }

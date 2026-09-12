@@ -10,6 +10,14 @@
         "user"
       ]
     },
+    "phone": {
+      "type": "string",
+      "description": "Phone number of the user"
+    },
+    "nickname": {
+      "type": "string",
+      "description": "Optional display nickname of the user"
+    },
     "seller_rating": {
       "type": "number"
     },

@@ -16,6 +16,7 @@ import ReviewModal from "@/components/ReviewModal";
 import ProductChat from "@/components/ProductChat";
 import ShareButton from "@/components/ShareButton";
 import ProductEditModal from "@/components/ProductEditModal";
+import LoginRequiredModal from "@/components/LoginRequiredModal";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -229,7 +230,7 @@ export default function AuctionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const bidFormRef = useRef(null);
-  const { user: authUser } = useAuth();
+  const { user: authUser, isAuthenticated } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -244,6 +245,7 @@ export default function AuctionDetail() {
   const [myLastBid, setMyLastBid] = useState(null);
   const [antiSnipeExtended, setAntiSnipeExtended] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [favSaved, setFavSaved] = useState(false);
@@ -381,6 +383,11 @@ export default function AuctionDetail() {
 
   const handleBid = async (e) => {
     e.preventDefault();
+    // חסימת הגשת הצעות למשתמש שאינו מחובר
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
     if (!bidAmount || parseFloat(bidAmount) < minBid) {
       setBidError(`ההצעה חייבת להיות לפחות ₪${minBid}`);
       return;
@@ -761,6 +768,10 @@ export default function AuctionDetail() {
             }).catch(() => {});
           }}
         />
+      )}
+
+      {showLoginModal && (
+        <LoginRequiredModal onClose={() => setShowLoginModal(false)} />
       )}
 
       {showReviewModal && (

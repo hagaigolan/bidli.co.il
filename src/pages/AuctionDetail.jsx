@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
+import { parseDbDate } from "@/lib/time";
 import { useAuth } from "@/lib/AuthContext";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
@@ -92,7 +93,10 @@ function SocialProofBar({ bidCount, lastBidTime }) {
 
   useEffect(() => {
     if (!lastBidTime) return;
-    const update = () => setSecAgo(Math.floor((Date.now() - new Date(lastBidTime)) / 1000));
+    const update = () => {
+      const d = parseDbDate(lastBidTime);
+      setSecAgo(d ? Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000)) : null);
+    };
     update();
     const t = setInterval(update, 1000);
     return () => clearInterval(t);

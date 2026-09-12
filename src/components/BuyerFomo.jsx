@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Flame, Users, Zap } from "lucide-react";
+import { parseDbDate } from "@/lib/time";
 
 // FOMO banner — top of the auction detail page for buyers.
 export function BuyerFomoBanner() {
@@ -24,7 +25,10 @@ export function BuyerLiveBlock({ bidCount, lastBidTime }) {
 
   useEffect(() => {
     if (!lastBidTime) return;
-    const update = () => setSecAgo(Math.floor((Date.now() - new Date(lastBidTime)) / 1000));
+    const update = () => {
+      const d = parseDbDate(lastBidTime);
+      setSecAgo(d ? Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000)) : null);
+    };
     update();
     const t = setInterval(update, 1000);
     return () => clearInterval(t);

@@ -160,6 +160,10 @@ html.a11y-reduce-motion *, html.a11y-reduce-motion *::before, html.a11y-reduce-m
   scroll-behavior: auto !important;
 }
 html.a11y-underline-links a { text-decoration: underline !important; text-underline-offset: 3px; }
+html.a11y-letter-spacing * { letter-spacing: 0.06em !important; }
+html.a11y-line-height p, html.a11y-line-height li, html.a11y-line-height span, html.a11y-line-height div { line-height: 1.9 !important; }
+html.a11y-large-cursor, html.a11y-large-cursor * { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'><path d='M6 3l28 19-12 3 8 14-6 3-8-14-9 7z' fill='%23e5893d' stroke='white' stroke-width='2'/></svg>") 6 3, auto; }
+html.a11y-strong-focus :focus-visible { outline: 4px solid #e5893d !important; outline-offset: 3px; }
 
 /* ── Accessibility: respect reduced motion ── */
 @media (prefers-reduced-motion: reduce) {

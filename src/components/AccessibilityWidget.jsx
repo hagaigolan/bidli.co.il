@@ -8,6 +8,10 @@ const OPTIONS = [
   { id: "high_contrast", label: "ניגודיות גבוהה", className: "a11y-high-contrast" },
   { id: "reduce_motion", label: "הפחתת תנועה", className: "a11y-reduce-motion" },
   { id: "underline_links", label: "הדגשת קישורים", className: "a11y-underline-links" },
+  { id: "letter_spacing", label: "ריווח בין אותיות", className: "a11y-letter-spacing" },
+  { id: "line_height", label: "ריווח בין שורות", className: "a11y-line-height" },
+  { id: "large_cursor", label: "סמן עכבר גדול", className: "a11y-large-cursor" },
+  { id: "strong_focus", label: "מיקוד בולט", className: "a11y-strong-focus" },
 ];
 
 export default function AccessibilityWidget() {

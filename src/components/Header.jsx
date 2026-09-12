@@ -46,7 +46,7 @@ export default function Header() {
   ];
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 bg-white ${scrolled ? "shadow-lg shadow-black/5" : ""}`} dir="rtl">
+    <header className="bg-white" dir="rtl">
       {/* Top micro-bar */}
       <div className="border-b border-gray-100 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
@@ -60,8 +60,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main bar */}
-      <div className="border-b border-gray-100 bg-white">
+      {/* Main bar — sticky; נשאר דבוק בראש בזמן גלילה */}
+      <div className={`sticky top-0 z-50 border-b border-gray-100 bg-white transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between min-h-16 py-3 gap-2 sm:gap-4">
             {/* Logo */}
@@ -148,8 +148,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Category strip — גלוי בראש העמוד, נעלם בגלילה למטה */}
-      <div className={`${scrolled ? "hidden" : "block"} border-b border-gray-100 bg-white`}>
+      {/* Category strip — חלק מהעמוד, גולל כלפי מעלה יחד עם האתר */}
+      <div className="border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}

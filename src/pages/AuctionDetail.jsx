@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import { parseDbDate } from "@/lib/time";
+import { isAnyEmailBanned } from "@/lib/banCheck";
 import { useAuth } from "@/lib/AuthContext";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
@@ -400,6 +401,11 @@ export default function AuctionDetail() {
     const sameUser = product.seller_user_id && authUser && product.seller_user_id === authUser.id;
     if (sameEmail || sameName || sameUser) {
       setBidError("אין לך הרשאה להגיש הצעה — זהו מכרז שפרסמת בעצמך");
+      return;
+    }
+    // חסימת משתמש מושהה מהגשת הצעות
+    if (await isAnyEmailBanned([myEmail, authUser?.email])) {
+      setBidError("חשבונך מושהה — אין אפשרות להגיש הצעות. לפניות: mitugplus@gmail.com");
       return;
     }
     setBidding(true); setBidError("");

@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { ChevronDown, LogOut, MessageCircleQuestion, Package, Store, User as UserIcon } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircleQuestion, Package, ShieldCheck, Store, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,6 +26,14 @@ function getDisplayName(name, email) {
 export default function UserMenu() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user?.email) return;
+    base44.entities.User.filter({ email: user.email })
+      .then(us => setIsAdmin(us.length > 0 && us[0].role === "admin"))
+      .catch(() => {});
+  }, [user?.email]);
 
   if (!isAuthenticated || !user) return null;
 
@@ -87,6 +97,14 @@ export default function UserMenu() {
             <span>פניות ושאלות</span>
           </Link>
         </DropdownMenuItem>
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin/manage" className="flex items-center gap-2 cursor-pointer">
+              <ShieldCheck className="h-4 w-4 text-[#3e6b8a]" />
+              <span>ניהול משתמשים ומכרזים</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogout}

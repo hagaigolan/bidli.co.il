@@ -5,6 +5,7 @@ import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X } from "luc
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
+import { isAnyEmailBanned } from "@/lib/banCheck";
 const PAYMENT_METHOD_LABELS = { kashcash: "קשקאש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
@@ -103,6 +104,15 @@ export default function UploadProduct() {
     if (!agreedTerms) {
       setError("יש לאשר את תנאי השימוש ומדיניות הפרטיות"); return;
     }
+    // חסימת משתמש מושהה מפרסום מכרזים
+    try {
+      let authEmail = "";
+      try { authEmail = (await base44.auth.me())?.email || ""; } catch {}
+      if (await isAnyEmailBanned([form.seller_email, authEmail])) {
+        setError("חשבונך מושהה — אין אפשרות לפרסם מכרזים. לפניות: mitugplus@gmail.com");
+        return;
+      }
+    } catch {}
     setLoading(true);
     setError("");
     try {

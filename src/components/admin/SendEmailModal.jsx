@@ -17,7 +17,7 @@ export default function SendEmailModal({ to, onClose }) {
     setSending(true); setError("");
     try {
       const bodyHtml = body.trim().split(/\n{2,}/)
-        .map(p => `<p style="margin:0 0 12px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
+        .map(p => `<p dir="rtl" style="margin:0 0 12px;text-align:right;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
         .join("");
       await sendAdminEmail({
         to,
@@ -25,7 +25,6 @@ export default function SendEmailModal({ to, onClose }) {
         title: subject,
         heroLine: "הודעה מהנהלת bidli",
         bodyHtml,
-        plainText: body,
       });
       setDone(true);
       setTimeout(onClose, 1500);

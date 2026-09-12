@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
+import { useAuth } from "@/lib/AuthContext";
 import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -223,6 +224,7 @@ export default function AuctionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const bidFormRef = useRef(null);
+  const { user: authUser } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -377,12 +379,15 @@ export default function AuctionDetail() {
     // Anti-shill: block seller from bidding on own auction
     const myEmail = localStorage.getItem("bidder_email") || "";
     const myNameTrim = (bidderName || "").trim();
-    const sameEmail = product.seller_email && myEmail &&
-      product.seller_email.trim().toLowerCase() === myEmail.trim().toLowerCase();
+    const authEmail = (authUser?.email || "").trim().toLowerCase();
+    const sellerEmail = (product.seller_email || "").trim().toLowerCase();
+    const sameEmail = sellerEmail && (myEmail || authEmail) &&
+      (sellerEmail === myEmail.trim().toLowerCase() || sellerEmail === authEmail);
     const sameName = product.seller_name && myNameTrim &&
       product.seller_name.trim().toLowerCase() === myNameTrim.toLowerCase();
-    if (sameEmail || sameName) {
-      setBidError("לא ניתן להגיש הצעה על מכרז שפרסמת בעצמך");
+    const sameUser = product.seller_user_id && authUser && product.seller_user_id === authUser.id;
+    if (sameEmail || sameName || sameUser) {
+      setBidError("אין לך הרשאה להגיש הצעה — זהו מכרז שפרסמת בעצמך");
       return;
     }
     setBidding(true); setBidError("");

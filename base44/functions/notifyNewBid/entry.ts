@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { sendGmail, ADMIN_EMAIL } from '../../shared/gmailSender.ts';
 import { sellerBidEmail, adminBidEmail } from '../../shared/notifyEmails.ts';
 import { sendWhatsAppText } from '../../shared/whatsapp.ts';
+import { createAppNotification } from '../../shared/appNotifications.ts';
 
 // Sends designed new-bid alerts — to the auction's seller and to the platform admin —
 // on every new bid. Invoked by the "Bid Notifications" workflow (entity trigger: Bid create).
@@ -50,6 +51,21 @@ export default async function (req: Request): Promise<Response> {
           const res = await sendWhatsAppText(pref.whatsapp_phone, msg);
           results.push({ to: 'outbid_whatsapp', ok: res.ok, error: res.error });
         }
+      }
+
+      // התראה בתוך האתר למוביל הקודם — תוצג בפעמון שבכותרת
+      if (outbidEmail) {
+        await createAppNotification(base44, {
+          recipient_email: outbidEmail,
+          recipient_name: outbidName,
+          type: 'outbid',
+          title: `עקפו אותך על "${product.title}"`,
+          body: `${newBidderName} הגיש הצעה גבוהה יותר (₪${bid.amount}). לחץ להגשת הצעה גבוהה יותר.`,
+          product_id: product.id,
+          product_title: product.title,
+          product_image_url: product.image_url || '',
+          link: `/auction/${product.id}`,
+        });
       }
     } catch (e) {
       results.push({ to: 'outbid_whatsapp', ok: false, error: String(e) });

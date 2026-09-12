@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "name": "AppNotification",
+  "properties": {
+    "recipient_email": {
+      "type": "string",
+      "description": "\u05d4\u05de\u05d9\u05d9\u05dc \u05e9\u05d0\u05dc\u05d9\u05d5 \u05de\u05e9\u05d5\u05d9\u05db\u05ea \u05d4\u05d4\u05ea\u05e8\u05d0\u05d4 (\u05de\u05d6\u05d4\u05d4 \u05d4\u05e0\u05de\u05e2\u05df)"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "outbid",
+        "won",
+        "sold",
+        "cancelled"
+      ],
+      "default": "outbid"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "product_image_url": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "recipient_email",
+    "type",
+    "title"
+  ]
+}

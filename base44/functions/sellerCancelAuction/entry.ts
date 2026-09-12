@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { sendGmail } from '../../shared/gmailSender.ts';
 import { bidderCancelEmail } from '../../shared/notifyEmails.ts';
 import { sendWhatsAppText } from '../../shared/whatsapp.ts';
+import { createAppNotification } from '../../shared/appNotifications.ts';
 
 // ביטול מכרז עצמי למוכר:
 // - אין הצעות → ביטול מיידי ללא השלכות
@@ -97,6 +98,18 @@ export default async function (req: Request): Promise<Response> {
           } catch (e) {
             results.push({ to: email, email: 'failed', error: String(e) });
           }
+
+          // התראה בתוך האתר — תוצג בפעמון שבכותרת
+          await createAppNotification(base44, {
+            recipient_email: email,
+            recipient_name: bid.bidder_name || '',
+            type: 'cancelled',
+            title: `המכרז "${product.title}" בוטל על ידי המוכר`,
+            body: 'כל ההצעות בוטלו. מוזמנים לעיין במכרזים פעילים נוספים באתר.',
+            product_id: product.id,
+            product_title: product.title,
+            product_image_url: product.image_url || '',
+          });
         }
 
         try {

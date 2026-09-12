@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Search, Bell } from "lucide-react";
+import { Menu, ChevronDown, Search } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import UserMenu from "@/components/UserMenu";
+import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 
 export default function Header() {
@@ -102,9 +103,7 @@ export default function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Button variant="ghost" size="icon" aria-label="התראות" className="h-9 w-9 text-gray-500 hover:text-[#e5893d] hidden sm:flex rounded-xl">
-                <Bell className="h-4 w-4" aria-hidden="true" />
-              </Button>
+              <NotificationBell />
               <UserMenu />
               <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
                 + פרסם מכרז

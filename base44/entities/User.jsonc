@@ -70,6 +70,13 @@
       "type": "number",
       "default": 0,
       "description": "Internal counter of seller-cancelled auctions that had bids \u2014 used for the cancellation quota, not shown publicly"
+    },
+    "interest_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Categories the user is interested in \u2014 used to offer personalized product recommendations in the profile"
     }
   },
   "required": [

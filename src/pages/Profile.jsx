@@ -5,6 +5,7 @@ import SalesManager from "@/components/SalesManager";
 import SellerAuctionEditor from "@/components/SellerAuctionEditor";
 import ProfileEditModal from "@/components/ProfileEditModal";
 import ProfileStatsCard from "@/components/ProfileStatsCard";
+import ProfileInterests from "@/components/ProfileInterests";
 import { useAuth } from "@/lib/AuthContext";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
@@ -216,6 +217,8 @@ export default function Profile() {
         {(profileMeta.email || authUser?.email) && (
           <ProfileStatsCard email={(profileMeta.email || authUser?.email).trim()} />
         )}
+
+        <ProfileInterests />
 
         {!hasProfile && !editingProfile && (
           <div className="text-center py-12">

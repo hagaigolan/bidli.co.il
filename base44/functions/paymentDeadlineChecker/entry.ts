@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { secondChanceEmail } from '../../shared/saleEmails.ts';
 
 // Runs every 30 min. If winner hasn't paid after 24h → strike + offer to second bidder
 Deno.serve(async (req) => {
@@ -49,7 +50,8 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: product.second_bidder_email,
           subject: `⚡ הצעה שנייה — אתה הבא! ${product.title}`,
-          body: `שלום ${product.second_bidder_name},\n\nהמציע הראשי ב"${product.title}" לא השלים את תשלומו.\nיש לך 12 שעות לרכוש את המוצר במחיר ₪${product.second_bid_amount?.toLocaleString()}.\n\nהיכנס לאזור האישי שלך ב-bidli להשלמת הרכישה.`,
+          html: secondChanceEmail(product, product.second_bidder_name),
+          text: `שלום ${product.second_bidder_name || ""},\n\nהמציע הראשי ב"${product.title}" לא השלים את תשלומו.\nיש לך 12 שעות לרכוש את המוצר במחיר ₪${product.second_bid_amount?.toLocaleString()}.\n\nלהשלמת הרכישה: ${"https://bidli.co.il"}/my-orders\nלעמוד המכרז: ${"https://bidli.co.il"}/auction/${product.id}\nלעמוד הבית: https://bidli.co.il`,
         });
         results.push({ id: product.id, action: 'offered_to_second_bidder' });
       } else {

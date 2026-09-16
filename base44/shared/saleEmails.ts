@@ -126,4 +126,29 @@ export function sellerSaleEmail(product, winnerName) {
   });
 }
 
+export function secondChanceEmail(product, secondBidderName) {
+  const productUrl = `${APP_URL}/auction/${product.id}`;
+  const ordersUrl = `${APP_URL}/my-orders`;
+  const price = (product.second_bid_amount ?? product.current_price ?? 0).toLocaleString("he-IL");
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${secondBidderName || "מציע"},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">⚡ ההזדמנות שלך הגיעה! המציע הראשי במכרז <strong>"${product.title}"</strong> לא השלים את התשלום בזמן — והזכייה מוצעת עכשיו לך, במחיר ההצעה שלך: <strong style="color:#e5893d;">₪${price}</strong>.</p>
+    <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#3f3f46;">לרשותך <strong style="color:#e5893d;">12 שעות</strong> להשלמת הרכישה. לאחר מכן תועבר הזכייה הלאה או המכרז יבוטל.</p>
+    ${productCard({ ...product, current_price: product.second_bid_amount ?? product.current_price }, productUrl)}
+    ${stepsBox(`
+      <strong>1.</strong> בצע את ההעברה למוכר בסכום הזכייה.<br>
+      <strong>2.</strong> דווח על ההעברה בעמוד "ההזמנות שלי".<br>
+      <strong>3.</strong> המוכר יאשר שהכסף התקבל — וההזמנה תסומן כשולמה.`)}
+    <p style="margin:16px 0 0;font-size:13px;line-height:1.7;color:#71717a;">אפשר גם לחזור לעיין במכרזים נוספים: <a href="${APP_URL}" style="color:#3e6b8a;font-weight:700;text-decoration:none;">עמוד הבית של bidli ←</a></p>`;
+  return shell({
+    title: "הצעה שנייה — אתה הבא!",
+    heroColor: "#e5893d",
+    heroEmoji: "⚡",
+    heroLine: "הזכייה מוצעת לך במחיר ההצעה שלך",
+    bodyHtml: body,
+    ctaUrl: ordersUrl,
+    ctaLabel: "להשלמת הרכישה בההזמנות שלי →",
+  });
+}
+
 export const APP_BASE_URL = APP_URL;

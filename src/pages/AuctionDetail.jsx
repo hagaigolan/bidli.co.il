@@ -815,6 +815,11 @@ export default function AuctionDetail() {
                       className="font-semibold hover:text-[#e5893d] transition-colors underline decoration-transparent hover:decoration-[#e5893d]">
                       מוכר: {product.seller_name}
                     </Link>
+                  ) : product.seller_user_id ? (
+                    <Link to={`/seller/id/${encodeURIComponent(product.seller_user_id)}`}
+                      className="font-semibold hover:text-[#e5893d] transition-colors underline decoration-transparent hover:decoration-[#e5893d]">
+                      מוכר: {product.seller_name}
+                    </Link>
                   ) : (
                     <span>מוכר: {product.seller_name}</span>
                   )}

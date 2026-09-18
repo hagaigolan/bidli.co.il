@@ -70,19 +70,28 @@ function ProductCard({ product }) {
 }
 
 export default function SellerProfile() {
-  const { email: rawEmail } = useParams();
+  const { email: rawEmail, id: rawId } = useParams();
   const email = decodeURIComponent(rawEmail || "");
+  const sellerId = decodeURIComponent(rawId || "");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active");
 
   useEffect(() => {
-    if (!email) return;
+    // פרופיל לפי מזהה מוכר (למשל מכרזים שפורסמו ללא אימייל) או לפי אימייל
+    if (sellerId) {
+      base44.entities.Product.filter({ seller_user_id: sellerId }, "-created_date", 100)
+        .then(setProducts)
+        .catch(() => {})
+        .finally(() => setLoading(false));
+      return;
+    }
+    if (!email) { setLoading(false); return; }
     base44.entities.Product.filter({ seller_email: email }, "-created_date", 100)
       .then(setProducts)
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [email]);
+  }, [email, sellerId]);
 
   const now = Date.now();
   const active = products.filter(p => p.ends_at && new Date(p.ends_at) > now && p.status !== "cancelled");
@@ -106,11 +115,13 @@ export default function SellerProfile() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <div className="mb-6">
-          <SellerTrustBadge sellerEmail={email} sellerName={sellerName} />
-        </div>
+        {email && (
+          <div className="mb-6">
+            <SellerTrustBadge sellerEmail={email} sellerName={sellerName} />
+          </div>
+        )}
 
-        <ReviewsBio email={email} />
+        {email && <ReviewsBio email={email} />}
 
         <div className="flex gap-1 p-1 bg-gray-50 rounded-xl mb-5 max-w-xs">
           <button onClick={() => setActiveTab("active")}

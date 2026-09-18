@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
       prompt: `Professional studio product photograph for an auction listing: ${llm.image_prompt}. Clean neutral background, soft studio lighting, high detail, catalog style, no text or logos in the image.`,
     });
 
-    const endsAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    const endsAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
     const product = await base44.asServiceRole.entities.Product.create({
       title: llm.title,

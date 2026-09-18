@@ -31,6 +31,7 @@ import About from './pages/About';
 import SellerProfile from './pages/SellerProfile';
 import SellerQuestions from './pages/SellerQuestions';
 import AdminManagement from './pages/AdminManagement';
+import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -104,6 +105,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <ScrollToTop />
           <AuthenticatedApp />
         </Router>
         <Toaster />

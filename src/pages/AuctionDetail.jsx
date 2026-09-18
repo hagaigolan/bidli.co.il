@@ -380,6 +380,9 @@ export default function AuctionDetail() {
         product.seller_email.trim().toLowerCase() === authUser.email.trim().toLowerCase())));
   const ended = product && new Date(product.ends_at) <= new Date();
   const cancelled = product?.status === "cancelled";
+  // עריכה — המוכר עצמו, או אדמין על מכרזים פיקטיביים שפורסמו ע"י הסוכן "בידלי"
+  const isAdmin = authUser?.role === "admin";
+  const canEdit = isSellerViewing || (isAdmin && product?.seller_user_id === "bidli-agent");
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;
@@ -607,7 +610,7 @@ export default function AuctionDetail() {
               <h1 className="text-2xl font-black text-gray-900 mt-1">{product.title}</h1>
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
 
-              {isMyAuction && !ended && (
+              {canEdit && !ended && (
                 <button type="button" onClick={() => setShowEdit(true)}
                   className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all"
                   style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
@@ -843,7 +846,7 @@ export default function AuctionDetail() {
         />
       )}
 
-      {showEdit && !ended && isMyAuction && (
+      {showEdit && !ended && canEdit && (
         <ProductEditModal
           product={product}
           onClose={() => setShowEdit(false)}

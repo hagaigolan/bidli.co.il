@@ -40,10 +40,10 @@ function useCountdown(endsAt) {
 
 function TimerBlock({ endsAt, antiSnipeExtended }) {
   const left = useCountdown(endsAt);
-  const critical = left && left.total < 60000;   // < 1 min — RED flashing
-  const urgent   = left && left.total < 3600000; // < 1 hr  — PINK
-  const color = critical ? "#ff2200" : urgent ? "#e5893d" : "#2d4f68";
-  const pulseClass = critical ? "animate-pulse" : "";
+  const critical = left && left.total < 60000;   // דקה אחרונה — אדום מהבהב
+  const urgent   = left && left.total < 3600000; // השעה האחרונה — אדום מהבהב ללחץ FOMO
+  const color = urgent ? "#ff2200" : "#2d4f68";
+  const pulseClass = urgent ? "animate-pulse" : "";
 
   if (!left) {
     return (
@@ -62,7 +62,7 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4" style={{ color }} />
           <span className="text-sm font-bold" style={{ color }}>
-            {critical ? "🔴 רגעים אחרונים!" : urgent ? "⚡ נגמר בקרוב!" : "המכרז מסתיים בעוד:"}
+            {critical ? "🔴 רגעים אחרונים!" : urgent ? "🔴 שעה אחרונה — אל תפספס!" : "המכרז מסתיים בעוד:"}
           </span>
         </div>
         {antiSnipeExtended && (
@@ -75,7 +75,7 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
           <div key={l} className="text-center">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl font-mono transition-all duration-300"
               style={{ background: "white", border: `2px solid ${color}66`, color,
-                boxShadow: critical ? `0 0 12px ${color}88` : "none" }}>
+                boxShadow: urgent ? `0 0 12px ${color}88` : "none" }}>
               {String(v).padStart(2, "0")}
             </div>
             <p className="text-xs text-gray-400 mt-1">{l}</p>

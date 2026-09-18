@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "name": "AutoBid",
+  "properties": {
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "product_image_url": {
+      "type": "string"
+    },
+    "product_ends_at": {
+      "type": "string"
+    },
+    "bidder_name": {
+      "type": "string"
+    },
+    "bidder_email": {
+      "type": "string"
+    },
+    "max_amount": {
+      "type": "number",
+      "description": "\u05d4\u05e1\u05db\u05d5\u05dd \u05d4\u05de\u05e7\u05e1\u05d9\u05de\u05dc\u05d9 \u05e9\u05d4\u05de\u05e6\u05d9\u05e2 \u05de\u05d5\u05db\u05df \u05dc\u05e9\u05dc\u05dd \u2014 \u05d4\u05d4\u05e6\u05e2\u05d4 \u05d4\u05d0\u05d5\u05d8\u05d5\u05de\u05d8\u05d9\u05ea \u05ea\u05d5\u05d2\u05e9 \u05e2\u05d3 \u05d0\u05dc\u05d9\u05d5"
+    },
+    "used": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05d4\u05e6\u05e2\u05d4 \u05d4\u05d0\u05d5\u05d8\u05d5\u05de\u05d8\u05d9\u05ea \u05d4\u05d7\u05d3-\u05e4\u05e2\u05de\u05d9\u05ea \u05db\u05d1\u05e8 \u05e0\u05d5\u05e6\u05dc\u05d4"
+    },
+    "used_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "max_amount"
+  ]
+}

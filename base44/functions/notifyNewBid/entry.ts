@@ -89,6 +89,61 @@ export default async function (req: Request): Promise<Response> {
       results.push({ to: 'admin', ok: false, error: String(e) });
     }
 
+    // ── הצעה אוטומטית חד-פעמית ──
+    // אם למציע אחר במכרז זה מוגדר סכום אוטומטי שטרם נוצל, וההצעה החדשה עקפה אותו —
+    // המערכת מגישה בשמו הצעה של מחיר נוכחי + 1, עד גבול הסכום שבחר (פעם אחת בלבד)
+    try {
+      const stillActive = product.status === 'active' && new Date(product.ends_at) > new Date();
+      if (stillActive) {
+        const key = (s) => (s || '').trim().toLowerCase();
+        const newBidderKey = key(bid.bidder_name);
+        const sellerKeys = [key(product.seller_name), key(product.seller_email)].filter(Boolean);
+        const autoBids = await base44.asServiceRole.entities.AutoBid.filter({ product_id: product.id, used: false });
+        let currentPrice = product.current_price || product.starting_price || 0;
+        let leader = { name: bid.bidder_name, email: bid.bidder_email || '', amount: bid.amount };
+        const fired = [];
+        for (let step = 0; step < 10; step++) {
+          const eligible = autoBids
+            .filter(a => !a.used
+              && a.max_amount >= currentPrice + 1
+              && key(a.bidder_name) !== newBidderKey
+              && !sellerKeys.includes(key(a.bidder_name))
+              && !sellerKeys.includes(key(a.bidder_email)))
+            .sort((a, b) => b.max_amount - a.max_amount);
+          if (!eligible.length) break;
+          const a = eligible[0];
+          const amount = currentPrice + 1;
+          await base44.asServiceRole.entities.Product.update(product.id, {
+            current_price: amount,
+            highest_bidder: a.bidder_name,
+            highest_bidder_email: a.bidder_email || '',
+            second_bidder_name: leader.name || '',
+            second_bidder_email: leader.email || '',
+            second_bid_amount: leader.amount || 0,
+            bid_count: (product.bid_count || 0) + 1,
+          });
+          await base44.asServiceRole.entities.Bid.create({
+            product_id: product.id,
+            product_title: product.title,
+            product_image_url: product.image_url || '',
+            product_ends_at: product.ends_at,
+            bidder_name: a.bidder_name,
+            bidder_email: a.bidder_email || '',
+            amount,
+            status: 'active',
+          });
+          await base44.asServiceRole.entities.AutoBid.update(a.id, { used: true, used_at: new Date().toISOString() });
+          a.used = true;
+          fired.push({ name: a.bidder_name, amount });
+          currentPrice = amount;
+          leader = { name: a.bidder_name, email: a.bidder_email || '', amount };
+        }
+        if (fired.length) results.push({ to: 'auto_bids', ok: true, fired });
+      }
+    } catch (e) {
+      results.push({ to: 'auto_bids', ok: false, error: String(e) });
+    }
+
     return Response.json({ ok: true, results });
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });

@@ -18,6 +18,7 @@ import ShareButton from "@/components/ShareButton";
 import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
+import AutoBidPanel from "@/components/AutoBidPanel";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -796,6 +797,11 @@ export default function AuctionDetail() {
                     ? <><Bell className="h-3.5 w-3.5" /> התראות מופעלות ✓ — לחץ לעדכון פרטים</>
                     : <><BellOff className="h-3.5 w-3.5" /> הפעל התראות — קבל/י מייל/ווצאפ אם יעקפו אותך</>}
                 </button>
+
+                {/* ── הצעה אוטומטית חד-פעמית ── */}
+                {!isSellerViewing && (
+                  <AutoBidPanel product={product} onRequireLogin={() => setShowLoginModal(true)} />
+                )}
               </form>
             ) : (
               <div className="rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden">

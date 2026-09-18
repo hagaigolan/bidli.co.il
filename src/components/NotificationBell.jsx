@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Bell, Zap, Trophy, Banknote, XCircle } from "lucide-react";
+import { Bell, Zap, Trophy, Banknote, XCircle, Clock } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 
 const TYPE_META = {
@@ -9,6 +9,7 @@ const TYPE_META = {
   won: { icon: Trophy, color: "#16a34a", bg: "#22c55e15" },
   sold: { icon: Banknote, color: "#3e6b8a", bg: "#3e6b8a15" },
   cancelled: { icon: XCircle, color: "#9ca3af", bg: "#f3f4f6" },
+  extension: { icon: Clock, color: "#f59e0b", bg: "#f59e0b15" },
 };
 
 function timeAgo(dateStr) {

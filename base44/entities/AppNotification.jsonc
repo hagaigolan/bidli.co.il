@@ -15,7 +15,8 @@
         "outbid",
         "won",
         "sold",
-        "cancelled"
+        "cancelled",
+        "extension"
       ],
       "default": "outbid"
     },

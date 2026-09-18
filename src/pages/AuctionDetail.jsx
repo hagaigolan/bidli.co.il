@@ -66,7 +66,7 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
         </div>
         {antiSnipeExtended && (
           <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white"
-            style={{ background: "#ff6600" }}>+30 שנ׳ הוספו!</span>
+            style={{ background: "#ff6600" }}>+60 שנ׳ הוספו!</span>
         )}
       </div>
       <div className="flex flex-row-reverse gap-3 justify-center mb-3">
@@ -337,11 +337,10 @@ export default function AuctionDetail() {
         // Flash new bid in feed
         setFlashNew(true);
         setTimeout(() => setFlashNew(false), 1500);
-        // Anti-snipe: if bid in last 60s, extend (visually)
-        const remaining = new Date(event.data.ends_at) - Date.now();
-        if (remaining > 0 && remaining < 60000) {
+        // הארכת זמן חד-פעמית — באנר חי כשזמן הסיום הוארך בפועל
+        if (prev?.ends_at && new Date(event.data.ends_at) > new Date(prev.ends_at)) {
           setAntiSnipeExtended(true);
-          setTimeout(() => setAntiSnipeExtended(false), 4000);
+          setTimeout(() => setAntiSnipeExtended(false), 5000);
         }
         // Outbid alert
         const myName = localStorage.getItem("bidder_name");
@@ -456,6 +455,13 @@ export default function AuctionDetail() {
         highest_bidder_email: myEmail || "",
         bid_count: (product.bid_count || 0) + 1,
       };
+      // הארכת זמן חד-פעמית — הצעה ב-60 השניות האחרונות מוסיפה 60 שניות
+      const remainingMs = new Date(product.ends_at) - Date.now();
+      const extendAuction = remainingMs > 0 && remainingMs <= 60000 && !product.snipe_extended;
+      if (extendAuction) {
+        updateData.ends_at = new Date(Date.now() + 60000).toISOString();
+        updateData.snipe_extended = true;
+      }
       // Previous leader becomes second bidder
       if (product.highest_bidder && product.highest_bidder !== name) {
         updateData.second_bidder_name = product.highest_bidder;
@@ -469,8 +475,31 @@ export default function AuctionDetail() {
         product_ends_at: product.ends_at,
         bidder_name: name, bidder_email: myEmail || "", amount: newPrice, status: "active",
       });
-      setProduct(p => ({ ...p, current_price: newPrice, highest_bidder: name, bid_count: (p.bid_count || 0) + 1 }));
+      setProduct(p => ({ ...p, ...updateData }));
       setBids(prev => [{ bidder_name: name, amount: newPrice, id: Date.now() }, ...prev]);
+      if (extendAuction) {
+        setAntiSnipeExtended(true);
+        setTimeout(() => setAntiSnipeExtended(false), 5000);
+        // התראה בפעמון לכל המציעים במכרז על הארכת הזמן
+        const recipients = [...new Map(
+          [...bids, { bidder_name: name, bidder_email: myEmail }]
+            .filter(b => (b.bidder_email || "").trim())
+            .map(b => [(b.bidder_email || "").trim().toLowerCase(), b])
+        ).values()];
+        if (recipients.length) {
+          base44.entities.AppNotification.bulkCreate(recipients.map(b => ({
+            recipient_email: (b.bidder_email || "").trim().toLowerCase(),
+            recipient_name: b.bidder_name || "",
+            type: "extension",
+            title: `הארכת זמן חד-פעמית — 60 שניות נוספו למכרז "${product.title}"`,
+            body: "הוגשה הצעה ברגעים האחרונים וזמן המכרז הוארך ב-60 שניות. זו ההזדמנות להגיש הצעה נוספת!",
+            product_id: product.id,
+            product_title: product.title,
+            product_image_url: product.image_url || "",
+            link: `/auction/${product.id}`,
+          }))).catch(() => {});
+        }
+      }
       setFlashNew(true); setTimeout(() => setFlashNew(false), 1500);
       setBidAmount(""); setBidSuccess(true);
       setTimeout(() => setBidSuccess(false), 3000);

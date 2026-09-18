@@ -34,7 +34,7 @@ export default function ImageSlider({ images = [], alt = "", children }) {
   };
 
   const toggleZoomDouble = () => {
-    if (zoom > 1) { resetZoom(); } else { setZoom(2.5); setPan({ x: 0, y: 0 }); }
+    if (zoom > 1) { resetZoom(); } else { setZoom(2); setPan({ x: 0, y: 0 }); }
   };
 
   // Keyboard navigation in lightbox

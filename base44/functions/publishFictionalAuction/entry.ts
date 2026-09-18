@@ -98,9 +98,11 @@ Deno.serve(async (req) => {
     const startingPrice = Math.max(50, Math.round(Number(llm.starting_price) || 100));
     const buyNowPrice = Math.max(startingPrice + 50, Math.round(Number(llm.buy_now_price) || startingPrice * 1.5));
 
-    // Generate a matching product photo
-    const img = await base44.asServiceRole.integrations.Core.GenerateImage({
-      prompt: `Professional studio product photograph for an auction listing: ${llm.image_prompt}. Clean neutral background, soft studio lighting, high detail, catalog style, no text or logos in the image.`,
+    // Generate two matching product photos (main shot + alternate angle)
+    const imgPrompt = `Professional studio product photograph for an auction listing: ${llm.image_prompt}. Clean neutral background, soft studio lighting, high detail, catalog style, no text or logos in the image.`;
+    const img = await base44.asServiceRole.integrations.Core.GenerateImage({ prompt: imgPrompt });
+    const img2 = await base44.asServiceRole.integrations.Core.GenerateImage({
+      prompt: `${imgPrompt} Different composition: an alternate angled view of the same item, closer detail shot from a different perspective.`,
     });
 
     const endsAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -113,7 +115,7 @@ Deno.serve(async (req) => {
       starting_price: startingPrice,
       buy_now_price: buyNowPrice,
       image_url: img.url,
-      image_urls: [img.url],
+      image_urls: [img.url, img2.url],
       seller_name: sellerName,
       seller_user_id: sellerUserId,
       location: city,

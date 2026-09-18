@@ -12,7 +12,8 @@ const CATEGORIES = [
 
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
 
-const SELLER_USER_ID = "bidli-agent";
+// קידומת משותפת לכל המוכרים הפיקטיביים — כל שם מוכר מקבל מזהה ייחודי משלו
+const SELLER_USER_ID_PREFIX = "bidli-agent";
 
 // שמות מוכרים פיקטיביים וערים — מתחלפים בכל מכרז שמתפרסם
 const SELLER_NAMES = [
@@ -57,10 +58,14 @@ Deno.serve(async (req) => {
     }
 
     // Rotate categories, seller names and cities based on how many fictional sales already exist
-    const existing = await base44.asServiceRole.entities.Product.filter({ seller_user_id: SELLER_USER_ID });
+    const existing = await base44.asServiceRole.entities.Product.filter({
+      seller_user_id: { $regex: `^${SELLER_USER_ID_PREFIX}` },
+    });
     const idx = existing.length;
     const category = CATEGORIES[idx % CATEGORIES.length];
-    const sellerName = SELLER_NAMES[idx % SELLER_NAMES.length];
+    const nameIdx = idx % SELLER_NAMES.length;
+    const sellerName = SELLER_NAMES[nameIdx];
+    const sellerUserId = `${SELLER_USER_ID_PREFIX}-${nameIdx}`;
     const city = CITIES[idx % CITIES.length];
 
     // Generate a realistic fictional listing with the LLM
@@ -110,7 +115,7 @@ Deno.serve(async (req) => {
       image_url: img.url,
       image_urls: [img.url],
       seller_name: sellerName,
-      seller_user_id: SELLER_USER_ID,
+      seller_user_id: sellerUserId,
       location: city,
       ends_at: endsAt,
       status: "active",

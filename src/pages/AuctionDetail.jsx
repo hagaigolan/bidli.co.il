@@ -394,7 +394,7 @@ export default function AuctionDetail() {
   const cancelled = product?.status === "cancelled";
   // עריכה — המוכר עצמו, או אדמין על מכרזים פיקטיביים שפורסמו ע"י הסוכן "בידלי"
   const isAdmin = authUser?.role === "admin";
-  const canEdit = isSellerViewing || (isAdmin && product?.seller_user_id === "bidli-agent");
+  const canEdit = isSellerViewing || (isAdmin && product?.seller_user_id?.startsWith("bidli-agent"));
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;

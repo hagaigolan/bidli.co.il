@@ -14,6 +14,19 @@ const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בי
 
 const SELLER_USER_ID = "bidli-agent";
 
+// שמות מוכרים פיקטיביים וערים — מתחלפים בכל מכרז שמתפרסם
+const SELLER_NAMES = [
+  "אבי לוי", "מרים כהן", "יוסי ביטון", "נורית שפירא", "דוד אזולאי",
+  "רונית בר", "משה פרידמן", "תמר גרוס", "אלי מזרחי", "יעל אלמוג",
+  "שלמה דהן", "ליאת בן-דוד", "עומר לוינסון", "הילה צדוק", "אביב מלכה",
+];
+
+const CITIES = [
+  "תל אביב", "ירושלים", "חיפה", "באר שבע", "ראשון לציון",
+  "פתח תקווה", "נתניה", "אשדוד", "רחובות", "הרצליה",
+  "כפר סבא", "בת ים", "רמת גן", "חולון", "מודיעין",
+];
+
 function localNow() {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit",
@@ -43,9 +56,12 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, skipped: "outside_publish_window" });
     }
 
-    // Rotate categories based on how many fictional sales already exist
+    // Rotate categories, seller names and cities based on how many fictional sales already exist
     const existing = await base44.asServiceRole.entities.Product.filter({ seller_user_id: SELLER_USER_ID });
-    const category = CATEGORIES[existing.length % CATEGORIES.length];
+    const idx = existing.length;
+    const category = CATEGORIES[idx % CATEGORIES.length];
+    const sellerName = SELLER_NAMES[idx % SELLER_NAMES.length];
+    const city = CITIES[idx % CITIES.length];
 
     // Generate a realistic fictional listing with the LLM
     const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
@@ -56,7 +72,7 @@ Deno.serve(async (req) => {
 - מחיר התחלתי ריאלי בשקלים לפריט כזה בשוק הישראלי (למשל: תכשיטים 300–5,000, אמנות 500–15,000, נומיסמטיקה 200–3,000, ספרים ובולים 100–1,500, עיצוב הבית 200–4,000, אופנה 150–2,500, יודאיקה 300–8,000, אספנות 200–6,000, רכבים 15,000–90,000, נדל"ן 350,000–2,500,000).
 - מחיר "קנה עכשיו" גבוה משמעותית מהמחיר ההתחלתי.
 - מצב: חייב להיות בדיוק אחד מהערכים: ${CONDITIONS.join(" / ")}.
-- מיקום בישראל (עיר).
+- מיקום: העיר חייבת להיות בדיוק "${city}".
 - image_prompt: תיאור קצר באנגלית לתמונת מוצר סטודיו של הפריט (בלי טקסט בתמונה).`,
       response_json_schema: {
         type: "object",
@@ -93,9 +109,9 @@ Deno.serve(async (req) => {
       buy_now_price: buyNowPrice,
       image_url: img.url,
       image_urls: [img.url],
-      seller_name: "בידלי",
+      seller_name: sellerName,
       seller_user_id: SELLER_USER_ID,
-      location: llm.location,
+      location: city,
       ends_at: endsAt,
       status: "active",
       bid_count: 0,
@@ -103,7 +119,7 @@ Deno.serve(async (req) => {
 
     return Response.json({
       ok: true,
-      published: { id: product.id, title: product.title, category, starting_price: startingPrice, image_url: img.url },
+      published: { id: product.id, title: product.title, category, seller_name: sellerName, location: city, starting_price: startingPrice, image_url: img.url },
       total_fictional: existing.length + 1,
     });
   } catch (error) {

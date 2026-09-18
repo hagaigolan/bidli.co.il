@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { SellerTrustBadge } from "@/components/SellerBadge";
+import ReviewsBio from "@/components/ReviewsBio";
 import { MapPin, Clock, Flame, Package } from "lucide-react";
 
 function CardTimer({ endsAt }) {
@@ -108,6 +109,8 @@ export default function SellerProfile() {
         <div className="mb-6">
           <SellerTrustBadge sellerEmail={email} sellerName={sellerName} />
         </div>
+
+        <ReviewsBio email={email} />
 
         <div className="flex gap-1 p-1 bg-gray-50 rounded-xl mb-5 max-w-xs">
           <button onClick={() => setActiveTab("active")}

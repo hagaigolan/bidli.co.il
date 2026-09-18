@@ -249,7 +249,9 @@ export default function AuctionDetail() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
+  const [buyerReviewed, setBuyerReviewed] = useState(false);
+  const [sellerReviewed, setSellerReviewed] = useState(false);
+  const [reviewDirection, setReviewDirection] = useState("buyer");
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
   // ── 7. notifications opt-in ──
@@ -294,19 +296,29 @@ export default function AuctionDetail() {
     } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
   };
 
-  // בדיקה אם המשתמש כבר דירג את המוכר במכרז זה
+  // בדיקה אם המשתמש כבר דירג את הצד השני במכרז זה (הדירוג ההדדי נפתח לאחר המסירה)
   useEffect(() => {
-    if (!id) return;
-    const myEmail = (localStorage.getItem("bidder_email") || "").trim().toLowerCase();
-    const myName = localStorage.getItem("bidder_name");
-    if (!myEmail && !myName) return;
+    if (!id || !product) return;
+    const myEmails = [
+      (localStorage.getItem("bidder_email") || "").trim().toLowerCase(),
+      (authUser?.email || "").trim().toLowerCase(),
+    ].filter(Boolean);
+    const myNameTrim = (localStorage.getItem("bidder_name") || "").trim();
+    if (!myEmails.length && !myNameTrim) return;
+    const isMine = r =>
+      myEmails.includes((r.reviewer_email || "").trim().toLowerCase()) ||
+      (myNameTrim && r.reviewer_name === myNameTrim);
+    const sellerEmail = (product.seller_email || "").trim().toLowerCase();
+    const buyerEmail = (product.highest_bidder_email || "").trim().toLowerCase();
     base44.entities.Review.filter({ product_id: id })
       .then(reviews => {
-        setAlreadyReviewed(reviews.some(r =>
-          (myEmail && (r.reviewer_email || "").trim().toLowerCase() === myEmail) ||
-          (myName && r.reviewer_name === myName)));
+        const mine = reviews.filter(isMine);
+        setBuyerReviewed(!!sellerEmail && mine.some(r =>
+          ((r.reviewee_email || r.seller_email || "")).trim().toLowerCase() === sellerEmail));
+        setSellerReviewed(!!buyerEmail && mine.some(r =>
+          (r.reviewee_email || "").trim().toLowerCase() === buyerEmail));
       }).catch(() => {});
-  }, [id]);
+  }, [id, product?.seller_email, product?.highest_bidder_email, product?.status]);
 
   // Load bid history
   useEffect(() => {
@@ -386,6 +398,16 @@ export default function AuctionDetail() {
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;
+  // דירוג הדדי — זמין לאחר שהמוצר סופק לקונה
+  const deliveredToBuyer = product && ["delivered", "released"].includes(product.status);
+  const myEmails = [
+    (localStorage.getItem("bidder_email") || "").trim().toLowerCase(),
+    (authUser?.email || "").trim().toLowerCase(),
+  ].filter(Boolean);
+  const iAmBuyer = !!product?.highest_bidder && (
+    (myName && product.highest_bidder.trim() === myName.trim()) ||
+    (product.highest_bidder_email && myEmails.includes(product.highest_bidder_email.trim().toLowerCase()))
+  );
 
   const handleBid = async (e) => {
     e.preventDefault();
@@ -812,21 +834,39 @@ export default function AuctionDetail() {
               <SellerTrustBadge sellerEmail={product.seller_email} sellerName={product.seller_name} />
             )}
 
-            {/* ── RATE SELLER (after auction ended, for any participant) ── */}
-            {ended && product.highest_bidder && !isSellerViewing && (alreadyReviewed ? (
-              <div className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border"
-                style={{ borderColor: "#22c55e44", color: "#16a34a", background: "#22c55e08" }}>
-                <Star className="h-4 w-4" aria-hidden="true" />
-                כבר דירגת את המוכר במכרז זה ✓
+            {/* ── דירוג הדדי — נפתח לאחר שהמוצר סופק לקונה ── */}
+            {deliveredToBuyer && product.highest_bidder && (iAmBuyer || isSellerViewing) && (
+              <div className="space-y-2">
+                {iAmBuyer && (buyerReviewed ? (
+                  <div className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border"
+                    style={{ borderColor: "#22c55e44", color: "#16a34a", background: "#22c55e08" }}>
+                    <Star className="h-4 w-4" aria-hidden="true" />
+                    כבר דירגת את המוכר במכרז זה ✓
+                  </div>
+                ) : (
+                  <button onClick={() => { setReviewDirection("buyer"); setShowReviewModal(true); }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
+                    style={{ borderColor: "#f59e0b66", color: "#b45309", background: "#f59e0b08" }}>
+                    <MessageSquare className="h-4 w-4" />
+                    דרג את המוכר — עזור לקהילה 🏆
+                  </button>
+                ))}
+                {isSellerViewing && (sellerReviewed ? (
+                  <div className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border"
+                    style={{ borderColor: "#22c55e44", color: "#16a34a", background: "#22c55e08" }}>
+                    <Star className="h-4 w-4" aria-hidden="true" />
+                    כבר דירגת את הקונה במכרז זה ✓
+                  </div>
+                ) : (
+                  <button onClick={() => { setReviewDirection("seller"); setShowReviewModal(true); }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
+                    style={{ borderColor: "#3e6b8a66", color: "#3e6b8a", background: "#3e6b8a08" }}>
+                    <MessageSquare className="h-4 w-4" />
+                    דרג את הקונה — {product.highest_bidder}
+                  </button>
+                ))}
               </div>
-            ) : (
-              <button onClick={() => setShowReviewModal(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.01]"
-                style={{ borderColor: "#f59e0b66", color: "#b45309", background: "#f59e0b08" }}>
-                <MessageSquare className="h-4 w-4" />
-                {myName === product.highest_bidder ? "דרג את המוכר — עזור לקהילה 🏆" : "דרג את המוכר"}
-              </button>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -877,10 +917,15 @@ export default function AuctionDetail() {
       {showReviewModal && (
         <ReviewModal
           product={product}
-          reviewerName={myName}
-          reviewerEmail={localStorage.getItem("bidder_email")}
+          direction={reviewDirection}
+          reviewerName={reviewDirection === "seller"
+            ? (localStorage.getItem("seller_name") || product.seller_name || authUser?.full_name || "")
+            : myName}
+          reviewerEmail={reviewDirection === "seller"
+            ? (localStorage.getItem("seller_email") || authUser?.email || "")
+            : localStorage.getItem("bidder_email")}
           onClose={() => setShowReviewModal(false)}
-          onDone={() => setAlreadyReviewed(true)}
+          onDone={() => { if (reviewDirection === "buyer") setBuyerReviewed(true); else setSellerReviewed(true); }}
         />
       )}
 

@@ -19,8 +19,8 @@ function localNow() {
     timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", hour12: false,
   }).formatToParts(new Date());
-  const get = (t) => Number(parts.find(p => p.type === t)?.value);
-  return { dateKey: `${get("year")}-${get("month")}-${get("day")}`, hour: get("hour") };
+  const str = (t) => parts.find(p => p.type === t)?.value || "";
+  return { dateKey: `${str("year")}-${str("month")}-${str("day")}`, hour: Number(str("hour")) };
 }
 
 function inPublishWindow() {

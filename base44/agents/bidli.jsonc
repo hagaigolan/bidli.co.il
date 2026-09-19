@@ -21,7 +21,9 @@
     }
   ],
   "selected_skill_names": [],
-  "selected_workspace_skill_ids": [],
+  "selected_workspace_skill_ids": [
+    "69ac9619a2a06c8cd6a9831e"
+  ],
   "model": "automatic",
   "whatsapp_greeting": "",
   "telegram_greeting": "",

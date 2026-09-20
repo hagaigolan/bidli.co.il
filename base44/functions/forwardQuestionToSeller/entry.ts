@@ -5,8 +5,32 @@ import { sellerQuestionEmail } from '../../shared/notifyEmails.ts';
 // Forwards a buyer's question from the product live chat to the seller's email
 // in real time, so the seller can reply fast and close the sale.
 // Called directly from the product page chat (public app — no login required).
+
+// הגבלת קצב לכל IP — מונע שימוש בפונקציה כממסר ספאם/פישינג בלתי מוגבל
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+const rateMap = new Map();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const arr = (rateMap.get(ip) || []).filter((t: number) => now - t < RATE_WINDOW_MS);
+  if (arr.length >= RATE_LIMIT) {
+    rateMap.set(ip, arr);
+    return true;
+  }
+  arr.push(now);
+  rateMap.set(ip, arr);
+  return false;
+}
+
 export default async function (req: Request): Promise<Response> {
   try {
+    const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+      || req.headers.get('cf-connecting-ip') || 'unknown';
+    if (isRateLimited(ip)) {
+      return Response.json({ error: 'too many requests' }, { status: 429 });
+    }
+
     const base44 = createClientFromRequest(req);
     const { product_id, question, asker_name, asker_contact } = await req.json();
     const q = (question || "").toString().trim().slice(0, 1000);

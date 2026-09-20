@@ -31,18 +31,8 @@ export default function SalesManager() {
     if (busyId) return;
     setBusyId(product.id);
     try {
-      await base44.entities.Product.update(product.id, {
-        status: "paid",
-        payment_status: "released",
-        seller_confirmed_at: new Date().toISOString(),
-      });
-      if (product.highest_bidder_email) {
-        base44.integrations.Core.SendEmail({
-          to: product.highest_bidder_email,
-          subject: `✅ התשלום אושר — ${product.title}`,
-          body: `שלום ${product.highest_bidder || ""},\n\nהמוכר אישר שההעברה עבור "${product.title}" התקבלה, וההזמנה סומנה כשולמה.\nמעכשיו תתואם המסירה ישירות מול המוכר.\n\nצוות bidli`,
-        }).catch(() => {});
-      }
+      // האישור מבוצע בשרת: אימות שהמאשר הוא המוכר, עדכון הסטטוס ומייל לקונה
+      await base44.functions.invoke("confirmSalePayment", { product_id: product.id });
       await load();
     } catch {} finally { setBusyId(""); }
   };

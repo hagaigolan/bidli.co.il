@@ -22,18 +22,11 @@ export default function OrderPaymentFlow({ product, onDone }) {
     setBusy(true);
     setError("");
     try {
-      await base44.entities.Product.update(product.id, {
-        status: "transfer_reported",
-        transfer_reported_at: new Date().toISOString(),
-        transfer_reference: reference.trim(),
+      // הדיווח מבוצע בשרת: אימות שהמדווח הוא הזוכה, עדכון הסטטוס ומייל למוכר
+      await base44.functions.invoke("reportTransfer", {
+        product_id: product.id,
+        reference: reference.trim(),
       });
-      if (product.seller_email) {
-        base44.integrations.Core.SendEmail({
-          to: product.seller_email,
-          subject: `💸 הקונה דיווח על העברה — ${product.title}`,
-          body: `שלום ${product.seller_name || ""},\n\nהקונה ${product.highest_bidder || ""} דיווח שהעביר את סכום הזכייה (₪${(product.current_price || 0).toLocaleString()}) עבור "${product.title}".${reference.trim() ? `\n\nאסמכתא שהוזנה על ידי הקונה: ${reference.trim()}` : ""}\n\nלאחר שהכסף התקבל בפועל, יש לאשר קבלת תשלום באזור האישי:\nhttps://bidli.co.il/profile\n\nצוות bidli`,
-        }).catch(() => {});
-      }
       setJustReported(true);
       onDone?.();
     } catch {

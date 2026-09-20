@@ -7,9 +7,17 @@ import { stripeRequest } from '../../shared/stripe.ts';
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
+    // רישום כרטיס לקבלת תשלומים מותר רק למוכר עצמו — הזהות נגזרת מהמשתמש
+    // המחובר, כדי שלא ניתן לשייך כרטיס תשלומים למוכר אחר
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'unauthorized' }, { status: 401 });
+
     const { seller_email, setup_intent_id } = await req.json().catch(() => ({}));
     if (!seller_email || !setup_intent_id) {
       return Response.json({ error: 'missing fields' }, { status: 400 });
+    }
+    if ((seller_email || '').trim().toLowerCase() !== (user.email || '').trim().toLowerCase()) {
+      return Response.json({ error: 'forbidden' }, { status: 403 });
     }
 
     const si = await stripeRequest('GET', `/setup_intents/${setup_intent_id}`);
@@ -18,6 +26,14 @@ export default async function(req: Request): Promise<Response> {
     }
     const pmId = si.payment_method;
     if (!pmId) return Response.json({ error: 'no payment method' }, { status: 400 });
+
+    // ה-SetupIntent חייב להשתייך ללקוח Stripe של המוכר המחובר בלבד
+    if (si.customer) {
+      const cust = await stripeRequest('GET', `/customers/${si.customer}`);
+      if ((cust.email || '').trim().toLowerCase() !== (user.email || '').trim().toLowerCase()) {
+        return Response.json({ error: 'forbidden' }, { status: 403 });
+      }
+    }
 
     const pm = await stripeRequest('GET', `/payment_methods/${pmId}`);
     const card = pm.card || {};

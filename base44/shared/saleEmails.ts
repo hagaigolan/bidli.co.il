@@ -10,16 +10,25 @@ const METHOD_LABELS = {
   bank: "העברה בנקאית",
 };
 
+// נטרול תגיות HTML בשדות שמגיעים מהמשתמשים — לפני הצבה בתוך תבניות מייל
+export function escHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function paymentMethodHtml(product) {
   const label = METHOD_LABELS[product.seller_payment_method];
   if (!label) return "";
   if (product.seller_payment_method === "bank") {
     return `<p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong></p>
       ${product.seller_bank_details
-        ? `<div style="background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px;line-height:1.7;color:#18181b;white-space:pre-line;">${product.seller_bank_details}</div>`
+        ? `<div style="background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px;line-height:1.7;color:#18181b;white-space:pre-line;">${escHtml(product.seller_bank_details)}</div>`
         : ""}`;
   }
-  return `<p style="margin:0;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong> — <strong style="color:#e5893d;">${product.seller_payme_phone || ""}</strong></p>`;
+  return `<p style="margin:0;font-size:15px;line-height:1.7;color:#3f3f46;">אמצעי התשלום שהוגדר על ידי המוכר: <strong>${label}</strong> — <strong style="color:#e5893d;">${escHtml(product.seller_payme_phone || "")}</strong></p>`;
 }
 
 function stepsBox(stepsHtml) {
@@ -66,11 +75,11 @@ export function productCard(product, productUrl) {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:18px 0;">
     <tr>
       <td style="padding:14px;">
-        ${product.image_url ? `<img src="${product.image_url}" alt="" style="display:block;width:96px;height:96px;border-radius:10px;object-fit:cover;margin:0 auto;">` : `<div style="width:96px;height:96px;border-radius:10px;background:#f4f4f5;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;">🏺</div>`}
+        ${product.image_url ? `<img src="${escHtml(product.image_url)}" alt="" style="display:block;width:96px;height:96px;border-radius:10px;object-fit:cover;margin:0 auto;">` : `<div style="width:96px;height:96px;border-radius:10px;background:#f4f4f5;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;">🏺</div>`}
       </td>
       <td style="padding:14px;vertical-align:top;">
-        <p style="margin:0 0 4px;font-size:16px;font-weight:800;color:#18181b;">${product.title}</p>
-        ${product.category ? `<p style="margin:0 0 8px;font-size:12px;color:#e5893d;font-weight:700;">${product.category}</p>` : ""}
+        <p style="margin:0 0 4px;font-size:16px;font-weight:800;color:#18181b;">${escHtml(product.title)}</p>
+        ${product.category ? `<p style="margin:0 0 8px;font-size:12px;color:#e5893d;font-weight:700;">${escHtml(product.category)}</p>` : ""}
         <p style="margin:0;font-size:20px;font-weight:900;color:#18181b;">₪${price}</p>
       </td>
     </tr>
@@ -82,7 +91,7 @@ export function buyerSaleEmail(product, winnerName) {
   const productUrl = `${APP_URL}/auction/${product.id}`;
   const ordersUrl = `${APP_URL}/my-orders`;
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${winnerName || "זוכה"},</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(winnerName || "זוכה")},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">ברכותינו! 🎉 זכית במכרז. עליך להעביר את סכום הזכייה ישירות למוכר תוך <strong style="color:#e5893d;">24 שעות</strong> — בהעברה ישירה, ללא כרטיס אשראי.</p>
     ${paymentMethodHtml(product)}
     ${productCard(product, productUrl)}
@@ -107,8 +116,8 @@ export function sellerSaleEmail(product, winnerName) {
   const profileUrl = `${APP_URL}/profile`;
   const method = METHOD_LABELS[product.seller_payment_method] || "העברה";
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${winnerName}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הקונה יעביר אליך את הסכום ישירות ב<strong>${method}</strong> — ללא כרטיס אשראי וללא עמלות.</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${escHtml(winnerName)}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הקונה יעביר אליך את הסכום ישירות ב<strong>${method}</strong> — ללא כרטיס אשראי וללא עמלות.</p>
     ${productCard(product, productUrl)}
     ${stepsBox(`
       <strong>1.</strong> הקונה יבצע את ההעברה וידווח עליה במערכת.<br>
@@ -131,8 +140,8 @@ export function secondChanceEmail(product, secondBidderName) {
   const ordersUrl = `${APP_URL}/my-orders`;
   const price = (product.second_bid_amount ?? product.current_price ?? 0).toLocaleString("he-IL");
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${secondBidderName || "מציע"},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">⚡ ההזדמנות שלך הגיעה! המציע הראשי במכרז <strong>"${product.title}"</strong> לא השלים את התשלום בזמן — והזכייה מוצעת עכשיו לך, במחיר ההצעה שלך: <strong style="color:#e5893d;">₪${price}</strong>.</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(secondBidderName || "מציע")},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">⚡ ההזדמנות שלך הגיעה! המציע הראשי במכרז <strong>"${escHtml(product.title)}"</strong> לא השלים את התשלום בזמן — והזכייה מוצעת עכשיו לך, במחיר ההצעה שלך: <strong style="color:#e5893d;">₪${price}</strong>.</p>
     <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#3f3f46;">לרשותך <strong style="color:#e5893d;">12 שעות</strong> להשלמת הרכישה. לאחר מכן תועבר הזכייה הלאה או המכרז יבוטל.</p>
     ${productCard({ ...product, current_price: product.second_bid_amount ?? product.current_price }, productUrl)}
     ${stepsBox(`

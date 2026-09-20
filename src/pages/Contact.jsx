@@ -37,10 +37,12 @@ export default function Contact() {
     setBusy(true);
     setError("");
     try {
-      await base44.integrations.Core.SendEmail({
-        to: CONTACT_EMAIL,
-        subject: `פנייה חדשה מהאתר: ${form.topic}`,
-        body: `פנייה חדשה מעמוד "צור קשר"\n\nנושא: ${form.topic}\nשם: ${form.name}\nאימייל: ${form.email}\n\nההודעה:\n${form.message}`,
+      // הפנייה נשלחת דרך השרת לכתובת התמיכה הקבועה — לא ניתן לבחור נמען אחר
+      await base44.functions.invoke("sendContactMessage", {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        topic: form.topic,
+        message: form.message,
       });
       setSent(true);
     } catch {

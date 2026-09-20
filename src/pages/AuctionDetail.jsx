@@ -390,10 +390,10 @@ export default function AuctionDetail() {
             const newLeader = event.data.highest_bidder;
 
             if (channels.email && notifEmail) {
-              base44.integrations.Core.SendEmail({
-                to: notifEmail,
-                subject: `הוצאת מהמשחק! עקפו אותך על "${productTitle}"`,
-                body: `שלום ${myName},\n\n${newLeader} הגיש הצעה גבוהה יותר (₪${(newPrice||0).toLocaleString()}) על הפריט "${productTitle}".\n\nלחץ כאן כדי לחזור ולהגיש הצעה גבוהה יותר:\n${pageUrl}\n\nבהצלחה!\nצוות bidli`
+              // הנמען מאומת בשרת מול המציע המשני (המוביל הקודם) — לא ניתן לשלוח לכתובת שרירותית
+              base44.functions.invoke("sendOutbidAlert", {
+                product_id: id,
+                recipient_email: notifEmail,
               }).catch(() => {});
             }
 
@@ -451,7 +451,8 @@ export default function AuctionDetail() {
       return;
     }
     // Anti-shill: block seller from bidding on own auction
-    const myEmail = localStorage.getItem("bidder_email") || authUser?.email || "";
+    // זהות המציע נגזרת מהחשבון המחובר בלבד — לא מ-localStorage שניתן לזייף
+    const myEmail = authUser?.email || "";
     const knownEmails = [
       myEmail,
       localStorage.getItem("seller_email"),
@@ -548,7 +549,8 @@ export default function AuctionDetail() {
       setBidError("אין אפשרות לרכוש מכרז שפרסמת בעצמך");
       return;
     }
-    const myEmail = localStorage.getItem("bidder_email") || authUser?.email || "";
+    // זהות המציע נגזרת מהחשבון המחובר בלבד — לא מ-localStorage שניתן לזייף
+    const myEmail = authUser?.email || "";
     if (await isAnyEmailBanned([myEmail, authUser?.email])) {
       setBidError("חשבונך מושהה — אין אפשרות לבצע רכישה. לפניות: mitugplus@gmail.com");
       return;

@@ -2,7 +2,7 @@
 // - seller publish confirmation (on product publish)
 // - new-bid alerts to the seller and to the platform admin
 
-import { shell, productCard, APP_BASE_URL } from "./saleEmails.ts";
+import { shell, productCard, APP_BASE_URL, escHtml } from "./saleEmails.ts";
 
 function priceHtml(amount) {
   return (amount ?? 0).toLocaleString("he-IL");
@@ -12,7 +12,7 @@ function priceHtml(amount) {
 export function sellerPublishEmail(product) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המכרז שלך פורסם בהצלחה והוא כעת פעיל באתר bidli! 🎉 המכרז יימשך <strong style="color:#e5893d;">24 שעות</strong>, ובסיומו ההצעה הגבוהה ביותר תזכה במוצר.</p>
     ${productCard(product, productUrl)}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:16px 0;">
@@ -42,7 +42,7 @@ export function sellerPublishEmail(product) {
 export function sellerBidEmail(product, bid) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה על המוצר שלך! 🚀</p>
     <p style="margin:0 0 14px;font-size:34px;font-weight:900;color:#e5893d;text-align:center;">₪${priceHtml(bid.amount)}</p>
     ${productCard(product, productUrl)}
@@ -66,12 +66,12 @@ export function sellerBidEmail(product, bid) {
 export function adminBidEmail(product, bid) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
   const body = `
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה במכרז <strong>${product.title}</strong>:</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה במכרז <strong>${escHtml(product.title)}</strong>:</p>
     <p style="margin:0 0 14px;font-size:34px;font-weight:900;color:#e5893d;text-align:center;">₪${priceHtml(bid.amount)}</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:16px 0;">
       <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#3f3f46;">
-        מציע: <strong>${bid.bidder_name || "אנונימי"}</strong>${bid.bidder_email ? ` (${bid.bidder_email})` : ""}<br>
-        מוכר: <strong>${product.seller_name || "—"}</strong>${product.seller_email ? ` (${product.seller_email})` : ""}<br>
+        מציע: <strong>${escHtml(bid.bidder_name || "אנונימי")}</strong>${bid.bidder_email ? ` (${escHtml(bid.bidder_email)})` : ""}<br>
+        מוכר: <strong>${escHtml(product.seller_name || "—")}</strong>${product.seller_email ? ` (${escHtml(product.seller_email)})` : ""}<br>
         סך ההצעות: <strong>${product.bid_count ?? "—"}</strong>
       </td></tr>
     </table>
@@ -91,16 +91,12 @@ export function adminBidEmail(product, bid) {
   };
 }
 
-function escHtml(str) {
-  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 // ── Seller: buyer question from the live chat, forwarded in real time ──
 export function sellerQuestionEmail(product, { question, asker_name, asker_contact }) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
   const asker = asker_name || "קונה מהצ'אט";
   const body = `
-    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${product.seller_name || "מוכר"},</p>
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">⚡ נשאלה כרגע שאלה חדשה על המוצר שלך בצ'אט החי. ענה מהר — קונה שמקבל תשובה מהירה הרבה יותר מוכן להציע!</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:18px 0;">
       <tr><td style="padding:16px 18px;">

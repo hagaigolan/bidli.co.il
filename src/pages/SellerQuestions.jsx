@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, MessageCircleQuestion, RefreshCw, CheckCircle2, RotateCcw, Loader2 } from "lucide-react";
+import { ArrowRight, MessageCircleQuestion, RefreshCw, CheckCircle2, RotateCcw, Loader2, Bot } from "lucide-react";
 
 function QuestionRow({ q, onToggle }) {
   const [busy, setBusy] = useState(false);
@@ -103,6 +103,11 @@ export default function SellerQuestions() {
             <div>
               <h1 className="text-xl font-black text-gray-900">פניות ושאלות</h1>
               <p className="text-sm text-gray-400">כל השאלות שהגיעו מהצ'אט החי במכרזים שלך — סמן כטופלות ועקוב אחרי השירות</p>
+              <Link to="/shop-support"
+                className="inline-flex items-center gap-1 mt-2 text-xs font-bold px-3 py-1.5 rounded-xl transition-all hover:opacity-80"
+                style={{ background: "#e5893d0f", color: "#e5893d", border: "1px solid #e5893d33" }}>
+                <Bot className="h-3.5 w-3.5" /> ענה על הפניות עם סוכן AI
+              </Link>
             </div>
           </div>
         </div>

@@ -30,6 +30,7 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import SellerProfile from './pages/SellerProfile';
 import SellerQuestions from './pages/SellerQuestions';
+import ShopSupport from './pages/ShopSupport';
 import AdminManagement from './pages/AdminManagement';
 import ScrollToTop from './components/ScrollToTop';
 import SeoAgent from './pages/SeoAgent';
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/seller/id/:id" element={<SellerProfile />} />
         <Route path="/seller/:email" element={<SellerProfile />} />
         <Route path="/seller-questions" element={<SellerQuestions />} />
+        <Route path="/shop-support" element={<ShopSupport />} />
         <Route path="/admin/manage" element={<AdminManagement />} />
         <Route path="/admin/seo-agent" element={<SeoAgent />} />
         {/* Add your page Route elements here */}

@@ -11,10 +11,18 @@ import {
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const { seller_email, seller_name } = await req.json().catch(() => ({}));
+
+    // זהות המוכר נגזרת מהחשבון המחובר בלבד — לא ניתן ליצור
+    // SetupIntent עבור כתובת של מישהו אחר או ללא התחברות
+    const me = await base44.auth.me();
+    if (!me) {
+      return Response.json({ error: 'unauthenticated' }, { status: 401 });
+    }
+    const seller_email = String(me.email || '').trim().toLowerCase();
     if (!seller_email) {
       return Response.json({ error: 'missing seller_email' }, { status: 400 });
     }
+    const seller_name = me.full_name || '';
 
     const customerId = await getOrCreateCustomer(seller_email, seller_name);
 

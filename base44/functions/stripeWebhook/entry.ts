@@ -14,6 +14,11 @@ async function verifySignature(body: string, sig: string, secret: string): Promi
   const ts = parts.t;
   const v1 = parts.v1;
   if (!ts || !v1) return null;
+  // טריות חתימה כמו ב-SDK הרשמי של Stripe — חתימה בת יותר מ-5 דקות נדחית,
+  // כך שלא ניתן לשחזר (replay) בקשת webhook תקיפה שנחטפה בדרך
+  if (!Number.isFinite(Number(ts)) || Date.now() - Number(ts) * 1000 > 5 * 60 * 1000) {
+    return null;
+  }
   const payload = `${ts}.${body}`;
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -25,7 +30,11 @@ async function verifySignature(body: string, sig: string, secret: string): Promi
   );
   const buf = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
   const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-  if (hex !== v1) return null;
+  // השוואה בזמן קבוע — לא ניתן להסיק את החתימה מזמן ההשוואה
+  if (hex.length !== v1.length) return null;
+  let diff = 0;
+  for (let i = 0; i < hex.length; i++) diff |= hex.charCodeAt(i) ^ v1.charCodeAt(i);
+  if (diff !== 0) return null;
   return JSON.parse(body);
 }
 

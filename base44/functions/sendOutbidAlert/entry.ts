@@ -1,13 +1,36 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
-// התראת "הוצאת מהמשחק" למציע שעקפו אותו — הנמען מאומת בשרת מול
-// second_bidder_email של המכרז (המוביל הקודם), כך שלא ניתן לשלוח
-// לכתובת שרירותית (בעבר נשלח מהדפדפן לכתובת מ-localStorage).
+// התראת "הוצאת מהמשחק" למציע שעקפו אותו — הנמען נגזר בשרת מ-
+// second_bidder_email של המכרז (המוביל הקודם) בלבד, עם הגבלת קצב לכל IP,
+// כדי שלא ניתן להשתמש בפונקציה כערוץ ספאם/הטרדה אנונימי.
+
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+const rateMap = new Map();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const arr = (rateMap.get(ip) || []).filter((t: number) => now - t < RATE_WINDOW_MS);
+  if (arr.length >= RATE_LIMIT) {
+    rateMap.set(ip, arr);
+    return true;
+  }
+  arr.push(now);
+  rateMap.set(ip, arr);
+  return false;
+}
+
 export default async function (req: Request): Promise<Response> {
   try {
+    const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+      || req.headers.get('cf-connecting-ip') || 'unknown';
+    if (isRateLimited(ip)) {
+      return Response.json({ error: 'too many requests' }, { status: 429 });
+    }
+
     const base44 = createClientFromRequest(req);
-    const { product_id, recipient_email } = await req.json().catch(() => ({}));
-    if (!product_id || !recipient_email) {
+    const { product_id } = await req.json().catch(() => ({}));
+    if (!product_id) {
       return Response.json({ error: 'missing fields' }, { status: 400 });
     }
 
@@ -15,8 +38,9 @@ export default async function (req: Request): Promise<Response> {
     if (!items.length) return Response.json({ error: 'not found' }, { status: 404 });
     const product = items[0];
 
-    const recipient = String(recipient_email).trim().toLowerCase();
-    if ((product.second_bidder_email || '').trim().toLowerCase() !== recipient) {
+    // הנמען נגזר מהרשומה בלבד — לא מקבלים כתובת מהקריאה
+    const recipient = (product.second_bidder_email || '').trim().toLowerCase();
+    if (!recipient) {
       return Response.json({ error: 'forbidden' }, { status: 403 });
     }
 

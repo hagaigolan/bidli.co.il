@@ -69,7 +69,7 @@ function HeroSection() {
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a] mb-3">
             <Zap className="h-3 w-3" style={{ color: "#e5893d" }} />
-            <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים מספר 1 בישראל</span>
+            <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים המוביל בישראל</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-2 leading-none tracking-tight">

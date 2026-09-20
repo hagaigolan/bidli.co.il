@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { sendGmail } from '../../shared/gmailSender.ts';
 import { isRateLimitedPersisted } from '../../shared/rateLimit.ts';
 
 const CONTACT_EMAIL = 'mitugplus@gmail.com';
@@ -41,10 +42,23 @@ export default async function (req: Request): Promise<Response> {
       return Response.json({ error: 'missing or invalid fields' }, { status: 400 });
     }
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
+    // שליחה דרך חיבור ה-Gmail של חשבון הבילדר — SendEmail של הפלטפורמה חוסם
+    // משלוח לכתובת שאינה משתמש רשום כשאין דומיין מותאם מאומת
+    const text = `פנייה חדשה מעמוד "צור קשר"\n\nנושא: ${t || '—'}\nשם: ${n}\nאימייל: ${e}\n\nההודעה:\n${m}`;
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const html = `<div dir="rtl" style="font-family:sans-serif;font-size:14px;line-height:1.7">
+<h2 style="margin:0 0 12px">פנייה חדשה מעמוד "צור קשר"</h2>
+<p><strong>נושא:</strong> ${esc(t || "—")}</p>
+<p><strong>שם:</strong> ${esc(n)}</p>
+<p><strong>אימייל:</strong> ${esc(e)}</p>
+<p style="white-space:pre-wrap"><strong>ההודעה:</strong><br>${esc(m)}</p>
+</div>`;
+    const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');
+    await sendGmail(accessToken, {
       to: CONTACT_EMAIL,
       subject: `פנייה חדשה מהאתר: ${t || 'שאלה כללית'}`,
-      body: `פנייה חדשה מעמוד "צור קשר"\n\nנושא: ${t || '—'}\nשם: ${n}\nאימייל: ${e}\n\nההודעה:\n${m}`,
+      html,
+      text,
     });
 
     return Response.json({ ok: true });

@@ -144,29 +144,24 @@ export default function UploadProduct() {
         image_urls.push(res.file_url);
       }
       const image_url = image_urls[0] || "";
-      const ends_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      if (form.seller_email) localStorage.setItem("seller_email", form.seller_email);
-      const startingPrice = parseFloat(form.starting_price);
-      let sellerUserId = "";
-      let sellerPhotoUrl = "";
-      try {
-        const me = await base44.auth.me();
-        sellerUserId = me?.id || "";
-        sellerPhotoUrl = me?.photo_url || localStorage.getItem("profile_photo_url") || "";
-      } catch {}
-      await base44.entities.Product.create({
-        ...form,
-        seller_user_id: sellerUserId,
-        seller_photo_url: sellerPhotoUrl,
-        starting_price: startingPrice,
-        buy_now_price: form.buy_now_price ? parseFloat(form.buy_now_price) : null,
-        current_price: startingPrice,
-        image_url,
+      // הפרסום עובר בשרת — זהות המוכר (שם, אימייל, מזהה) נגזרת שם מהחשבון המחובר
+      // ושדות זהות שהוזנו בטופס לא נשלחים כלל ואינם יכולים לשמש להתחזות.
+      const res = await base44.functions.invoke("publishProduct", {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        condition: form.condition,
+        is_stock: form.is_stock,
+        starting_price: form.starting_price,
+        buy_now_price: form.buy_now_price,
+        location: form.location,
+        seller_phone: form.seller_phone,
+        seller_payment_method: form.seller_payment_method,
+        seller_payme_phone: form.seller_payme_phone,
+        seller_bank_details: form.seller_bank_details,
         image_urls,
-        ends_at,
-        status: "active",
-        bid_count: 0,
       });
+      if (res?.seller_email) localStorage.setItem("seller_email", res.seller_email);
       setDone(true);
     } catch (err) {
       setError("שגיאה בהעלאה, נסה שנית");

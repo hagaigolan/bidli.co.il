@@ -9,6 +9,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { toast } from "@/components/ui/use-toast";
+import { safeReturnTo } from "@/lib/authReturnTo";
 
 // הרשמה: שם מלא, כינוי (אופציונלי), מייל, טלפון — עם אימות מייל בקוד OTP
 export default function Register() {
@@ -24,8 +25,7 @@ export default function Register() {
   const [otpCode, setOtpCode] = useState("");
   const [agreed, setAgreed] = useState(false);
 
-  const returnTo = new URLSearchParams(window.location.search).get("returnTo");
-  const postRegisterUrl = returnTo && returnTo.startsWith("/") ? returnTo : "/";
+  const postRegisterUrl = safeReturnTo();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

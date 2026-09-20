@@ -12,7 +12,7 @@ export default function CategoryHero({ name, cat }) {
           <img src={heroImg} alt="" aria-hidden="true" loading="lazy"
             className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(to left, rgba(255,255,255,0.98) 30%, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0.5) 100%)" }} />
+            style={{ background: "rgba(255,255,255,0.2)" }} />
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </>
       )}

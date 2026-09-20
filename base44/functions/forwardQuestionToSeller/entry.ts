@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { sendGmail } from '../../shared/gmailSender.ts';
 import { sellerQuestionEmail } from '../../shared/notifyEmails.ts';
+import { isRateLimitedPersisted } from '../../shared/rateLimit.ts';
 
 // Forwards a buyer's question from the product live chat to the seller's email
 // in real time, so the seller can reply fast and close the sale.
@@ -27,11 +28,12 @@ export default async function (req: Request): Promise<Response> {
   try {
     const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
       || req.headers.get('cf-connecting-ip') || 'unknown';
-    if (isRateLimited(ip)) {
+    const base44 = createClientFromRequest(req);
+    // שכבת זיכרון מקומית (מסנן מהיר) + מונה מבוסס מסד נתונים — המגבלה תקפה בכל האיסולטים
+    if (isRateLimited(ip) || await isRateLimitedPersisted(base44, `forwardQuestionToSeller:${ip}`, RATE_LIMIT, RATE_WINDOW_MS)) {
       return Response.json({ error: 'too many requests' }, { status: 429 });
     }
 
-    const base44 = createClientFromRequest(req);
     const { product_id, question, asker_name, asker_contact } = await req.json();
     const q = (question || "").toString().trim().slice(0, 1000);
     if (!product_id || !q) {

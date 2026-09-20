@@ -17,10 +17,25 @@ function utf8Base64(str) {
 // Builds an RFC 2822 multipart/alternative message.
 // Subject is encoded with RFC 2047 (via libmime) so Hebrew and emoji are safe;
 // bodies are base64-encoded, so the raw message is pure ASCII.
+const EMAIL_RE = /^[^\s@,;:"'<>\\]+@[^\s@,;:"'<>\\]+\.[^\s@,;:"'<>\\]+$/;
+
+// מניעת הזרקת כותרות (CRLF) — הנמען עלול להגיע מרשומות שנוצרות בצד הלקוח
+// (למשל bidder_email מהצעה פומבית), ולכן מנקים תווי בקרה ומוודאים כתובת אחת תקינה
+// לפני בניית ההודעה הגולמית.
+function sanitizeRecipient(to) {
+  const cleaned = String(to || "").replace(/[\u0000-\u001f\u007f]+/g, "");
+  const first = cleaned.split(",")[0].trim();
+  if (!EMAIL_RE.test(first)) {
+    throw new Error("invalid recipient address");
+  }
+  return first;
+}
+
 export async function sendGmail(accessToken, { to, subject, html, text }) {
+  const recipient = sanitizeRecipient(to);
   const boundary = "bidli_" + crypto.randomUUID().replace(/-/g, "");
   const raw = [
-    `To: ${to}`,
+    `To: ${recipient}`,
     `Subject: ${libmime.encodeWords(subject)}`,
     "MIME-Version: 1.0",
     `Date: ${new Date().toUTCString()}`,
@@ -53,7 +68,7 @@ export async function sendGmail(accessToken, { to, subject, html, text }) {
     const detail = await res.text();
     throw new Error(`Gmail send failed (${res.status}): ${detail}`);
   }
-  return { to, subject, ok: true };
+  return { to: recipient, subject, ok: true };
 }
 
 export { ADMIN_EMAIL };

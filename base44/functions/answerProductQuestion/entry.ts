@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { isRateLimitedPersisted } from '../../shared/rateLimit.ts';
 
 // Answers a buyer's question about a specific product listing from the live chat.
 // The LLM call runs server-side (service role) so integration credits can't be
@@ -51,11 +52,11 @@ export default async function(req: Request): Promise<Response> {
   try {
     const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
       || req.headers.get('cf-connecting-ip') || 'unknown';
-    if (isRateLimited(ip)) {
+    const base44 = createClientFromRequest(req);
+    // שכבת זיכרון מקומית (מסנן מהיר) + מונה מבוסס מסד נתונים — המגבלה תקפה בכל האיסולטים
+    if (isRateLimited(ip) || await isRateLimitedPersisted(base44, `answerProductQuestion:${ip}`, RATE_LIMIT, RATE_WINDOW_MS)) {
       return Response.json({ error: 'too many requests' }, { status: 429 });
     }
-
-    const base44 = createClientFromRequest(req);
     const { product_id, question } = await req.json();
     const q = (question || "").toString().trim().slice(0, 500);
     if (!product_id || !q) {

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { isRateLimitedPersisted } from '../../shared/rateLimit.ts';
 
 const CONTACT_EMAIL = 'mitugplus@gmail.com';
 
@@ -26,7 +27,8 @@ export default async function (req: Request): Promise<Response> {
     const base44 = createClientFromRequest(req);
     const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
       || req.headers.get('cf-connecting-ip') || 'unknown';
-    if (isRateLimited(ip)) {
+    // שכבת זיכרון מקומית (מסנן מהיר) + מונה מבוסס מסד נתונים — המגבלה תקפה בכל האיסולטים
+    if (isRateLimited(ip) || await isRateLimitedPersisted(base44, `sendContactMessage:${ip}`, RATE_LIMIT, RATE_WINDOW_MS)) {
       return Response.json({ error: 'too many requests' }, { status: 429 });
     }
 

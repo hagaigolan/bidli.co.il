@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "name": "RateLimit",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "\u05de\u05e4\u05ea\u05d7 \u05d4\u05de\u05d5\u05e0\u05d4 \u2014 \u05e9\u05dd \u05d4\u05e4\u05d5\u05e0\u05e7\u05e6\u05d9\u05d4 + IP, \u05dc\u05de\u05e9\u05dc answerProductQuestion:1.2.3.4"
+    },
+    "window_start": {
+      "type": "string",
+      "description": "\u05de\u05d5\u05e2\u05d3 \u05ea\u05d7\u05d9\u05dc\u05ea \u05d7\u05dc\u05d5\u05df \u05d4\u05d4\u05d2\u05d1\u05dc\u05d4 (ISO)"
+    },
+    "count": {
+      "type": "number",
+      "default": 0,
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d4\u05e7\u05e8\u05d9\u05d0\u05d5\u05ea \u05e9\u05d1\u05d5\u05e6\u05e2\u05d5 \u05d1\u05d7\u05dc\u05d5\u05df"
+    }
+  },
+  "required": [
+    "key"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

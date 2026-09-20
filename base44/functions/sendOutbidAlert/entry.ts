@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { isRateLimitedPersisted } from '../../shared/rateLimit.ts';
 
 // התראת "הוצאת מהמשחק" למציע שעקפו אותו — הנמען נגזר בשרת מ-
 // second_bidder_email של המכרז (המוביל הקודם) בלבד, עם הגבלת קצב לכל IP,
@@ -24,11 +25,12 @@ export default async function (req: Request): Promise<Response> {
   try {
     const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
       || req.headers.get('cf-connecting-ip') || 'unknown';
-    if (isRateLimited(ip)) {
+    const base44 = createClientFromRequest(req);
+    // שכבת זיכרון מקומית (מסנן מהיר) + מונה מבוסס מסד נתונים — המגבלה תקפה בכל האיסולטים
+    if (isRateLimited(ip) || await isRateLimitedPersisted(base44, `sendOutbidAlert:${ip}`, RATE_LIMIT, RATE_WINDOW_MS)) {
       return Response.json({ error: 'too many requests' }, { status: 429 });
     }
 
-    const base44 = createClientFromRequest(req);
     const { product_id } = await req.json().catch(() => ({}));
     if (!product_id) {
       return Response.json({ error: 'missing fields' }, { status: 400 });

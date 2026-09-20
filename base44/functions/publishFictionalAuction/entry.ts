@@ -51,6 +51,15 @@ function inPublishWindow() {
   return true;
 }
 
+// נרמול כותרת לצורך זיהוי כפילויות — השוואה ללא תלות בריווח, בסימני פיסוק וברישיות
+function normalizeTitle(title) {
+  return String(title || "")
+    .toLowerCase()
+    .replace(/[".,:;!()\[\]״׳"׳\-–—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -86,11 +95,16 @@ Deno.serve(async (req) => {
     const sellerUserId = `${SELLER_USER_ID_PREFIX}-${nameIdx}`;
     const city = CITIES[idx % CITIES.length];
 
+    // כפילויות: רשימת הכותרות הקיימות — למניעת פרסום אותו פריט פעמיים (גם בשם מוכר אחר)
+    const existingTitles = [...new Set(existing.map(p => normalizeTitle(p.title)).filter(Boolean))];
+    const existingTitleSet = new Set(existingTitles);
+
     // Generate a realistic fictional listing with the LLM
     const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: `צור מודעת מכרז פיקטיבית ריאליסטית אחת בעברית עבור אתר מכרזים ישראלי, בקטגוריה "${category}".
 דרישות:
 - כותרת קצרה ומושכת בעברית עם פרט מזהה של הפריט (יצרן/תקופה/סוג).
+- הכותרת חייבת להיות פריט שונה ולא דומה לכותרות הבאות שכבר פורסמו באתר: ${existingTitles.slice(-30).join(" | ") || "(אין עדיין)"}.
 - תיאור אמין של 2-3 משפטים: מצב, רקע, מה מיוחד בפריט.
 - מחיר התחלתי ריאלי בשקלים לפריט כזה בשוק הישראלי (למשל: תכשיטים 300–5,000, אמנות 500–15,000, נומיסמטיקה ומטבעות 200–3,000, ספרים ובולים 100–1,500, עיצוב הבית 200–4,000, אופנה 150–2,500, יודאיקה 300–8,000, אספנות 200–6,000, שעונים 500–20,000, כלי נגינה 500–30,000, יין ואלכוהול 150–3,000, אלקטרוניקה 100–8,000, רכבים 15,000–90,000, נדל"ן 350,000–2,500,000, אחר 100–3,000).
 - מחיר "קנה עכשיו" גבוה משמעותית מהמחיר ההתחלתי.
@@ -111,6 +125,11 @@ Deno.serve(async (req) => {
         required: ["title", "description", "starting_price", "buy_now_price", "location", "condition", "image_prompt"],
       },
     });
+
+    // חסימה קשיחה — אם הכותרת שנוצרה זהה לכותרת קיימת, לא מפרסמים (מניעת כפילויות)
+    if (existingTitleSet.has(normalizeTitle(llm.title))) {
+      return Response.json({ ok: true, skipped: "duplicate_title" });
+    }
 
     const condition = CONDITIONS.includes(llm.condition) ? llm.condition : "מצב מעולה";
     const startingPrice = Math.max(50, Math.round(Number(llm.starting_price) || 100));

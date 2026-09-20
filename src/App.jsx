@@ -32,6 +32,7 @@ import SellerProfile from './pages/SellerProfile';
 import SellerQuestions from './pages/SellerQuestions';
 import AdminManagement from './pages/AdminManagement';
 import ScrollToTop from './components/ScrollToTop';
+import SeoAgent from './pages/SeoAgent';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/seller/:email" element={<SellerProfile />} />
         <Route path="/seller-questions" element={<SellerQuestions />} />
         <Route path="/admin/manage" element={<AdminManagement />} />
+        <Route path="/admin/seo-agent" element={<SeoAgent />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -30,11 +30,11 @@ function DealCountdown({ endsAt }) {
   );
 }
 
-export default function DealsEndingSoon({ products }) {
-  if (!products || products.length === 0) return null;
-
+// פריטי "מציאות שנגמרות עוד מעט" — משמש גם לחריגתם מסקציית "מכרזים פעילים" בדף הבית
+export function getEndingSoonDeals(products) {
+  if (!products || products.length === 0) return [];
   const now = Date.now();
-  const deals = products
+  return products
     .filter(p =>
       (p.status || "active") === "active" &&
       p.ends_at &&
@@ -44,7 +44,10 @@ export default function DealsEndingSoon({ products }) {
     )
     .sort((a, b) => new Date(a.ends_at) - new Date(b.ends_at))
     .slice(0, 8);
+}
 
+export default function DealsEndingSoon({ products }) {
+  const deals = getEndingSoonDeals(products);
   if (!deals.length) return null;
 
   return (

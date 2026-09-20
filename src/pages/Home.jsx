@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
-import DealsEndingSoon from "@/components/DealsEndingSoon";
+import DealsEndingSoon, { getEndingSoonDeals } from "@/components/DealsEndingSoon";
 import TrustSection from "@/components/TrustSection";
 
 const AuctionEntity = base44.entities.Auction;
@@ -270,7 +270,9 @@ function SortBar({ sort, onChange }) {
 function UpcomingAuctionsSection({ products }) {
   const [sort, setSort] = useState("ending_soon");
   const now = Date.now();
-  const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now && p.status !== "cancelled");
+  // חריגת פריטי "מציאות שנגמרות עוד מעט" כדי שלא יוצגו פעמיים
+  const dealIds = new Set(getEndingSoonDeals(products).map(d => d.id));
+  const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now && p.status !== "cancelled" && !dealIds.has(p.id));
   const sorted = sortProducts(upcoming, sort);
   if (upcoming.length === 0) return null;
 

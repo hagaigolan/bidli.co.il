@@ -3,7 +3,7 @@ import { Search, Filter } from "lucide-react";
 import CategoryHero from "@/components/CategoryHero";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { setPageMeta } from "@/lib/seo";
+import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { SUBCATEGORIES } from "@/lib/subcategories";
 
 const CATEGORIES = {
@@ -47,6 +47,23 @@ export default function Category() {
       description: `${cat.description} מכרזים חיים של ${decodedName} ב-bidli, פורטל המכרזים בישראל — הצע מחיר בזמן אמת, המכרזים נסגרים תוך 24 שעות.`,
     });
   }, [decodedName]);
+
+  // SEO: ItemList — נתונים מובנים של פריטי הקטגוריה לתוצאות עשירות בגוגל
+  useEffect(() => {
+    if (!items.length) return;
+    setPageJsonLd({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: `מכרזי ${decodedName} ב-bidli`,
+      numberOfItems: items.length,
+      itemListElement: items.slice(0, 25).map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${window.location.origin}/auction/${item.id}`,
+        name: item.title,
+      })),
+    });
+  }, [items, decodedName]);
 
   if (!cat) {
     return (

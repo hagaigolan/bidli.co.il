@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { setPageMeta } from "@/lib/seo";
+import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { Plus, Clock, MapPin, Tag } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
 
@@ -96,6 +96,25 @@ export default function Auctions() {
       noindex: ARCHIVE_MODE,
     });
   }, []);
+
+  // SEO: ItemList — נתונים מובנים של המכרזים הפעילים לתוצאות עשירות בגוגל
+  useEffect(() => {
+    if (ARCHIVE_MODE) return;
+    const active = products.filter(p => p.status === "active" && new Date(p.ends_at) > new Date());
+    if (!active.length) return;
+    setPageJsonLd({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "מכרזים פעילים ב-bidli",
+      numberOfItems: active.length,
+      itemListElement: active.slice(0, 25).map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${window.location.origin}/auction/${p.id}`,
+        name: p.title,
+      })),
+    });
+  }, [products]);
 
   const active = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date());
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());

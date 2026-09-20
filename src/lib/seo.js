@@ -50,12 +50,17 @@ export function setPageMeta({ title, description, image, noindex, jsonLd } = {})
   }
   canonical.setAttribute("href", url);
 
+  setPageJsonLd(jsonLd);
+}
+
+// מעדכן אך ורק נתונים מובנים (JSON-LD) בלי לגעת בשאר המטא-תגיות —
+// שימושי בעמודים שבהם הרשימה מגיעה אחרי טעינת הנתונים
+export function setPageJsonLd(jsonLd) {
   document.head.querySelectorAll('script[data-seo-jsonld]').forEach(el => el.remove());
-  if (jsonLd) {
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-seo-jsonld", "true");
-    script.textContent = JSON.stringify(jsonLd);
-    document.head.appendChild(script);
-  }
+  if (!jsonLd) return;
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.setAttribute("data-seo-jsonld", "true");
+  script.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(script);
 }

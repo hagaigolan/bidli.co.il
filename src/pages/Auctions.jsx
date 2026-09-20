@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { setPageMeta } from "@/lib/seo";
 import { Plus, Clock, MapPin, Tag } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
 
@@ -85,6 +86,15 @@ export default function Auctions() {
       .then(setProducts)
       .catch(() => {})
       .finally(() => setLoading(false));
+  }, []);
+
+  // SEO: כותרת ותיאור לעמוד המכרזים
+  useEffect(() => {
+    setPageMeta({
+      title: ARCHIVE_MODE ? "ארכיון מכרזים — מכרזים שהסתיימו | bidli" : "מכרזים אונליין בישראל — כל המכרזים הפעילים | bidli",
+      description: "כל המכרזים הפעילים ב-bidli: אמנות, תכשיטים, יודאיקה, שעונים, מטבעות, בולים ואספנות. הצע מחיר בזמן אמת — המכרזים נסגרים תוך 24 שעות.",
+      noindex: ARCHIVE_MODE,
+    });
   }, []);
 
   const active = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date());

@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { setPageMeta } from "@/lib/seo";
 import { ArrowRight, Clock, Calendar, Tag } from "lucide-react";
 import { ARTICLES } from "./ArticlesData.jsx";
 
 export default function Articles() {
+  useEffect(() => {
+    setPageMeta({
+      title: "מאמרים ומדריכים על מכרזים, אמנות ואספנות | bidli",
+      description: "מדריכי קנייה, טיפים לזיהוי והערכת שווי ותובנות מעולם המכרזים והאספנות — מהמומחים של bidli, פורטל המכרזים בישראל.",
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}

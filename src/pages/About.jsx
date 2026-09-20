@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { setPageMeta } from "@/lib/seo";
 import { Gavel, ShieldCheck, Heart, Zap, Users, Eye, ArrowLeft, Image, Sparkles } from "lucide-react";
 
 const FEATURES = [
@@ -47,6 +49,13 @@ const FEATURES = [
 ];
 
 export default function About() {
+  useEffect(() => {
+    setPageMeta({
+      title: "אודות bidli — פורטל המכרזים לאמנות, תכשיטים ואספנות בישראל",
+      description: "bidli היא פלטפורמת מכירות פומביות ייחודית לאמנות, תכשיטים, עתיקות ופריטי אספנות — מחברת אספנים ומוכרים ישירות, באמון מלא וללא כל עמלות.",
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* ── Hero ── */}

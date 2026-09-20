@@ -1,11 +1,35 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowRight, Clock, Calendar, Tag, Share2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { useEffect } from "react";
+import { setPageMeta } from "@/lib/seo";
 import { ARTICLES } from "./ArticlesData.jsx";
 
 export default function ArticleDetail() {
   const { id } = useParams();
   const article = ARTICLES.find(a => a.id === id);
+
+  // SEO: כותרת, תיאור, תמונה ונתונים מובנים למאמר
+  useEffect(() => {
+    if (!article) return;
+    setPageMeta({
+      title: `${article.title} | מאמרי bidli`,
+      description: article.excerpt,
+      image: article.image,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: article.title,
+        description: article.excerpt,
+        image: [article.image],
+        datePublished: article.date,
+        inLanguage: "he",
+        author: { "@type": "Organization", name: "bidli" },
+        publisher: { "@type": "Organization", name: "bidli" },
+        mainEntityOfPage: window.location.href,
+      },
+    });
+  }, [id]);
 
   if (!article) {
     return (

@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Search, Filter, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { setPageMeta } from "@/lib/seo";
 
 const CATEGORIES = {
   "אמנות": {
@@ -100,6 +101,15 @@ export default function Category() {
       .finally(() => setLoading(false));
   }, [decodedName]);
 
+  // SEO: כותרת ותיאור ייחודיים לכל קטגוריה
+  useEffect(() => {
+    if (!cat) return;
+    setPageMeta({
+      title: `מכרזי ${decodedName} — קנה ומכור במכרז אונליין | bidli`,
+      description: `${cat.description} מכרזים חיים של ${decodedName} ב-bidli, פורטל המכרזים בישראל — הצע מחיר בזמן אמת, המכרזים נסגרים תוך 24 שעות.`,
+    });
+  }, [decodedName]);
+
   if (!cat) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center" dir="rtl">
@@ -124,7 +134,7 @@ export default function Category() {
 
           <div className="flex items-start justify-between gap-4 mb-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-black text-gray-900 mb-1">{decodedName}</h1>
+              <h1 className="text-2xl font-black text-gray-900 mb-1">מכרזי {decodedName}</h1>
               <p className="text-gray-500 text-sm leading-relaxed max-w-lg">{cat.description}</p>
             </div>
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"

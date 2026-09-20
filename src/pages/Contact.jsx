@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { setPageMeta } from "@/lib/seo";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
@@ -13,6 +14,13 @@ export default function Contact() {
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
   const [consent, setConsent] = useState(false);
+
+  useEffect(() => {
+    setPageMeta({
+      title: "צור קשר — תמיכה, שאלות ושיתוף פעולה | bidli מכרזים",
+      description: "יש לכם שאלה על מכרז, מכירה או שיתוף פעולה עסקי? צוות bidli — פורטל המכרזים בישראל — זמין לכם.",
+    });
+  }, []);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 

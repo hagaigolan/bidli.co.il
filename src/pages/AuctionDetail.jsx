@@ -19,6 +19,7 @@ import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
 import AutoBidPanel from "@/components/AutoBidPanel";
+import { setPageMeta } from "@/lib/seo";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -265,6 +266,35 @@ export default function AuctionDetail() {
       if (items.length) setProduct(items[0]);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [id]);
+
+  // ── SEO: מטא-תגיות ונתונים מובנים (Product/Offer) לעמוד המכרז ──
+  useEffect(() => {
+    if (!product) return;
+    const price = Number(product.current_price || product.starting_price || 0);
+    const isActive = product.status === "active" && new Date(product.ends_at) > new Date();
+    const cleanDesc = String(product.description || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
+    setPageMeta({
+      title: `${product.title} — מכרז אונליין${product.category ? ` של ${product.category}` : ""} | bidli`,
+      description: cleanDesc || `${product.title} במכרז אונליין ב-bidli. מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? ` · ${product.location}` : ""} · ${product.bid_count || 0} הצעות.`,
+      image: product.image_url,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.title,
+        description: cleanDesc || product.title,
+        image: product.image_urls || (product.image_url ? [product.image_url] : undefined),
+        category: product.category,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ILS",
+          price,
+          availability: isActive ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+          url: window.location.href,
+          priceValidUntil: product.ends_at,
+        },
+      },
+    });
+  }, [product?.id, product?.current_price, product?.status]);
 
   // Check if already saved to favorites
   useEffect(() => {

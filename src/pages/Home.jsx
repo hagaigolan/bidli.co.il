@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { setPageMeta } from "@/lib/seo";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 import DealsEndingSoon from "@/components/DealsEndingSoon";
 import TrustSection from "@/components/TrustSection";
@@ -73,8 +74,7 @@ function HeroSection() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-2 leading-none tracking-tight">
-            ברוכים הבאים ל-{" "}
-            <span className="gradient-text">bidli</span>
+            <span className="gradient-text">bidli</span> — מכרזים אונליין בישראל
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 font-light mb-5 max-w-xl mx-auto">
             גלה מציאות, הצע בזמן אמת וזכה — המכרזים המהירים בישראל, פתוחים רק 24 שעות
@@ -362,6 +362,13 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setPageMeta({
+      title: "bidli — מכרזים אונליין בישראל | אמנות, יודאיקה, תכשיטים ואספנות",
+      description: "פורטל המכרזים המוביל בישראל: מכרזים חיים של אמנות, יודאיקה, תכשיטים, שעונים, מטבעות ובולים. הצע מחיר בזמן אמת, גלה מציאות וזכה — המכרזים המהירים בישראל, פתוחים 24 שעות בלבד.",
+    });
+  }, []);
 
   useEffect(() => {
     Promise.all([

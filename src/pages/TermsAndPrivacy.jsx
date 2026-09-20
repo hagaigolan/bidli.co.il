@@ -189,6 +189,14 @@ ${PLATFORM_NAME} הינה פלטפורמה טכנולוגית בלבד המשמ�
   }
 ];
 
+const PLATFORM_STATUS_SECTION = {
+  id: "privacy-platform",
+  title: "מעמד הפלטפורמה — מתווך טכנולוגי בלבד",
+  content: `${PLATFORM_NAME} הינה פלטפורמה טכנולוגית בלבד המשמשת כמדיום דיגיטלי לחיבור ולקישור בין קונים למוכרים. הפלטפורמה אינה צד לשום עסקה המתבצעת באמצעות האתר.
+
+האחריות המלאה והבלעדית לביצוע העסקה — לרבות אספקת המוצרים, מסירתם והתשלום בין המוכר לקונה — חלה על הקונה והמוכר בלבד. הפלטפורמה אינה אחראית בפועל לאספקת המוצרים, להעברת התשלומים או להתקיימות ההתחייבויות בין הצדדים, ואינה מחזיקה, מקפיאה או משחררת כספים בעד צדדים כלשהם.`
+};
+
 const TABS = [
   { id: "terms", label: "תנאי שימוש", Icon: FileText },
   { id: "privacy", label: "מדיניות פרטיות", Icon: Shield },
@@ -209,7 +217,7 @@ const PRELUDES = {
 
 const DOC_SECTIONS = {
   terms: [0, 1, 2, 3, 5, 6, 7, 8].map(i => sections[i]).filter(Boolean),
-  privacy: [3, 4, 5].map(i => sections[i]).filter(Boolean).concat(sections.slice(7)),
+  privacy: [PLATFORM_STATUS_SECTION, ...[3, 4, 5].map(i => sections[i]).filter(Boolean).concat(sections.slice(7))],
   cookies: COOKIE_POLICY_SECTIONS,
   returns: [sections[2], ...RETURNS_POLICY_SECTIONS],
   shipping: SHIPPING_POLICY_SECTIONS,

@@ -1,14 +1,18 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-// "בידלי" — publishes one realistic fictional auction per invocation, always
-// in a category different from the previous fictional listing. Invoked every
-// 30 minutes by the "Bidli Fictional Sales" scheduled workflow, and on demand
-// by the "bidli" in-app agent. Publishes only inside the daily 9:00–22:00
-// window (Asia/Jerusalem) and no-ops outside it.
+// "בידלי" — publishes one realistic fictional auction per invocation.
+// Each run picks the site category with the fewest active fictional listings,
+// so every category gets covered before any repeats — and always a category
+// different from the previous listing. Invoked every 30 minutes by the
+// "Bidli Fictional Sales" scheduled workflow, and on demand by the "bidli"
+// in-app agent. Publishes only inside the daily 9:00–22:00 window
+// (Asia/Jerusalem) and no-ops outside it.
 
+// כל הקטגוריות הרשומות באתר (src/lib/productMeta.js) — שום קטגוריה לא נשארת ריקה
 const CATEGORIES = [
-  "אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים",
-  "עיצוב הבית", "אופנה", "רכבים", "נדל\"ן", "ספרים", "בולים",
+  "אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "מטבעות", "בולים",
+  "תכשיטים", "שעונים", "עיצוב הבית", "אופנה", "ספרים", "כלי נגינה",
+  "יין ואלכוהול", "אלקטרוניקה", "רכבים", "נדל\"ן", "אחר",
 ];
 
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
@@ -64,14 +68,19 @@ Deno.serve(async (req) => {
       seller_user_id: { $regex: `^${SELLER_USER_ID_PREFIX}` },
     });
     const idx = existing.length;
+    // הקטגוריה עם הכי מעט מכרזים פיקטיביים פעילים — מבטיח כיסוי של כל הקטגוריות
+    const active = existing.filter(p => p.status !== "cancelled");
+    const counts = new Map(CATEGORIES.map(c => [c, 0]));
+    for (const p of active) {
+      if (counts.has(p.category)) counts.set(p.category, counts.get(p.category) + 1);
+    }
+    const byFewest = [...CATEGORIES].sort((a, b) => counts.get(a) - counts.get(b));
     // הקטגוריה חייבת להיות שונה מזו של המכרז הפיקטיבי הקודם
     const sorted = [...existing].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
     const lastCategory = sorted[0]?.category;
-    let catIdx = idx % CATEGORIES.length;
-    if (lastCategory && CATEGORIES[catIdx] === lastCategory) {
-      catIdx = (catIdx + 1) % CATEGORIES.length;
-    }
-    const category = CATEGORIES[catIdx];
+    const category = lastCategory && byFewest[0] === lastCategory && byFewest.length > 1
+      ? byFewest[1]
+      : byFewest[0];
     const nameIdx = idx % SELLER_NAMES.length;
     const sellerName = SELLER_NAMES[nameIdx];
     const sellerUserId = `${SELLER_USER_ID_PREFIX}-${nameIdx}`;
@@ -83,7 +92,7 @@ Deno.serve(async (req) => {
 דרישות:
 - כותרת קצרה ומושכת בעברית עם פרט מזהה של הפריט (יצרן/תקופה/סוג).
 - תיאור אמין של 2-3 משפטים: מצב, רקע, מה מיוחד בפריט.
-- מחיר התחלתי ריאלי בשקלים לפריט כזה בשוק הישראלי (למשל: תכשיטים 300–5,000, אמנות 500–15,000, נומיסמטיקה 200–3,000, ספרים ובולים 100–1,500, עיצוב הבית 200–4,000, אופנה 150–2,500, יודאיקה 300–8,000, אספנות 200–6,000, רכבים 15,000–90,000, נדל"ן 350,000–2,500,000).
+- מחיר התחלתי ריאלי בשקלים לפריט כזה בשוק הישראלי (למשל: תכשיטים 300–5,000, אמנות 500–15,000, נומיסמטיקה ומטבעות 200–3,000, ספרים ובולים 100–1,500, עיצוב הבית 200–4,000, אופנה 150–2,500, יודאיקה 300–8,000, אספנות 200–6,000, שעונים 500–20,000, כלי נגינה 500–30,000, יין ואלכוהול 150–3,000, אלקטרוניקה 100–8,000, רכבים 15,000–90,000, נדל"ן 350,000–2,500,000, אחר 100–3,000).
 - מחיר "קנה עכשיו" גבוה משמעותית מהמחיר ההתחלתי.
 - מצב: חייב להיות בדיוק אחד מהערכים: ${CONDITIONS.join(" / ")}.
 - מיקום: העיר חייבת להיות בדיוק "${city}".

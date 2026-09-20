@@ -140,7 +140,7 @@ export default function UploadProduct() {
     try {
       let image_urls = [...existingImages];
       for (const f of imageFiles) {
-        const res = await base44.integrations.Core.UploadFile({ file: f });
+        const res = await base44.integrations.Core.UploadPublicFile({ file: f });
         image_urls.push(res.file_url);
       }
       const image_url = image_urls[0] || "";

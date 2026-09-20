@@ -11,30 +11,6 @@ function toIntl(phone) {
   return (phone || "").replace(/[^0-9]/g, "").replace(/^0/, "972");
 }
 
-function buildPrompt(product, question) {
-  const details = [
-    `כותרת: ${product.title}`,
-    product.category && `קטגוריה: ${product.category}`,
-    product.condition && `מצב מוצהר: ${product.condition}`,
-    product.description && `תיאור: ${product.description}`,
-    product.location && `מיקום: ${product.location}`,
-    `מחיר התחלתי: ₪${(product.starting_price || 0).toLocaleString()}`,
-    `מחיר נוכחי: ₪${(product.current_price || product.starting_price || 0).toLocaleString()}`,
-    product.bid_count ? `מספר הצעות: ${product.bid_count}` : null,
-    product.ends_at && `מועד סיום: ${new Date(product.ends_at).toLocaleString("he-IL")}`,
-    product.seller_name && `מוכר: ${product.seller_name}`,
-  ].filter(Boolean).join("\n");
-
-  return `אתה עוזר השירות של פלטפורמת המכירות bidli. ענה בעברית, בקצרה ובידידות, על שאלת הקונה.
-ענה אך ורק על סמך נתוני המכרז הבאים. אם מידע מבוקש לא קיים בנתונים — ציין זאת בכנות והצע לפנות לצוות המכירה בוואטסאפ.
-אל תמציא פרטים, מידות או הערכות שלא נמסרו, ואין לתת הערכת שווי מחייבת.
-
-נתוני המכרז:
-${details}
-
-שאלת הקונה: ${question}`;
-}
-
 export default function ProductChat({ product, inline = false }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -83,8 +59,8 @@ export default function ProductChat({ product, inline = false }) {
     setTyping(true);
     forwardToSeller(question);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({ prompt: buildPrompt(product, question) });
-      const answer = typeof res === "string" ? res : res?.response ?? res?.message ?? res?.data ?? "";
+      const res = await base44.functions.invoke("answerProductQuestion", { product_id: product.id, question });
+      const answer = typeof res === "string" ? res : res?.answer ?? "";
       setMessages(m => [...m, { from: "bot", text: answer || "לא הצלחתי לענות כרגע — נסה שוב או פנה לצוות בוואטסאפ." }]);
     } catch {
       setMessages(m => [...m, { from: "bot", text: "אירעה שגיאה — נסה שוב, או פנה ישירות לצוות המכירה בוואטסאפ." }]);

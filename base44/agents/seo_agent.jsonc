@@ -21,7 +21,9 @@
   "selected_skill_names": [
     "brand-voice"
   ],
-  "selected_workspace_skill_ids": [],
+  "selected_workspace_skill_ids": [
+    "69cd4c082882679890efc3e2"
+  ],
   "model": "automatic",
   "whatsapp_greeting": null,
   "telegram_greeting": null,

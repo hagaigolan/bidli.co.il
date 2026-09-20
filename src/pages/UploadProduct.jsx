@@ -165,6 +165,18 @@ export default function UploadProduct() {
         image_urls,
       });
       if (res?.seller_email) localStorage.setItem("seller_email", res.seller_email);
+      // מעקב אירועים: פרסום מוצר שהסתיים בהצלחה (ללא נתונים מזהים)
+      base44.analytics.track({
+        eventName: "product_listing_submitted",
+        properties: {
+          category: form.category || "",
+          subcategory: form.subcategory || "",
+          starting_price: Number(form.starting_price) || 0,
+          has_buy_now_price: Boolean(form.buy_now_price),
+          is_stock: form.is_stock,
+          image_count: image_urls.length,
+        },
+      }).catch(() => {});
       setDone(true);
     } catch (err) {
       setError("שגיאה בהעלאה, נסה שנית");

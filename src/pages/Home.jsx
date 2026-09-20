@@ -52,35 +52,35 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white" style={{ minHeight: 480 }} dir="rtl">
+    <section className="relative overflow-hidden bg-white" style={{ minHeight: 240 }} dir="rtl">
       {carouselImages.map((img, i) => (
         <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ${i === currentSlide ? "opacity-100" : "opacity-0"}`}>
           <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
         </div>
       ))}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255, 255, 255, 0.85)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255, 255, 255, 0.6)" }} />
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 20% 50%, #e5893d10 0%, transparent 70%)" }} />
       <div className="absolute inset-0 pointer-events-none opacity-30" style={{
         backgroundImage: "linear-gradient(#e5893d08 1px, transparent 1px), linear-gradient(90deg, #e5893d08 1px, transparent 1px)",
         backgroundSize: "60px 60px"
       }} />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a] mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a] mb-3">
             <Zap className="h-3 w-3" style={{ color: "#e5893d" }} />
             <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים מספר 1 בישראל</span>
           </div>
 
-          <h1 className="text-5xl sm:text-7xl font-black text-gray-900 mb-4 leading-none tracking-tight">
+          <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-2 leading-none tracking-tight">
             ברוכים הבאים ל-{" "}
             <span className="gradient-text">bidli</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-500 font-light mb-10 max-w-xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-500 font-light mb-5 max-w-xl mx-auto">
             גלה יצירות נדירות, הצע בזמן אמת וזכה — המכרזים המהירים בישראל, פתוחים רק 24 שעות
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mb-10">
+          <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mb-5">
             <div className="relative flex-1">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input

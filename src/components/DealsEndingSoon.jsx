@@ -61,7 +61,7 @@ export default function DealsEndingSoon({ products }) {
           </div>
         </div>
         <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-          {deals.map(p => (
+          {deals.map((p, i) => (
             <Link key={p.id} to={`/auction/${p.id}`}
               className="flex-shrink-0 w-44 bg-white border border-gray-100 rounded-2xl overflow-hidden group card-neon transition-all hover:-translate-y-0.5"
               style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
@@ -69,8 +69,10 @@ export default function DealsEndingSoon({ products }) {
                 {p.image_url
                   ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
-                <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
-                  style={{ background: "linear-gradient(135deg, #ff2200, #e5893d)" }}>מציאה</span>
+                {i % 5 === 0 && (
+                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
+                    style={{ background: "linear-gradient(135deg, #ff2200, #e5893d)" }}>מציאה</span>
+                )}
               </div>
               <div className="p-2.5">
                 <p className="font-bold text-gray-900 text-xs leading-snug line-clamp-1 mb-1">{p.title}</p>

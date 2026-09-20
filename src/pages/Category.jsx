@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { Search, Filter, ArrowRight } from "lucide-react";
+import { Search, Filter } from "lucide-react";
+import CategoryHero from "@/components/CategoryHero";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
@@ -125,35 +126,7 @@ export default function Category() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <div className="px-4 pt-6 pb-5" style={{ background: "linear-gradient(135deg, #f3e8ff 0%, #fdf4ff 60%, #ffffff 100%)" }}>
-        <div className="max-w-5xl mx-auto">
-          <a href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors">
-            <ArrowRight className="h-4 w-4 rotate-180" />
-            חזרה לדף הבית
-          </a>
-
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex-1">
-              <h1 className="text-2xl font-black text-gray-900 mb-1">מכרזי {decodedName}</h1>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-lg">{cat.description}</p>
-            </div>
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
-              style={{ background: "#f3e8ff", border: "1px solid #e9d5ff" }}>
-              {cat.icon}
-            </div>
-          </div>
-
-          {/* Subcategories */}
-          <div className="flex flex-wrap gap-2">
-            {cat.subcategories.map((sub) => (
-              <button key={sub} className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
-                style={{ background: "#f3e8ff", color: "#7c3aed", border: "1px solid #e9d5ff" }}>
-                {sub}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      <CategoryHero name={decodedName} cat={cat} />
 
       {/* Search + filter bar */}
       <div className="border-y border-gray-100 bg-gray-50 py-3 px-4">

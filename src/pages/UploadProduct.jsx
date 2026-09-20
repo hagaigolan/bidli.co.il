@@ -7,13 +7,14 @@ import { useAuth } from "@/lib/AuthContext";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
+import { SUBCATEGORIES } from "@/lib/subcategories";
 import { isAnyEmailBanned } from "@/lib/banCheck";
 const PAYMENT_METHOD_LABELS = { kashcash: "קשקאש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    title: "", description: "", category: "", condition: "מצב מעולה",
+    title: "", description: "", category: "", subcategory: "", condition: "מצב מעולה",
     starting_price: "", buy_now_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
     seller_payment_method: "", seller_payme_phone: "", seller_bank_details: "",
     is_stock: false,
@@ -49,6 +50,7 @@ export default function UploadProduct() {
         title: d.title || "",
         description: d.description || "",
         category: d.category || "",
+        subcategory: d.subcategory || "",
         condition: d.condition || f.condition,
         location: d.location || "",
         starting_price: d.starting_price != null ? String(d.starting_price) : "",
@@ -150,6 +152,7 @@ export default function UploadProduct() {
         title: form.title,
         description: form.description,
         category: form.category,
+        subcategory: form.subcategory,
         condition: form.condition,
         is_stock: form.is_stock,
         starting_price: form.starting_price,
@@ -195,7 +198,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",subcategory:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -306,7 +309,7 @@ export default function UploadProduct() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">קטגוריה</label>
-              <select value={form.category} onChange={e => set("category", e.target.value)}
+              <select value={form.category} onChange={e => { set("category", e.target.value); set("subcategory", ""); }}
                 className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right">
                 <option value="">בחר קטגוריה</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -319,6 +322,17 @@ export default function UploadProduct() {
                 {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">תת קטגוריה
+              <span className="text-xs text-gray-400 font-normal"> — מיקוד המכרז לקונים הרלוונטיים</span>
+            </label>
+            <select value={form.subcategory} onChange={e => set("subcategory", e.target.value)} disabled={!form.category}
+              className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right disabled:bg-gray-50 disabled:text-gray-400">
+              <option value="">{form.category ? "בחר תת קטגוריה (אופציונלי)" : "בחר קטגוריה תחילה"}</option>
+              {(SUBCATEGORIES[form.category] || []).map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
 
           {/* סימון כסטוק */}

@@ -11,6 +11,9 @@
     "category": {
       "type": "string"
     },
+    "subcategory": {
+      "type": "string"
+    },
     "condition": {
       "type": "string",
       "enum": [
@@ -187,25 +190,5 @@
     "title",
     "starting_price",
     "ends_at"
-  ],
-  "rls": {
-    "create": null,
-    "read": null,
-    "update": null,
-    "delete": {
-      "$or": [
-        {
-          "created_by_id": "{{user.id}}"
-        },
-        {
-          "data.seller_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
-    }
-  }
+  ]
 }

@@ -50,6 +50,7 @@ export default async function (req: Request): Promise<Response> {
     if (paymentMethod === 'bank' && !bankDetails) {
       return Response.json({ error: 'bank details required' }, { status: 400 });
     }
+    const subcategory = str(body.subcategory, 100);
     const condition = str(body.condition, 20);
     if (condition && !CONDITIONS.includes(condition)) {
       return Response.json({ error: 'invalid condition' }, { status: 400 });
@@ -59,6 +60,7 @@ export default async function (req: Request): Promise<Response> {
       title,
       description: str(body.description),
       category: str(body.category, 100),
+      subcategory,
       condition: condition || undefined,
       is_stock: !!body.is_stock,
       starting_price: startingPrice,

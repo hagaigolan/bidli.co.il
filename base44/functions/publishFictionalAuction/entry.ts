@@ -1,9 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-// "בידלי" — publishes one realistic fictional auction per invocation, rotating
-// categories. Invoked hourly by the "Bidli Fictional Sales" scheduled workflow,
-// and on demand by the "bidli" in-app agent. Publishes only inside the
-// requested 3-day window (Asia/Jerusalem) and no-ops outside it.
+// "בידלי" — publishes one realistic fictional auction per invocation, always
+// in a category different from the previous fictional listing. Invoked every
+// 30 minutes by the "Bidli Fictional Sales" scheduled workflow, and on demand
+// by the "bidli" in-app agent. Publishes only inside the daily 9:00–22:00
+// window (Asia/Jerusalem) and no-ops outside it.
 
 const CATEGORIES = [
   "אמנות", "יודאיקה", "אספנות", "נומיסמטיקה", "תכשיטים",
@@ -31,18 +32,19 @@ const CITIES = [
 function localNow() {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", hour12: false,
+    hour: "2-digit", minute: "2-digit", hour12: false,
   }).formatToParts(new Date());
   const str = (t) => parts.find(p => p.type === t)?.value || "";
-  return { dateKey: `${str("year")}-${str("month")}-${str("day")}`, hour: Number(str("hour")) };
+  return { dateKey: `${str("year")}-${str("month")}-${str("day")}`, hour: Number(str("hour")), minute: Number(str("minute")) };
 }
 
+// חלון יומי קבוע: 9:00 עד 22:00 (כולל), כל יום — עד שמבקשים להפסיק
 function inPublishWindow() {
-  const { dateKey, hour } = localNow();
-  if (dateKey === "2026-09-18") return hour >= 14 && hour <= 20;
-  if (dateKey === "2026-09-19") return hour >= 8 && hour <= 16;
-  if (dateKey === "2026-09-20") return hour >= 8 && hour <= 20;
-  return false;
+  const { hour, minute } = localNow();
+  if (hour < 9) return false;
+  if (hour > 22) return false;
+  if (hour === 22 && minute > 0) return false;
+  return true;
 }
 
 Deno.serve(async (req) => {
@@ -62,7 +64,14 @@ Deno.serve(async (req) => {
       seller_user_id: { $regex: `^${SELLER_USER_ID_PREFIX}` },
     });
     const idx = existing.length;
-    const category = CATEGORIES[idx % CATEGORIES.length];
+    // הקטגוריה חייבת להיות שונה מזו של המכרז הפיקטיבי הקודם
+    const sorted = [...existing].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    const lastCategory = sorted[0]?.category;
+    let catIdx = idx % CATEGORIES.length;
+    if (lastCategory && CATEGORIES[catIdx] === lastCategory) {
+      catIdx = (catIdx + 1) % CATEGORIES.length;
+    }
+    const category = CATEGORIES[catIdx];
     const nameIdx = idx % SELLER_NAMES.length;
     const sellerName = SELLER_NAMES[nameIdx];
     const sellerUserId = `${SELLER_USER_ID_PREFIX}-${nameIdx}`;

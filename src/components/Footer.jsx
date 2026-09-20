@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 import { Mail, Smartphone, ArrowRight } from "lucide-react";
-import logoWordmarkDark from "@/assets/logo-wordmark-dark.png";
+import logoWordmark from "@/assets/logo-wordmark.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-950 text-white" dir="rtl">
+    <footer className="bg-white text-gray-900 border-t border-gray-100" dir="rtl">
       {/* Neon top border */}
       <div className="h-px" style={{ background: "linear-gradient(to right, #e5893d, #3e6b8a, #6aa3cd, #2d4f68)" }} />
 
       {/* App banner */}
-      <div className="py-8 border-b border-white/10">
+      <div className="py-8 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -18,12 +18,12 @@ export default function Footer() {
                 <Smartphone className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="font-bold text-white text-sm">הורד את אפליקציית bidli</p>
-                <p className="text-white/50 text-xs">הצע הצעות בזמן אמת מכל מקום, קבל התראות מיידיות</p>
+                <p className="font-bold text-gray-900 text-sm">הורד את אפליקציית bidli</p>
+                <p className="text-gray-500 text-xs">הצע הצעות בזמן אמת מכל מקום, קבל התראות מיידיות</p>
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold border border-[#e5893d55] text-white hover:bg-[#e5893d15] transition-colors">
+              <a href="#" className="group px-4 py-2 rounded-xl text-xs font-semibold border border-[#e5893d55] text-gray-700 hover:bg-[#e5893d15] transition-colors">
                 <span className="group-hover:hidden">App Store</span>
                 <span className="hidden group-hover:inline">עובדים על זה</span>
               </a>
@@ -45,18 +45,18 @@ export default function Footer() {
             <div>
               <Link to="/" className="flex flex-col items-center gap-1.5 mb-4" aria-label="bidli.co.il — דף הבית">
                 <img
-                  src={logoWordmarkDark}
+                  src={logoWordmark}
                   alt="bidli.co.il"
                   className="h-[96px] w-auto object-contain"
                 />
-                <span className="text-sm font-bold text-white/60 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
+                <span className="text-sm font-bold text-gray-600 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
               </Link>
-              <p className="text-white/40 text-xs mb-4 leading-relaxed">
+              <p className="text-gray-500 text-xs mb-4 leading-relaxed">
                 נשמח לשמוע ממך! שלח לנו שאלות, הערות או רעיונות.
               </p>
-              <div className="flex items-center gap-2 text-xs text-white/40 mb-2">
+              <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
                 <Mail className="h-3 w-3" />
-                <a href="mailto:mitugplus@gmail.com" className="hover:text-white/70 transition-colors">mitugplus@gmail.com</a>
+                <a href="mailto:mitugplus@gmail.com" className="hover:text-gray-700 transition-colors">mitugplus@gmail.com</a>
               </div>
               <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#e5893d" }}>
                 צור קשר <ArrowRight className="h-3 w-3 rotate-180" />
@@ -65,37 +65,37 @@ export default function Footer() {
 
             {/* Navigation */}
             <div>
-              <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">ניווט</h3>
+              <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">ניווט</h3>
               <nav className="flex flex-col gap-2">
-                <Link to="/" className="text-xs text-white/40 hover:text-white transition-colors">דף הבית</Link>
+                <Link to="/" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">דף הבית</Link>
                 {["מכרזים","חנויות","יודאיקה","רכבים","נדל\"ן","תעשייה"].map(l => (
-                  <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
+                  <a key={l} href="#" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</a>
                 ))}
               </nav>
             </div>
 
             {/* Categories */}
             <div>
-              <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">קטגוריות</h3>
+              <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">קטגוריות</h3>
               <nav className="flex flex-col gap-2">
                 {["אמנות","יודאיקה","אספנות","נומיסמטיקה ופילטליה","תכשיטים","עיצוב הבית","אופנה"].map(l => (
-                  <a key={l} href="#" className="text-xs text-white/40 hover:text-white transition-colors">{l}</a>
+                  <a key={l} href="#" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</a>
                 ))}
               </nav>
             </div>
 
             {/* Company */}
             <div>
-              <h3 className="font-bold text-white text-xs mb-4 uppercase tracking-widest">חברה</h3>
+              <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">חברה</h3>
               <nav className="flex flex-col gap-2 mb-6">
-                <Link to="/articles" className="text-xs text-white/40 hover:text-white transition-colors">מאמרים</Link>
-                <Link to="/contact" className="text-xs text-white/40 hover:text-white transition-colors">צור קשר</Link>
-                <Link to="/about" className="text-xs text-white/40 hover:text-white transition-colors">אודות</Link>
+                <Link to="/articles" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">מאמרים</Link>
+                <Link to="/contact" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">צור קשר</Link>
+                <Link to="/about" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">אודות</Link>
 
 
               </nav>
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-xs text-white/40 mb-1">יש לך משהו למכור?</p>
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 mb-1">יש לך משהו למכור?</p>
                 <a href="#" className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "#6aa3cd" }}>
                   צור קשר עם בתי המכרזים <ArrowRight className="h-3 w-3 rotate-180" />
                 </a>
@@ -106,19 +106,19 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/5 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/25">
+      <div className="border-t border-gray-100 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
           <div className="text-center sm:text-right">
             <p>© bidli בע"מ. כל הזכויות שמורות.</p>
-            <a href="mailto:mitugplus@gmail.com" className="hover:text-white/50 transition-colors" dir="ltr">mitugplus@gmail.com</a>
+            <a href="mailto:mitugplus@gmail.com" className="hover:text-gray-500 transition-colors" dir="ltr">mitugplus@gmail.com</a>
           </div>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
-            <Link to="/terms?tab=terms" className="hover:text-white/50 transition-colors">תנאי שימוש</Link>
-            <Link to="/terms?tab=privacy" className="hover:text-white/50 transition-colors">מדיניות פרטיות</Link>
-            <Link to="/terms?tab=cookies" className="hover:text-white/50 transition-colors">מדיניות עוגיות</Link>
-            <Link to="/terms?tab=returns" className="hover:text-white/50 transition-colors">מדיניות החזרים</Link>
-            <Link to="/terms?tab=shipping" className="hover:text-white/50 transition-colors">משלוחים והספקה</Link>
-            <Link to="/terms?tab=accessibility" className="hover:text-white/50 transition-colors">הצהרת נגישות</Link>
+            <Link to="/terms?tab=terms" className="hover:text-gray-500 transition-colors">תנאי שימוש</Link>
+            <Link to="/terms?tab=privacy" className="hover:text-gray-500 transition-colors">מדיניות פרטיות</Link>
+            <Link to="/terms?tab=cookies" className="hover:text-gray-500 transition-colors">מדיניות עוגיות</Link>
+            <Link to="/terms?tab=returns" className="hover:text-gray-500 transition-colors">מדיניות החזרים</Link>
+            <Link to="/terms?tab=shipping" className="hover:text-gray-500 transition-colors">משלוחים והספקה</Link>
+            <Link to="/terms?tab=accessibility" className="hover:text-gray-500 transition-colors">הצהרת נגישות</Link>
           </div>
         </div>
       </div>

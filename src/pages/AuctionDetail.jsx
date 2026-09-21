@@ -491,7 +491,8 @@ export default function AuctionDetail() {
       const remainingMs = new Date(product.ends_at) - Date.now();
       const extendAuction = remainingMs > 0 && remainingMs <= 60000 && !product.snipe_extended;
       if (extendAuction) {
-        updateData.ends_at = new Date(Date.now() + 60000).toISOString();
+        // מוסיפים 60 שניות לזמן הסיום הקיים — לא מאפסים את המונה ל-60
+        updateData.ends_at = new Date(new Date(product.ends_at).getTime() + 60000).toISOString();
         updateData.snipe_extended = true;
       }
       // Previous leader becomes second bidder

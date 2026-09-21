@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Users, Gavel, Lock, ShieldCheck } from "lucide-react";
+import { Users, Gavel, BookOpen, Lock, ShieldCheck } from "lucide-react";
 import UsersSection from "@/components/admin/UsersSection";
 import AdminAuctionsSection from "@/components/admin/AdminAuctionsSection";
+import MagazineSection from "@/components/admin/MagazineSection";
 import SendEmailModal from "@/components/admin/SendEmailModal";
 
 // עמוד ניהול משתמשים ומכרזים — נגיש לאדמינים בלבד
@@ -79,10 +80,17 @@ export default function AdminManagement() {
             style={tab === "auctions" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <Gavel className="h-4 w-4" aria-hidden="true" /> מכרזים
           </button>
+          <button onClick={() => setTab("magazine")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "magazine" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            style={tab === "magazine" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
+            <BookOpen className="h-4 w-4" aria-hidden="true" /> מגזין
+          </button>
         </div>
 
         {tab === "users"
           ? <UsersSection onSendEmail={openEmail} />
+          : tab === "magazine"
+          ? <MagazineSection />
           : <AdminAuctionsSection onSendEmail={openEmail} />}
       </div>
 

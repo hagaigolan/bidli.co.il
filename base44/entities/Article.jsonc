@@ -1,0 +1,94 @@
+{
+  "type": "object",
+  "name": "Article",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string",
+      "description": "\u05d2\u05d5\u05e3 \u05d4\u05de\u05d0\u05de\u05e8 \u05d1-Markdown"
+    },
+    "category": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cover_image_url": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "rejected"
+      ],
+      "default": "draft",
+      "description": "draft = \u05de\u05de\u05ea\u05d9\u05df \u05dc\u05d0\u05d9\u05e9\u05d5\u05e8 \u05d0\u05d3\u05de\u05d9\u05df, published = \u05d2\u05dc\u05d5\u05d9 \u05d1\u05de\u05d2\u05d6\u05d9\u05df, rejected = \u05e0\u05d3\u05d7\u05d4"
+    },
+    "read_time": {
+      "type": "number",
+      "default": 7
+    },
+    "published_date": {
+      "type": "string"
+    },
+    "is_price_guide": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05de\u05d0\u05de\u05e8 \u05de\u05d7\u05d9\u05e8\u05d5\u05df \u2014 \u05d8\u05d5\u05d5\u05d7\u05d9 \u05de\u05d7\u05d9\u05e8\u05d9\u05dd \u05dc\u05e4\u05d9 \u05ea\u05ea-\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d4 \u05d4\u05de\u05d1\u05d5\u05e1\u05e1\u05d9\u05dd \u05e2\u05dc \u05de\u05db\u05d9\u05e8\u05d5\u05ea \u05e9\u05d4\u05e1\u05ea\u05d9\u05d9\u05de\u05d5 \u05d1\u05d0\u05ea\u05e8"
+    },
+    "price_updated_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "description": "static = \u05d4\u05de\u05d0\u05de\u05e8\u05d9\u05dd \u05d4\u05d4\u05d9\u05e1\u05d8\u05d5\u05e8\u05d9\u05d9\u05dd \u05e9\u05d4\u05d5\u05d2\u05d3\u05e8\u05d5 \u05d1\u05e7\u05d5\u05d3, ai = \u05e0\u05d5\u05e6\u05e8 \u05e2\u05dc \u05d9\u05d3\u05d9 \u05e1\u05d5\u05db\u05df \u05d4-AI"
+    }
+  },
+  "required": [
+    "title",
+    "content",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

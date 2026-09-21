@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "name": "CollectionComment",
+  "properties": {
+    "collector_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d1\u05e2\u05dc \u05d4\u05d0\u05d5\u05e1\u05e3 \u05e9\u05d4\u05e4\u05e8\u05d9\u05d8 \u05e9\u05dc\u05d5 \u05e7\u05d9\u05d1\u05dc \u05ea\u05d2\u05d5\u05d1\u05d4"
+    },
+    "collector_name": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "commenter_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05db\u05d5\u05ea\u05d1 \u05d4\u05ea\u05d2\u05d5\u05d1\u05d4"
+    },
+    "commenter_name": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "collector_key",
+    "product_id",
+    "commenter_key",
+    "comment"
+  ],
+  "rls": {
+    "read": null,
+    "create": {
+      "data.commenter_key": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.commenter_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.commenter_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

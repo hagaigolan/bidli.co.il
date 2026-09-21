@@ -19,6 +19,10 @@ import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
 import AutoBidPanel from "@/components/AutoBidPanel";
+import LiveBidFeed from "@/components/LiveBidFeed";
+import BidLeaderboard from "@/components/BidLeaderboard";
+import SoundToggle from "@/components/SoundToggle";
+import { playBidPing, playTickTock, playHammer } from "@/lib/auctionSounds";
 import { setPageMeta } from "@/lib/seo";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
@@ -41,6 +45,17 @@ function useCountdown(endsAt) {
 
 function TimerBlock({ endsAt, antiSnipeExtended }) {
   const left = useCountdown(endsAt);
+  // אולם חי — טיק-טוק בדקה האחרונה, פטיש מכירה בסיום
+  const prevTotalRef = useRef(left ? left.total : null);
+  useEffect(() => {
+    if (!left) {
+      if (prevTotalRef.current !== null && prevTotalRef.current <= 60000) playHammer();
+      prevTotalRef.current = null;
+    } else {
+      if (prevTotalRef.current !== null && left.total < prevTotalRef.current && left.total <= 60000) playTickTock();
+      prevTotalRef.current = left.total;
+    }
+  }, [left]);
   const critical = left && left.total < 60000;   // דקה אחרונה — אדום מהבהב
   const urgent   = left && left.total < 3600000; // השעה האחרונה — אדום מהבהב ללחץ FOMO
   const color = urgent ? "#ff2200" : "#2d4f68";
@@ -66,11 +81,22 @@ function TimerBlock({ endsAt, antiSnipeExtended }) {
             {critical ? "🔴 רגעים אחרונים!" : urgent ? "🔴 שעה אחרונה — אל תפספס!" : "המכרז מסתיים בעוד:"}
           </span>
         </div>
-        {antiSnipeExtended && (
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white"
-            style={{ background: "#ff6600" }}>+60 שנ׳ הוספו!</span>
-        )}
+        <div className="flex items-center gap-2">
+          {antiSnipeExtended && (
+            <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white"
+              style={{ background: "#ff6600" }}>+60 שנ׳ הוספו!</span>
+          )}
+          <SoundToggle />
+        </div>
       </div>
+      {left.total <= 10000 && (
+        <div className="text-center mb-3 animate-neon-pulse">
+          <p className="text-sm font-black mb-1" style={{ color }}>🔥 ההצעה הגבוהה לוקחת — שניות אחרונות!</p>
+          <div className="text-6xl font-black font-mono" style={{ color, textShadow: `0 0 20px ${color}aa` }}>
+            {String(left.s).padStart(2, "0")}
+          </div>
+        </div>
+      )}
       <div className="flex flex-row-reverse gap-3 justify-center mb-3">
         {[{ v: left.h, l: "שעות" }, { v: left.m, l: "דקות" }, { v: left.s, l: "שניות" }].map(({ v, l }) => (
           <div key={l} className="text-center">
@@ -133,39 +159,7 @@ function SocialProofBar({ bidCount, lastBidTime }) {
   );
 }
 
-// ── 3. LIVE BID FEED ──────────────────────────────────────────────────────────
-function BidFeed({ bids, flashNew }) {
-  return (
-    <div className="rounded-2xl border border-gray-100 overflow-hidden">
-      <div className="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2"
-        style={{ background: "linear-gradient(to right, #e5893d08, transparent)" }}>
-        <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-        <span className="text-xs font-bold text-gray-700">הצעות אחרונות — חי</span>
-      </div>
-      <div className="max-h-40 overflow-y-auto">
-        {bids.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-4">עדיין לא הוגשו הצעות — היה הראשון!</p>
-        ) : (
-          bids.slice(0, 8).map((bid, i) => (
-            <div key={bid.id || i}
-              className={`flex items-center justify-between px-4 py-2 border-b border-gray-50 transition-all duration-500 ${i === 0 && flashNew ? "bg-green-50" : ""}`}>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                  style={{ background: i === 0 ? "linear-gradient(135deg, #e5893d, #3e6b8a)" : "#e5e7eb", color: i === 0 ? "white" : "#6b7280" }}>
-                  {i === 0 ? "👑" : i + 1}
-                </div>
-                <span className="text-xs font-semibold text-gray-700">{bid.bidder_name || "אנונימי"}</span>
-              </div>
-              <span className="text-xs font-black" style={{ color: i === 0 ? "#e5893d" : "#374151" }}>
-                ₪{(bid.amount || 0).toLocaleString()}
-              </span>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
+
 
 // ── 4. OUTBID ALERT BANNER ────────────────────────────────────────────────────
 function OutbidBanner({ show, currentLeader, onBidNow }) {
@@ -368,6 +362,8 @@ export default function AuctionDetail() {
         // Flash new bid in feed
         setFlashNew(true);
         setTimeout(() => setFlashNew(false), 1500);
+        // אולם חי — צליל להצעה חדשה שהגיעה בזמן אמת
+        if ((event.data.current_price || 0) > (prev?.current_price || 0)) playBidPing();
         // הארכת זמן חד-פעמית — באנר חי כשזמן הסיום הוארך בפועל
         if (prev?.ends_at && new Date(event.data.ends_at) > new Date(prev.ends_at)) {
           setAntiSnipeExtended(true);
@@ -674,9 +670,10 @@ export default function AuctionDetail() {
                     </div>
                     )}
                     </ImageSlider>
-            {/* ── 3. BID FEED ── */}
-            <div className="mt-4">
-              <BidFeed bids={bids} flashNew={flashNew} />
+            {/* ── 3. BID FEED + LEADERBOARD ── */}
+            <div className="mt-4 space-y-4">
+              <LiveBidFeed bids={bids} flashNew={flashNew} />
+              <BidLeaderboard bids={bids} />
             </div>
 
             {/* ── LIVE CHAT — שאלות למוכר ── */}

@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "name": "CollectorFollow",
+  "properties": {
+    "follower_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d4\u05e2\u05d5\u05e7\u05d1"
+    },
+    "follower_name": {
+      "type": "string"
+    },
+    "followed_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d4\u05d0\u05e1\u05e4\u05df \u05e9\u05e2\u05d5\u05e7\u05d1\u05d9\u05dd \u05d0\u05d7\u05e8\u05d9\u05d5"
+    },
+    "followed_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "follower_key",
+    "followed_key"
+  ],
+  "rls": {
+    "read": null,
+    "create": {
+      "data.follower_key": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.follower_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.follower_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

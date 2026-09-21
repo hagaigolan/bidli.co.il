@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "name": "CollectionLike",
+  "properties": {
+    "collector_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d1\u05e2\u05dc \u05d4\u05d0\u05d5\u05e1\u05e3 \u05e9\u05d4\u05e4\u05e8\u05d9\u05d8 \u05e9\u05dc\u05d5 \u05e7\u05d9\u05d1\u05dc \u05dc\u05d9\u05d9\u05e7"
+    },
+    "collector_name": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "product_image_url": {
+      "type": "string"
+    },
+    "liked_by_key": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d4\u05de\u05e9\u05ea\u05de\u05e9 \u05e9\u05e0\u05ea\u05df \u05d0\u05ea \u05d4\u05dc\u05d9\u05d9\u05e7"
+    },
+    "liked_by_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "collector_key",
+    "product_id",
+    "liked_by_key"
+  ],
+  "rls": {
+    "read": null,
+    "create": {
+      "data.liked_by_key": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.liked_by_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.liked_by_key": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

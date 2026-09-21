@@ -61,6 +61,15 @@ Deno.serve(async (req) => {
         }
       }
 
+      // טלפון הזוכה מרשומת המשתמש שלו — נשלח למוכר במייל לצורך העברת הכספים
+      let winnerPhone = "";
+      if (product.highest_bidder_email) {
+        try {
+          const winnerUsers = await base44.asServiceRole.entities.User.filter({ email: product.highest_bidder_email });
+          winnerPhone = String(winnerUsers?.[0]?.phone || "").trim();
+        } catch {}
+      }
+
       // התראה בתוך האתר למוכר
       if (product.seller_email) {
         await createAppNotification(base44, {
@@ -82,7 +91,7 @@ Deno.serve(async (req) => {
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: product.seller_email,
             subject: `💰 המוצר שלך נמכר: ${product.title}`,
-            body: sellerSaleEmail(product, product.highest_bidder),
+            body: sellerSaleEmail(product, product.highest_bidder, winnerPhone),
           });
         } catch (e) {
           results.push({ id: product.id, action: 'seller_email_failed', error: String(e) });

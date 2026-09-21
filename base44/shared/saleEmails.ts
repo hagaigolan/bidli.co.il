@@ -111,13 +111,23 @@ export function buyerSaleEmail(product, winnerName) {
   });
 }
 
-export function sellerSaleEmail(product, winnerName) {
+export function sellerSaleEmail(product, winnerName, winnerPhone) {
   const productUrl = `${APP_URL}/auction/${product.id}`;
   const profileUrl = `${APP_URL}/profile`;
   const method = METHOD_LABELS[product.seller_payment_method] || "העברה";
+  const winnerDetails = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;margin:16px 0;">
+      <tr><td style="padding:14px 16px;font-size:15px;line-height:1.9;color:#3f3f46;">
+        <strong style="color:#15803d;">פרטי הזוכה לצורך העברת הכספים ותיאום המסירה:</strong><br>
+        שם: <strong>${escHtml(winnerName || "—")}</strong><br>
+        ${winnerPhone ? `טלפון: <strong style="color:#e5893d;">${escHtml(winnerPhone)}</strong><br>` : ""}
+        מייל: <strong>${escHtml(product.highest_bidder_email || "—")}</strong>
+      </td></tr>
+    </table>`;
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">המוצר שלך נמכר! 💰 ${winnerName ? `הזוכה הוא <strong>${escHtml(winnerName)}</strong>` : "נמצא זוכה"} והמחיר הסופי רשום מטה. הקונה יעביר אליך את הסכום ישירות ב<strong>${method}</strong> — ללא כרטיס אשראי וללא עמלות.</p>
+    ${winnerDetails}
     ${productCard(product, productUrl)}
     ${stepsBox(`
       <strong>1.</strong> הקונה יבצע את ההעברה וידווח עליה במערכת.<br>

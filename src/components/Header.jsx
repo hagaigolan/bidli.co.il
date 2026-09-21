@@ -83,7 +83,6 @@ export default function Header() {
             <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
               <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>דף הבית</Link>
               <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">מכרזים פעילים</Link>
-              <Link to="/auctions?view=archive" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">ארכיון מכרזים</Link>
               <Link to="/stocks" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">סטוקים</Link>
 
 

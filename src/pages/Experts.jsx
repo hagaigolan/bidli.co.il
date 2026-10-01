@@ -228,7 +228,7 @@ export default function Experts() {
         )}
       </div>
 
-      {showLoginModal && <LoginRequiredModal action="default" onClose={() => setShowLoginModal(false)} />}
+      {showLoginModal && <LoginRequiredModal action="expert" onClose={() => setShowLoginModal(false)} />}
     </div>
   );
 }

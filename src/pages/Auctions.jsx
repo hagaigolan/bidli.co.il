@@ -223,6 +223,17 @@ export default function Auctions() {
                   </div>
                 )}
 
+                {hasFilters && active.length === 0 && (
+                  <div className="text-center py-16 rounded-2xl border border-dashed border-gray-200">
+                    <p className="text-4xl mb-3">🔍</p>
+                    <p className="font-bold text-gray-700 mb-1">אין מכרזים תואמים למסננים</p>
+                    <p className="text-sm text-gray-400 mb-4">נסה להרחיב את המסננים, או שמור את החיפוש ונעדכן אותך כשמכרז חדש ייפתח</p>
+                    <Link to="/auctions" className="text-sm font-bold underline" style={{ color: "#e5893d" }}>
+                      נקה מסננים והצג הכל
+                    </Link>
+                  </div>
+                )}
+
               </>
             )}
           </>

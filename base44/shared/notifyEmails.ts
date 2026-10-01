@@ -38,27 +38,56 @@ export function sellerPublishEmail(product) {
   };
 }
 
-// ── Seller: new bid on their auction ──
+// ── Seller: new bid on their auction (FOMO-driven) ──
 export function sellerBidEmail(product, bid) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  // דחיפות: כמה זמן נותר לסיום המכרז
+  const leftMs = product.ends_at ? new Date(product.ends_at).getTime() - Date.now() : 0;
+  const leftLabel = leftMs <= 0
+    ? "המכרז עומד להיסגר"
+    : leftMs > 3600000
+      ? `נותרו כ-${Math.floor(leftMs / 3600000)} שעות לסיום`
+      : "⏰ נותרו פחות משעה לסיום!";
+  const bidsCount = Math.max(1, product.bid_count ?? 1);
   const body = `
     <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
-    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התקבלה הצעה חדשה על המוצר שלך! 🚀</p>
-    <p style="margin:0 0 14px;font-size:34px;font-weight:900;color:#e5893d;text-align:center;">₪${priceHtml(bid.amount)}</p>
-    ${productCard(product, productUrl)}
-    <p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:#71717a;">סך ההצעות על המוצר עד כה: <strong>${product.bid_count ?? "—"}</strong>. המשך לעקוב — תקבל עדכון בכל הצעה חדשה.</p>`;
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">מישהו פשוט הציע על הפריט שלך — והמכרז <strong style="color:#e5893d;">מתלהט</strong> 🔥</p>
+    <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#71717a;text-align:center;">ההצעה החדשה:</p>
+    <p style="margin:0 0 14px;font-size:40px;font-weight:900;color:#e5893d;text-align:center;line-height:1.2;">₪${priceHtml(bid.amount)}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;margin:0 0 14px;overflow:hidden;" dir="rtl">
+      <tr>
+        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;padding:10px 8px;text-align:center;">
+          <span style="display:block;font-size:18px;font-weight:900;color:#18181b;">${bidsCount}</span>
+          <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">הצעות עד כה</span>
+        </td>
+        <td style="background:#e5893d08;border:1px solid #e5893d33;padding:10px 8px;text-align:center;">
+          <span style="display:block;font-size:18px;font-weight:900;color:#e5893d;">${escHtml(product.highest_bidder || "מתחרה")}</span>
+          <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">במקום הראשון כרגע</span>
+        </td>
+        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;padding:10px 8px;text-align:center;">
+          <span style="display:block;font-size:14px;font-weight:900;color:#3e6b8a;white-space:nowrap;">${leftLabel}</span>
+          <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">לסגירת העסקה</span>
+        </td>
+      </tr>
+    </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;margin:0 0 4px;" dir="rtl">
+      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#7c2d12;">
+        <strong>🔥 אל תפסיד את הרגע:</strong> ${bidsCount > 1 ? `כבר <strong>${bidsCount} קונים</strong> מתחרים על הפריט שלך, והמחיר רק עולה. ` : ""}המכרז נסגר בעוד רגע — ${leftMs <= 3600000 && leftMs > 0 ? "פחות משעה! " : ""}היכנס עכשיו לעקוב אחרי הקרב, ענה לקונים בצ'אט החי ודחוף אותם להצעה הבאה. מי שלא עוקב — מפסיד מכירה.
+      </td></tr>
+    </table>
+    ${productCard(product, productUrl)}`;
   return {
-    subject: `🚀 הצעה חדשה על "${product.title}" — ₪${priceHtml(bid.amount)}`,
+    subject: `🚨 הצעה חדשה על "${product.title}" — ₪${priceHtml(bid.amount)} (${leftLabel})`,
     html: shell({
       title: "הצעה חדשה במכרז שלך!",
       heroColor: "#e5893d",
-      heroEmoji: "🚀",
-      heroLine: "מישהו הציע על המוצר שלך",
+      heroEmoji: "🔥",
+      heroLine: bidsCount > 1 ? `${bidsCount} הצעות בקרב — וזה רק מתחיל` : "ההצעה הראשונה נרשמה",
       bodyHtml: body,
       ctaUrl: productUrl,
-      ctaLabel: "צפה במכרז שלך →",
+      ctaLabel: "🔥 רוצה לראות מי מתחרה? היכנס עכשיו →",
     }),
-    text: `שלום ${product.seller_name || "מוכר"},\n\nהתקבלה הצעה חדשה על המוצר שלך:\n\nמוצר: ${product.title}\nהצעה חדשה: ₪${priceHtml(bid.amount)}\nסך ההצעות: ${product.bid_count ?? "—"}\n\nקישור למכרז: ${productUrl}`,
+    text: `שלום ${product.seller_name || "מוכר"},\n\nהתקבלה הצעה חדשה על המוצר שלך:\n\nמוצר: ${product.title}\nהצעה חדשה: ₪${priceHtml(bid.amount)}\nסך ההצעות: ${bidsCount}\n${leftLabel}\n\nהיכנס עכשיו לעקוב אחרי הקרב ולענות לקונים בצ'אט החי:\n${productUrl}`,
   };
 }
 

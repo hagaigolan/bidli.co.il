@@ -90,7 +90,6 @@ export function sellerBidEmail(product, bid) {
       bodyHtml: body,
       ctaUrl: productUrl,
       ctaLabel: "🔥 רוצה לראות מי מתחרה? היכנס עכשיו →",
-      bodyWidth: 448, // רוחב מוקטן ב-20% — מוצג במלואו גם במובייל
     }),
     text: `שלום ${product.seller_name || "מוכר"},\n\nהתקבלה הצעה חדשה על המוצר שלך:\n\nמוצר: ${product.title}\nהצעה חדשה: ₪${priceHtml(bid.amount)}\nסך ההצעות: ${bidsCount}\n${leftLabel}\n\nהיכנס עכשיו לעקוב אחרי הקרב ולענות לקונים בצ'אט החי:\n${productUrl}`,
   };

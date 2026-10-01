@@ -40,28 +40,38 @@ function stepsBox(stepsHtml) {
   </table>`;
 }
 
-export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel, bodyWidth = 560 }) {
+export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  @media only screen and (max-width:600px) {
+    .wrap { padding: 10px 6px !important; }
+    .hero { padding: 22px 14px !important; }
+    .pad  { padding: 20px 14px !important; }
+    .cta  { padding: 0 14px 20px !important; }
+    .foot { padding: 16px 14px 22px !important; }
+    .pc-cell { display: block !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+  }
+</style></head>
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:'Inter',system-ui,Segoe UI,Arial,sans-serif;color:#18181b;direction:rtl;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="rtl" style="background:#f4f4f5;padding:24px 12px;direction:rtl;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="rtl" class="wrap" style="background:#f4f4f5;padding:24px 12px;direction:rtl;">
     <tr><td align="center" dir="rtl">
-      <table role="presentation" width="${bodyWidth}" cellpadding="0" cellspacing="0" dir="rtl" style="max-width:${bodyWidth}px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.06);direction:rtl;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="rtl" style="width:100%;max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.06);direction:rtl;">
         <tr>
-          <td style="padding:28px 32px;text-align:center;background:linear-gradient(135deg,${heroColor}1a,${heroColor}08);border-bottom:1px solid ${heroColor}22;">
+          <td class="hero" style="padding:28px 32px;text-align:center;background:linear-gradient(135deg,${heroColor}1a,${heroColor}08);border-bottom:1px solid ${heroColor}22;">
             <div style="display:inline-block;width:56px;height:56px;line-height:56px;border-radius:16px;background:linear-gradient(135deg,#e5893d,#3e6b8a);font-size:28px;">${heroEmoji}</div>
             <h1 style="margin:14px 0 4px;font-size:22px;font-weight:900;color:#18181b;">${title}</h1>
             <p style="margin:0;font-size:14px;color:#71717a;font-weight:600;">${heroLine}</p>
           </td>
         </tr>
-        <tr><td dir="rtl" style="padding:28px 32px;direction:rtl;">
+        <tr><td dir="rtl" class="pad" style="padding:28px 32px;direction:rtl;word-break:break-word;overflow-wrap:anywhere;">
           ${bodyHtml}
         </td></tr>
-        <tr><td style="padding:0 32px 28px;">
+        <tr><td class="cta" style="padding:0 32px 28px;">
           <a href="${ctaUrl || APP_URL + "/auctions"}" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#e5893d,#3e6b8a);color:#ffffff;font-weight:800;font-size:15px;padding:14px 20px;border-radius:14px;box-shadow:0 4px 16px rgba(247,0,255,0.35);">${ctaLabel || "צפה במכרז ב-bidli →"}</a>
         </td></tr>
-        <tr><td style="padding:20px 32px 28px;border-top:1px solid #f4f4f5;">
+        <tr><td class="foot" style="padding:20px 32px 28px;border-top:1px solid #f4f4f5;">
           <p style="margin:0;font-size:12px;color:#a1a1aa;text-align:center;line-height:1.6;">bidli — הבית של פלטפורמת מכרזים שלך<br>הודעה זו נשלחה אוטומטית, אין להשיב.</p>
         </td></tr>
       </table>
@@ -74,10 +84,10 @@ export function productCard(product, productUrl) {
   const price = (product.current_price ?? product.starting_price ?? 0).toLocaleString("he-IL");
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafa;border:1px solid #f4f4f5;border-radius:14px;margin:18px 0;">
     <tr>
-      <td style="padding:14px;">
+      <td class="pc-cell" style="padding:14px;">
         ${product.image_url ? `<img src="${escHtml(product.image_url)}" alt="" style="display:block;width:96px;height:96px;border-radius:10px;object-fit:cover;margin:0 auto;">` : `<div style="width:96px;height:96px;border-radius:10px;background:#f4f4f5;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;">🏺</div>`}
       </td>
-      <td style="padding:14px;vertical-align:top;">
+      <td class="pc-cell" style="padding:14px;vertical-align:top;">
         <p style="margin:0 0 4px;font-size:16px;font-weight:800;color:#18181b;">${escHtml(product.title)}</p>
         ${product.category ? `<p style="margin:0 0 8px;font-size:12px;color:#e5893d;font-weight:700;">${escHtml(product.category)}</p>` : ""}
         <p style="margin:0;font-size:20px;font-weight:900;color:#18181b;">₪${price}</p>

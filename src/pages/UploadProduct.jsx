@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap } from "lucide-react";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
+import GuidedPublishChat from "@/components/GuidedPublishChat";
 import { useAuth } from "@/lib/AuthContext";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 
@@ -240,6 +241,18 @@ export default function UploadProduct() {
 
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <SellerFomoBanner />
+        <GuidedPublishChat
+          onApply={(fields) => setForm(f => ({
+            ...f,
+            ...(fields.title ? { title: fields.title } : {}),
+            ...(fields.description ? { description: fields.description } : {}),
+            ...(fields.category ? { category: fields.category } : {}),
+            ...(fields.condition ? { condition: fields.condition } : {}),
+            ...(fields.starting_price ? { starting_price: fields.starting_price } : {}),
+            ...(fields.buy_now_price ? { buy_now_price: fields.buy_now_price } : {}),
+            ...(fields.location ? { location: fields.location } : {}),
+          }))}
+        />
         {isRepublish && (
           <div className="p-4 rounded-2xl" style={{ background: "#e5893d08", border: "1px solid #e5893d33" }} dir="rtl">
             <p className="text-sm font-bold text-gray-800 mb-0.5">🔄 מכרז חוזר</p>

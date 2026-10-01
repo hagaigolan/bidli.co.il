@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { ARTICLES } from "./ArticlesData.jsx";
+import ArticleAuctionCta from "@/components/ArticleAuctionCta";
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -188,6 +189,9 @@ export default function ArticleDetail() {
             </div>
           </div>
         )}
+
+        {/* מכרזים פעילים בקטגוריית המאמר — המרת קוראים למציעים */}
+        <ArticleAuctionCta category={article.category} />
       </div>
     </div>
   );

@@ -34,6 +34,9 @@ import ShopSupport from './pages/ShopSupport';
 import AdminManagement from './pages/AdminManagement';
 import ScrollToTop from './components/ScrollToTop';
 import SeoAgent from './pages/SeoAgent';
+import Experts from './pages/Experts';
+import Valuation from './pages/Valuation';
+import AuctionsMap from './pages/AuctionsMap';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -97,6 +100,9 @@ const AuthenticatedApp = () => {
         <Route path="/shop-support" element={<ShopSupport />} />
         <Route path="/admin/manage" element={<AdminManagement />} />
         <Route path="/admin/seo-agent" element={<SeoAgent />} />
+        <Route path="/experts" element={<Experts />} />
+        <Route path="/valuation" element={<Valuation />} />
+        <Route path="/auctions-map" element={<AuctionsMap />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Send, CheckCircle2, Hourglass, Loader2, AlertCircle } from "lucide-react";
+import { setInstallmentPlan } from "@/functions/setInstallmentPlan";
+import { Send, CheckCircle2, Hourglass, Loader2, AlertCircle, Wallet } from "lucide-react";
 import TransferInstructions from "@/components/TransferInstructions";
 
 // תהליך התשלום בהעברה עבור הזוכה:
@@ -10,6 +11,25 @@ export default function OrderPaymentFlow({ product, onDone }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [justReported, setJustReported] = useState(false);
+  const [showPlan, setShowPlan] = useState(false);
+  const [planBusy, setPlanBusy] = useState(false);
+  const [planError, setPlanError] = useState("");
+
+  // בחירת תוכנית תשלומים — 2 עד 4 תשלומים בהעברה ישירה, כל תשלום מדווח בנפרד
+  const choosePlan = async (n) => {
+    if (planBusy) return;
+    setPlanBusy(true);
+    setPlanError("");
+    try {
+      await setInstallmentPlan({ product_id: product.id, installments_count: n });
+      setShowPlan(false);
+      onDone?.();
+    } catch (e) {
+      setPlanError("שגיאה בהגדרת התשלומים, נסה שנית");
+    } finally {
+      setPlanBusy(false);
+    }
+  };
 
   const reported = justReported || ["transfer_reported", "paid"].includes(product.status);
   const confirmed = product.status === "paid";
@@ -52,6 +72,47 @@ export default function OrderPaymentFlow({ product, onDone }) {
           המוכר אישר קבלה
         </span>
       </div>
+
+      {/* תשלומים — חלוקת הסכום ל-2-4 תשלומים בהעברה ישירה */}
+      {(product.installments_count || 0) > 1 ? (
+        <div className="p-3 rounded-xl border" style={{ background: "#3e6b8a08", borderColor: "#3e6b8a33" }} dir="rtl">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800 mb-1">
+            <Wallet className="h-3.5 w-3.5 flex-shrink-0" style={{ color: "#3e6b8a" }} />
+            תוכנית תשלומים — {product.installments_paid || 0} מתוך {product.installments_count} תשלומים בוצעו
+          </div>
+          <p className="text-xs text-gray-500">
+            סכום כל תשלום: כ-₪{Math.ceil((product.current_price || 0) / product.installments_count).toLocaleString()}.
+            דווח/י על כל העברה בנפרד — ההזמנה תסומן כשולמה עם התשלום האחרון.
+          </p>
+          {planError && <p className="text-xs text-red-500 mt-1">{planError}</p>}
+        </div>
+      ) : !reported && (
+        <div className="p-3 rounded-xl border" style={{ background: "#3e6b8a08", borderColor: "#3e6b8a33" }} dir="rtl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800">
+              <Wallet className="h-3.5 w-3.5 flex-shrink-0" style={{ color: "#3e6b8a" }} />
+              רוצה לשלם בתשלומים? (2-4 תשלומים בהעברה ישירה)
+            </div>
+            <button type="button" onClick={() => setShowPlan(s => !s)}
+              className="text-xs font-bold flex-shrink-0" style={{ color: "#3e6b8a" }}>
+              {showPlan ? "הסתר" : "בחר"}
+            </button>
+          </div>
+          {showPlan && (
+            <div className="flex gap-2 mt-2">
+              {[2, 3, 4].map(n => (
+                <button key={n} type="button" onClick={() => choosePlan(n)} disabled={planBusy}
+                  className="flex-1 text-xs font-bold py-2 rounded-xl border transition-all disabled:opacity-60"
+                  style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "white" }}>
+                  {n} תשלומים
+                </button>
+              ))}
+            </div>
+          )}
+          {planBusy && <p className="text-xs text-gray-400 mt-1">מעדכן...</p>}
+          {planError && <p className="text-xs text-red-500 mt-1">{planError}</p>}
+        </div>
+      )}
 
       {!reported ? (
         <>

@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
-import { Plus, Clock, MapPin, Tag } from "lucide-react";
+import { Plus, Clock, MapPin, Tag, Bookmark, Map } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
+import SavedSearchModal from "@/components/SavedSearchModal";
 
 const urlParams = new URLSearchParams(window.location.search);
 const ARCHIVE_MODE = urlParams.get("view") === "archive";
+// מסננים מה-URL — מופעלים מצ'יפי החיפוש הפופולריים בדף הבית ומהחיפושים השמורים
+const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
+const PARAM_MAX = Number(urlParams.get("max")) || 0;
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -79,6 +83,7 @@ function AuctionCard({ product }) {
 export default function Auctions() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showSaveSearch, setShowSaveSearch] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -116,8 +121,14 @@ export default function Auctions() {
     });
   }, [products]);
 
-  const active = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date());
+  const active = products.filter(p => {
+    if (p.status === "cancelled" || new Date(p.ends_at) <= new Date()) return false;
+    if (PARAM_CATEGORY && p.category !== PARAM_CATEGORY) return false;
+    if (PARAM_MAX && (p.starting_price || 0) > PARAM_MAX) return false;
+    return true;
+  });
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());
+  const hasFilters = PARAM_CATEGORY || PARAM_MAX;
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -139,6 +150,34 @@ export default function Auctions() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <SellerFomoBlock />
+
+        {/* מסננים פעילים + שמירת חיפוש + תצוגת מפה */}
+        {!ARCHIVE_MODE && (
+          <div className="flex items-center justify-between gap-3 mb-5 flex-wrap" dir="rtl">
+            <div className="flex items-center gap-2 flex-wrap">
+              {hasFilters && (
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+                  style={{ background: "#e5893d0f", color: "#e5893d", border: "1px solid #e5893d44" }}>
+                  {PARAM_CATEGORY && <span>קטגוריה: {PARAM_CATEGORY}</span>}
+                  {PARAM_CATEGORY && PARAM_MAX && <span>·</span>}
+                  {PARAM_MAX && <span>עד ₪{PARAM_MAX.toLocaleString()}</span>}
+                  <Link to="/auctions" aria-label="ניקוי מסננים" className="hover:opacity-70">✕</Link>
+                </span>
+              )}
+              <Link to="/auctions-map"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 text-gray-600 hover:border-[#3e6b8a66] hover:text-[#3e6b8a] transition-all">
+                <Map className="h-3.5 w-3.5" />
+                תצוגת מפה
+              </Link>
+            </div>
+            <button onClick={() => setShowSaveSearch(true)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-all hover:scale-[1.02]"
+              style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
+              <Bookmark className="h-3.5 w-3.5" />
+              שמור חיפוש — התרא על מכרזים חדשים
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center py-20">
@@ -189,6 +228,18 @@ export default function Auctions() {
           </>
         )}
       </div>
+
+      {showSaveSearch && (
+        <SavedSearchModal
+          category={PARAM_CATEGORY}
+          maxPrice={PARAM_MAX}
+          defaultLabel={PARAM_CATEGORY
+            ? `${PARAM_CATEGORY}${PARAM_MAX ? ` עד ₪${PARAM_MAX.toLocaleString()}` : ""}`
+            : PARAM_MAX ? `מכרזים עד ₪${PARAM_MAX.toLocaleString()}` : "כל המכרזים"}
+          onClose={() => setShowSaveSearch(false)}
+          onSaved={() => {}}
+        />
+      )}
     </div>
   );
 }

@@ -22,10 +22,34 @@ export default async function (req: Request): Promise<Response> {
     }
 
     const ref = (reference || '').toString().trim().slice(0, 200);
+    const total = product.installments_count > 1 ? product.installments_count : 1;
+    const paidSoFar = product.installments_paid || 0;
+
+    // תשלום ביניים בתוכנית תשלומים — הסטטוס נשאר בהמתנה לתשלום עד לתשלום האחרון
+    if (total > 1 && paidSoFar + 1 < total) {
+      const paidNow = paidSoFar + 1;
+      await base44.asServiceRole.entities.Product.update(product.id, { installments_paid: paidNow });
+      try {
+        if (product.seller_email) {
+          const each = Math.ceil((product.current_price || 0) / total);
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: product.seller_email,
+            subject: `💸 תשלום ${paidNow} מתוך ${total} דווח — ${product.title}`,
+            body: `שלום ${product.seller_name || ''},\n\nהקונה ${product.highest_bidder || ''} דיווח על תשלום ${paidNow} מתוך ${total} בתוכנית התשלומים עבור "${product.title}" (כ-₪${each.toLocaleString()} לתשלום).${ref ? `\n\nאסמכתא: ${ref}` : ''}\n\nנותרו ${total - paidNow} תשלומים — ההזמנה תסומן כשולמה לאחר אישור התשלום האחרון.\n\nצוות bidli`,
+          });
+        }
+      } catch (e) {
+        console.error('reportTransfer seller email failed:', e);
+      }
+      return Response.json({ ok: true, installment: paidNow, total });
+    }
+
+    // תשלום בודד, או התשלום האחרון בתוכנית — ממשיכים כרגיל
     await base44.asServiceRole.entities.Product.update(product.id, {
       status: 'transfer_reported',
       transfer_reported_at: new Date().toISOString(),
       transfer_reference: ref,
+      ...(total > 1 ? { installments_paid: total } : {}),
     });
 
     try {
@@ -33,14 +57,14 @@ export default async function (req: Request): Promise<Response> {
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: product.seller_email,
           subject: `💸 הקונה דיווח על העברה — ${product.title}`,
-          body: `שלום ${product.seller_name || ''},\n\nהקונה ${product.highest_bidder || ''} דיווח שהעביר את סכום הזכייה (₪${(product.current_price || 0).toLocaleString()}) עבור "${product.title}".${ref ? `\n\nאסמכתא שהוזנה על ידי הקונה: ${ref}` : ''}\n\nלאחר שהכסף התקבל בפועל, יש לאשר קבלת תשלום באזור האישי:\nhttps://bidli.co.il/profile\n\nצוות bidli`,
+          body: `שלום ${product.seller_name || ''},\n\nהקונה ${product.highest_bidder || ''} דיווח שהעביר את סכום הזכייה (₪${(product.current_price || 0).toLocaleString()}) עבור "${product.title}".${total > 1 ? `\n\nזהו התשלום האחרון מתוך ${total} בתוכנית התשלומים.` : ''}${ref ? `\n\nאסמכתא שהוזנה על ידי הקונה: ${ref}` : ''}\n\nלאחר שהכסף התקבל בפועל, יש לאשר קבלת תשלום באזור האישי:\nhttps://bidli.co.il/profile\n\nצוות bidli`,
         });
       }
     } catch (e) {
       console.error('reportTransfer seller email failed:', e);
     }
 
-    return Response.json({ ok: true });
+    return Response.json({ ok: true, installment: total, total });
   } catch (error) {
     console.error('reportTransfer error:', error);
     return Response.json({ error: error.message }, { status: 500 });

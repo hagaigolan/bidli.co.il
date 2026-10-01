@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { estimateItemValue } from "@/functions/estimateItemValue";
 import { setPageMeta } from "@/lib/seo";
@@ -18,7 +18,7 @@ export default function Valuation() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
-  useState(() => {
+  useEffect(() => {
     setPageMeta({
       title: "מחשבון הערכת שווי לפריטי אספנות ועתיקות | bidli",
       description: "הזן פריט וקבל טווח שווי מוערך — מבוסס על מכירות שהסתיימו באתר ועל נתוני שוק האספנות. הערכה חינם לפני פרסום מכרז.",

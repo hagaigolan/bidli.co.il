@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Users, Gavel, BookOpen, Lock, ShieldCheck } from "lucide-react";
+import { Users, Gavel, BookOpen, Lock, ShieldCheck, GraduationCap } from "lucide-react";
 import UsersSection from "@/components/admin/UsersSection";
 import AdminAuctionsSection from "@/components/admin/AdminAuctionsSection";
 import MagazineSection from "@/components/admin/MagazineSection";
+import ExpertsSection from "@/components/admin/ExpertsSection";
 import SendEmailModal from "@/components/admin/SendEmailModal";
 
 // עמוד ניהול משתמשים ומכרזים — נגיש לאדמינים בלבד
@@ -85,12 +86,19 @@ export default function AdminManagement() {
             style={tab === "magazine" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <BookOpen className="h-4 w-4" aria-hidden="true" /> מגזין
           </button>
+          <button onClick={() => setTab("experts")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "experts" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            style={tab === "experts" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
+            <GraduationCap className="h-4 w-4" aria-hidden="true" /> מומחים
+          </button>
         </div>
 
         {tab === "users"
           ? <UsersSection onSendEmail={openEmail} />
           : tab === "magazine"
           ? <MagazineSection />
+          : tab === "experts"
+          ? <ExpertsSection />
           : <AdminAuctionsSection onSendEmail={openEmail} />}
       </div>
 

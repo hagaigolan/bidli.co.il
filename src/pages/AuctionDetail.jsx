@@ -10,6 +10,7 @@ import OutbidNotificationModal from "@/components/OutbidNotificationModal";
 import ImageSlider from "@/components/ImageSlider";
 import RelatedProducts from "@/components/RelatedProducts";
 import RelatedArticle from "@/components/RelatedArticle";
+import SoldSimilar from "@/components/SoldSimilar";
 import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
@@ -946,6 +947,7 @@ export default function AuctionDetail() {
         <div className="max-w-5xl mx-auto px-4 pb-12">
           <RelatedProducts category={product.category} excludeId={product.id} />
           <RelatedArticle category={product.category} />
+          <SoldSimilar category={product.category} excludeId={product.id} />
         </div>
       )}
 

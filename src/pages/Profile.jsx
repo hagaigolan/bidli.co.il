@@ -6,6 +6,7 @@ import SellerAuctionEditor from "@/components/SellerAuctionEditor";
 import ProfileEditModal from "@/components/ProfileEditModal";
 import ProfileStatsCard from "@/components/ProfileStatsCard";
 import ProfileInterests from "@/components/ProfileInterests";
+import SavedSearchesList from "@/components/SavedSearchesList";
 import { useAuth } from "@/lib/AuthContext";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
@@ -219,6 +220,8 @@ export default function Profile() {
         )}
 
         <ProfileInterests />
+
+        <SavedSearchesList />
 
         {!hasProfile && !editingProfile && (
           <div className="text-center py-12">

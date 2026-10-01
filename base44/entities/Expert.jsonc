@@ -1,0 +1,100 @@
+{
+  "type": "object",
+  "name": "Expert",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "profession": {
+      "type": "string",
+      "enum": [
+        "\u05e9\u05de\u05d0\u05d9",
+        "\u05de\u05e9\u05e7\u05dd \u05e2\u05ea\u05d9\u05e7\u05d5\u05ea",
+        "\u05de\u05d5\u05de\u05d7\u05d4 \u05ea\u05db\u05e9\u05d9\u05d8\u05d9\u05dd",
+        "\u05de\u05d5\u05de\u05d7\u05d4 \u05d0\u05de\u05e0\u05d5\u05ea",
+        "\u05de\u05d5\u05de\u05d7\u05d4 \u05d9\u05d5\u05d3\u05d0\u05d9\u05e7\u05d4",
+        "\u05de\u05d5\u05de\u05d7\u05d4 \u05e0\u05d5\u05de\u05d9\u05e1\u05de\u05d8\u05d9\u05e7\u05d4",
+        "\u05de\u05d5\u05de\u05d7\u05d4 \u05e9\u05e2\u05d5\u05e0\u05d9\u05dd",
+        "\u05d0\u05d7\u05e8"
+      ]
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "pending = \u05de\u05de\u05ea\u05d9\u05df \u05dc\u05d0\u05d9\u05e9\u05d5\u05e8 \u05d0\u05d3\u05de\u05d9\u05df, approved = \u05de\u05d5\u05e6\u05d2 \u05d1\u05d3\u05d9\u05e8\u05e7\u05d8\u05d5\u05e8\u05d9\u05d5\u05df \u05d4\u05e6\u05d9\u05d1\u05d5\u05e8\u05d9"
+    },
+    "approved_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "profession",
+    "email",
+    "phone"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "approved"
+        },
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.email": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

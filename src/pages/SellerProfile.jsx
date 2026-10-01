@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewsBio from "@/components/ReviewsBio";
-import { MapPin, Clock, Flame, Package } from "lucide-react";
+import { MapPin, Clock, Flame, Package, Store, Tag, TrendingUp } from "lucide-react";
 
 function CardTimer({ endsAt }) {
   const calc = () => {
@@ -98,19 +98,55 @@ export default function SellerProfile() {
   const ended = products.filter(p => !p.ends_at || new Date(p.ends_at) <= now);
   const shown = activeTab === "active" ? active : ended;
   const sellerName = products[0]?.seller_name;
+  const totalBids = products.reduce((sum, p) => sum + (p.bid_count || 0), 0);
+  const soldCategories = [...new Set(products.map(p => p.category).filter(Boolean))];
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
-        <div className="max-w-5xl mx-auto flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black"
-            style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
-            {(sellerName || email || "?")[0].toUpperCase()}
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black"
+              style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>
+              {(sellerName || email || "?")[0].toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                <Store className="h-4 w-4" style={{ color: "#e5893d" }} />
+                {sellerName || email}
+              </h1>
+              <p className="text-sm text-gray-400">כל המכירות של המוכר ב-bidli</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-black text-gray-900">{sellerName || email}</h1>
-            <p className="text-sm text-gray-400">כל המכירות של המוכר ב-bidli</p>
+
+          {/* נתוני פעילות המוכר */}
+          <div className="grid grid-cols-3 gap-3 mt-5">
+            {[
+              { label: "מכרזים פעילים", value: active.length, color: "#e5893d" },
+              { label: "הצעות שהתקבלו", value: totalBids, color: "#3e6b8a" },
+              { label: "מכירות שהסתיימו", value: ended.length, color: "#6aa3cd" },
+            ].map(s => (
+              <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-3.5 text-center"
+                style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.05)" }}>
+                <p className="text-2xl font-black" style={{ color: s.color }}>{s.value.toLocaleString("he-IL")}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
+              </div>
+            ))}
           </div>
+
+          {/* קטגוריות שהמוכר פעיל בהן */}
+          {soldCategories.length > 0 && (
+            <div className="flex items-center gap-2 mt-4 flex-wrap">
+              <Tag className="h-3.5 w-3.5 text-gray-400" />
+              {soldCategories.slice(0, 6).map(cat => (
+                <Link key={cat} to={`/auctions?category=${encodeURIComponent(cat)}`}
+                  className="text-xs px-2.5 py-1 rounded-full font-semibold"
+                  style={{ background: "#e5893d0f", color: "#e5893d", border: "1px solid #e5893d33" }}>
+                  {cat}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

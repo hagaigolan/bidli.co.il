@@ -11,6 +11,12 @@ const POPULAR_SEARCHES = [
   { label: "מטבעות ובולים", query: "category=נומיסמטיקה" },
   { label: "יין ואלכוהול", query: "category=יין ואלכוהול" },
   { label: "עיצוב הבית", query: "category=עיצוב הבית" },
+  // קומבינציות קטגוריה + עיר — סטנדרט "המבוקשים ביותר" של לוחות מודעות
+  { label: "אמנות בתל אביב", query: "category=אמנות&city=תל אביב" },
+  { label: "תכשיטים בירושלים", query: "category=תכשיטים&city=ירושלים" },
+  { label: "אספנות בחיפה", query: "category=אספנות&city=חיפה" },
+  { label: "עיצוב הבית ברמת גן", query: "category=עיצוב הבית&city=רמת גן" },
+  { label: "יודאיקה בחיפה", query: "category=יודאיקה&city=חיפה" },
 ];
 
 export default function PopularSearches() {

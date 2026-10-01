@@ -11,6 +11,7 @@ const ARCHIVE_MODE = urlParams.get("view") === "archive";
 // מסננים מה-URL — מופעלים מצ'יפי החיפוש הפופולריים בדף הבית ומהחיפושים השמורים
 const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
 const PARAM_MAX = Number(urlParams.get("max")) || 0;
+const PARAM_CITY = (urlParams.get("city") || "").trim();
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -125,10 +126,11 @@ export default function Auctions() {
     if (p.status === "cancelled" || new Date(p.ends_at) <= new Date()) return false;
     if (PARAM_CATEGORY && p.category !== PARAM_CATEGORY) return false;
     if (PARAM_MAX && (p.starting_price || 0) > PARAM_MAX) return false;
+    if (PARAM_CITY && !(p.location || "").includes(PARAM_CITY)) return false;
     return true;
   });
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());
-  const hasFilters = PARAM_CATEGORY || PARAM_MAX;
+  const hasFilters = PARAM_CATEGORY || PARAM_MAX || PARAM_CITY;
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -161,6 +163,8 @@ export default function Auctions() {
                   {PARAM_CATEGORY && <span>קטגוריה: {PARAM_CATEGORY}</span>}
                   {PARAM_CATEGORY && PARAM_MAX && <span>·</span>}
                   {PARAM_MAX && <span>עד ₪{PARAM_MAX.toLocaleString()}</span>}
+                  {(PARAM_CATEGORY || PARAM_MAX) && PARAM_CITY && <span>·</span>}
+                  {PARAM_CITY && <span>עיר: {PARAM_CITY}</span>}
                   <Link to="/auctions" aria-label="ניקוי מסננים" className="hover:opacity-70">✕</Link>
                 </span>
               )}

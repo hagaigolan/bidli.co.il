@@ -9,6 +9,9 @@ import TrustSection from "@/components/TrustSection";
 import PopularSearches from "@/components/PopularSearches";
 import TrendingSection from "@/components/TrendingSection";
 import ServicesStrip from "@/components/ServicesStrip";
+import CategoryGrid from "@/components/CategoryGrid";
+import CategoryCarousel from "@/components/CategoryCarousel";
+import CommunityStrip from "@/components/CommunityStrip";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -41,7 +44,7 @@ const carouselImages = [
   { src: "https://media.base44.com/images/public/6a32f31cf5e6cd9c550cedeb/bf66870bf_res_cloudinary_com_portal_AuctionHouse_53aa6675e4b032e680e98708_hallPicture_70bee7d1.jpg", alt: "חדר מכרז" },
 ];
 
-function HeroSection() {
+function HeroSection({ todayCount = 0 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -71,9 +74,17 @@ function HeroSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a] mb-3">
-            <Zap className="h-3 w-3" style={{ color: "#e5893d" }} />
-            <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים המוביל בישראל</span>
+          <div className="flex items-center justify-center gap-2 flex-wrap mb-3">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#e5893d33] bg-[#e5893d0a]">
+              <Zap className="h-3 w-3" style={{ color: "#e5893d" }} />
+              <span className="text-xs font-semibold" style={{ color: "#e5893d" }}>מכרזים חיים • פורטל המכרזים המוביל בישראל</span>
+            </span>
+            {todayCount > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#3e6b8a33] bg-[#3e6b8a0a]">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-xs font-semibold" style={{ color: "#3e6b8a" }}>{todayCount} מכרזים חדשים פורסמו היום</span>
+              </span>
+            )}
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-2 leading-none tracking-tight">
@@ -366,6 +377,7 @@ function ShopsSection({ shops }) {
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [shops, setShops] = useState([]);
+  const [todayCount, setTodayCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -379,16 +391,24 @@ export default function Home() {
     Promise.all([
       base44.entities.Product.list("-created_date", 50).then(setProducts).catch(() => {}),
       ShopEntity.list("-created_date", 10).then(setShops).catch(() => {}),
+      // מונה חי — כמה מכרזים פורסמו היום
+      base44.entities.Product.list("-created_date", 200).then(ps => {
+        const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+        setTodayCount(ps.filter(p => new Date(p.created_date) >= dayStart).length);
+      }).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
   return (
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
-      <HeroSection />
+      <HeroSection todayCount={todayCount} />
+      <CategoryGrid />
       <DealsEndingSoon products={products} />
-      <PopularSearches />
       <UpcomingAuctionsSection products={products} />
+      <CategoryCarousel products={products} />
       <TrendingSection products={products} />
+      <CommunityStrip />
+      <PopularSearches />
       <ShopsSection shops={shops} />
       <ServicesStrip />
       <TrustSection />

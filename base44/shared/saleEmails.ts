@@ -40,14 +40,14 @@ function stepsBox(stepsHtml) {
   </table>`;
 }
 
-export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel }) {
+export function shell({ title, heroColor, heroEmoji, heroLine, bodyHtml, ctaUrl, ctaLabel, bodyWidth = 560 }) {
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:'Inter',system-ui,Segoe UI,Arial,sans-serif;color:#18181b;direction:rtl;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="rtl" style="background:#f4f4f5;padding:24px 12px;direction:rtl;">
     <tr><td align="center" dir="rtl">
-      <table role="presentation" width="560" cellpadding="0" cellspacing="0" dir="rtl" style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.06);direction:rtl;">
+      <table role="presentation" width="${bodyWidth}" cellpadding="0" cellspacing="0" dir="rtl" style="max-width:${bodyWidth}px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.06);direction:rtl;">
         <tr>
           <td style="padding:28px 32px;text-align:center;background:linear-gradient(135deg,${heroColor}1a,${heroColor}08);border-bottom:1px solid ${heroColor}22;">
             <div style="display:inline-block;width:56px;height:56px;line-height:56px;border-radius:16px;background:linear-gradient(135deg,#e5893d,#3e6b8a);font-size:28px;">${heroEmoji}</div>

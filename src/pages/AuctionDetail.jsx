@@ -18,6 +18,7 @@ import ProductChat from "@/components/ProductChat";
 import ShareButton from "@/components/ShareButton";
 import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
+import View3DButton from "@/components/View3DButton";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
 import AutoBidPanel from "@/components/AutoBidPanel";
 import LiveBidFeed from "@/components/LiveBidFeed";
@@ -670,6 +671,14 @@ export default function AuctionDetail() {
                     }
                     </div>
                     )}
+              {/* ── תצוגת 3D באמצעות AI ── */}
+              <View3DButton
+                product={product}
+                isAuthenticated={isAuthenticated}
+                onRequireLogin={() => setShowLoginModal(true)}
+                onGenerated={(urls) => urls && setProduct(p => (p ? { ...p, spin3d_urls: urls } : p))}
+                className="absolute top-3 left-3 z-10"
+              />
                     </ImageSlider>
             {/* ── 3. BID FEED + LEADERBOARD ── */}
             <div className="mt-4 space-y-4">

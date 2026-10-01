@@ -56,16 +56,20 @@ export function sellerBidEmail(product, bid) {
     <p style="margin:0 0 14px;font-size:40px;font-weight:900;color:#e5893d;text-align:center;line-height:1.2;">₪${priceHtml(bid.amount)}</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;margin:0 0 14px;overflow:hidden;" dir="rtl">
       <tr>
-        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;padding:10px 8px;text-align:center;">
-          <span style="display:block;font-size:18px;font-weight:900;color:#18181b;">${bidsCount}</span>
-          <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">הצעות עד כה</span>
+        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;border-bottom:none;padding:10px 14px;text-align:center;">
+          <span style="display:block;font-size:16px;font-weight:900;color:#18181b;">${bidsCount} הצעות עד כה</span>
+          <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">מתחרים על הפריט שלך</span>
         </td>
-        <td style="background:#e5893d08;border:1px solid #e5893d33;padding:10px 8px;text-align:center;">
-          <span style="display:block;font-size:18px;font-weight:900;color:#e5893d;">${escHtml(product.highest_bidder || "מתחרה")}</span>
+      </tr>
+      <tr>
+        <td style="background:#e5893d08;border:1px solid #e5893d33;border-bottom:none;padding:10px 14px;text-align:center;">
+          <span style="display:block;font-size:16px;font-weight:900;color:#e5893d;">${escHtml(product.highest_bidder || "מתחרה")}</span>
           <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">במקום הראשון כרגע</span>
         </td>
-        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;padding:10px 8px;text-align:center;">
-          <span style="display:block;font-size:14px;font-weight:900;color:#3e6b8a;white-space:nowrap;">${leftLabel}</span>
+      </tr>
+      <tr>
+        <td style="background:#3e6b8a08;border:1px solid #3e6b8a22;padding:10px 14px;text-align:center;">
+          <span style="display:block;font-size:16px;font-weight:900;color:#3e6b8a;">${leftLabel}</span>
           <span style="display:block;font-size:11px;color:#71717a;font-weight:700;">לסגירת העסקה</span>
         </td>
       </tr>

@@ -7,6 +7,7 @@ import { Flame, TrendingUp } from "lucide-react";
 export function SellerFomoBanner() {
   const [todayCount, setTodayCount] = useState(null);
   const [activeCount, setActiveCount] = useState(null);
+  const [weekSales, setWeekSales] = useState(0);
 
   useEffect(() => {
     base44.entities.Product.list("-created_date", 500)
@@ -15,6 +16,10 @@ export function SellerFomoBanner() {
         startToday.setHours(0, 0, 0, 0);
         setTodayCount(items.filter((p) => new Date(p.created_date) >= startToday).length);
         setActiveCount(items.filter((p) => new Date(p.ends_at) > new Date()).length);
+        // הצגת הצלחות אמיתיות: מכירות שהושלמו בשבוע האחרון
+        const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+        const soldStatuses = ["awaiting_payment", "transfer_reported", "paid", "escrow", "delivered", "released"];
+        setWeekSales(items.filter((p) => soldStatuses.includes(p.status) && new Date(p.updated_date || p.created_date).getTime() >= weekAgo).length);
       })
       .catch(() => {});
   }, []);
@@ -30,6 +35,7 @@ export function SellerFomoBanner() {
       </div>
       <p className="text-xs text-gray-500 leading-relaxed">
         הפריט שלך עדיין מחכה במגירה?{" "}
+        {weekSales > 0 ? `${weekSales} מכירות הושלמו כאן בשבוע האחרון. ` : ""}
         {activeCount !== null ? `כרגע ${activeCount} מכרזים פעילים מתחרים. ` : ""}
         פרסם עכשיו לפני שהרגע עובר ומישהו אחר מוכר את מה שדומה לפריט שלך.
       </p>

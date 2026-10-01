@@ -37,7 +37,7 @@ export default function Header() {
   return (
     <header className="bg-white" dir="rtl">
       {/* Top micro-bar */}
-      <div className="border-b border-gray-100 bg-gray-50">
+      <div className="border-b border-gray-100 bg-gray-50 relative z-[60]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
           <div className="hidden sm:flex items-center gap-4">
           </div>
@@ -90,6 +90,11 @@ export default function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 flex-shrink-0">
+              {!isAuthenticated && (
+                <Link to="/login" className="sm:hidden btn-neon text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+                  כניסה / הרשמה
+                </Link>
+              )}
               <NotificationBell />
               <UserMenu />
               <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
@@ -117,11 +122,21 @@ export default function Header() {
                         className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
                       />
                     </div>
+                    {!isAuthenticated && (
+                      <div className="grid grid-cols-2 gap-2 px-3 mb-2">
+                        <Link to="/login" onClick={() => setOpen(false)}
+                          className="text-center text-white text-xs font-bold py-3 rounded-xl"
+                          style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>כניסה / הרשמה</Link>
+                        <Link to="/register" onClick={() => setOpen(false)}
+                          className="text-center text-xs font-bold py-3 rounded-xl border-2"
+                          style={{ borderColor: "#e5893d", color: "#e5893d" }}>חשבון חדש</Link>
+                      </div>
+                    )}
+                    <Link to="/upload-product" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-[#e5893d] hover:bg-orange-50 rounded-xl">+ פרסם מכרז</Link>
                     <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">דף הבית</Link>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">חנויות</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">רכבים</a>
-                    <a href="#" className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">נדל"ן</a>
+                    <Link to="/auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים פעילים</Link>
+                    <Link to="/valuation" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">הערכת שווי חינם</Link>
+                    <Link to="/experts" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">המומחים שלנו</Link>
                     <div className="border-t border-gray-100 my-2" />
                     {categoryLinks.map(l => (
                       <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-[#3e6b8a] hover:bg-blue-50 rounded-xl">{l.label}</Link>
@@ -140,7 +155,7 @@ export default function Header() {
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
               className="flex-shrink-0 flex flex-col items-center gap-1 group">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] group-hover:scale-[3] group-hover:z-20 transition-all duration-300"
+              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] lg:group-hover:scale-[3] lg:group-hover:z-20 transition-all duration-300"
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
                 <img src={link.img} alt={link.label} className="w-full h-full object-cover" />
               </div>

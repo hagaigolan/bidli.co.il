@@ -79,6 +79,21 @@ export default function ProfileInterests() {
   const [saving, setSaving] = useState(false);
   const [recs, setRecs] = useState([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
+  const [notifyNew, setNotifyNew] = useState(true);
+  const [keywords, setKeywords] = useState("");
+
+  // טעינת הגדרות ההתראות הקיימות של המשתמש (קטגוריות + מוצרים במעקב)
+  useEffect(() => {
+    if (!authUser?.email) return;
+    base44.entities.InterestAlert.filter({ owner_email: authUser.email })
+      .then(rows => {
+        if (rows.length) {
+          setNotifyNew(rows[0].active !== false);
+          setKeywords((rows[0].keywords || []).join(", "));
+        }
+      })
+      .catch(() => {});
+  }, [authUser?.email]);
 
   const key = saved.join("|");
   useEffect(() => {
@@ -106,6 +121,23 @@ export default function ProfileInterests() {
     setSaving(true);
     try {
       await base44.auth.updateMe({ interest_categories: selected });
+      // שמירת מעקב התראות: בכל פרסום מכרז תואם — מייל מעוצב + התראה בפעמון האתר
+      const kws = keywords.split(/[,،]/).map(k => k.trim()).filter(Boolean).slice(0, 10);
+      const existing = await base44.entities.InterestAlert.filter({ owner_email: authUser.email }).catch(() => []);
+      if (notifyNew && (selected.length || kws.length)) {
+        const payload = {
+          owner_email: authUser.email,
+          owner_name: authUser.full_name || "",
+          categories: selected,
+          keywords: kws,
+          notify_email: true,
+          active: true,
+        };
+        if (existing.length) await base44.entities.InterestAlert.update(existing[0].id, payload);
+        else await base44.entities.InterestAlert.create(payload);
+      } else if (existing.length) {
+        await base44.entities.InterestAlert.update(existing[0].id, { active: false });
+      }
       setEditing(false);
     } catch {}
     setSaving(false);
@@ -149,6 +181,28 @@ export default function ProfileInterests() {
               );
             })}
           </div>
+
+          {/* התראות על מכירות חדשות — מייל מעוצב + התראה באתר */}
+          <div className="rounded-xl border border-gray-100 bg-white p-3 mb-4">
+            <label className="flex items-center justify-between gap-3 cursor-pointer">
+              <div>
+                <p className="text-xs font-bold text-gray-800">התראות על מכירות חדשות 🔔</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">בכל פרסום מכרז בקטגוריות או במוצרים שבחרת — תקבל/י מייל מעוצב והתראה באתר</p>
+              </div>
+              <button type="button" onClick={() => setNotifyNew(v => !v)} role="switch" aria-checked={notifyNew}
+                className="relative w-10 h-6 rounded-full transition-all flex-shrink-0"
+                style={{ background: notifyNew ? "#e5893d" : "#d1d5db" }}>
+                <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
+                  style={{ right: notifyNew ? "2px" : "18px" }} />
+              </button>
+            </label>
+            {notifyNew && (
+              <input value={keywords} onChange={e => setKeywords(e.target.value)}
+                placeholder="שמות מוצרים מעניינים — מופרדים בפסיק (למשל: שעון בולובה, ציור גוטמן)"
+                className="w-full mt-3 px-3 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e5893d88]" dir="rtl" />
+            )}
+          </div>
+
           <button type="button" onClick={save} disabled={saving || !selected.length}
             className="w-full text-white text-sm py-2.5 rounded-xl font-bold disabled:opacity-60 transition-all"
             style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
@@ -168,6 +222,17 @@ export default function ProfileInterests() {
               );
             })}
           </div>
+          <p className="text-[11px] text-gray-400 mb-2">
+            🔔 {notifyNew ? "תקבל/י מייל והתראה באתר על כל מכרז חדש בקטגוריות שבחרת" : "התראות על מכירות חדשות כבויות"}
+          </p>
+          {notifyNew && keywords.split(/[,،]/).map(k => k.trim()).filter(Boolean).length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {keywords.split(/[,،]/).map(k => k.trim()).filter(Boolean).map(kw => (
+                <span key={kw} className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                  style={{ background: "#3e6b8a12", color: "#3e6b8a" }}>🔎 {kw}</span>
+              ))}
+            </div>
+          )}
           {loadingRecs ? (
             <div className="flex justify-center py-6">
               <div className="w-6 h-6 border-4 border-gray-100 border-t-[#e5893d] rounded-full animate-spin" />

@@ -1,4 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { waitUntil } from 'base44:runtime';
+import { interestAlertEmail } from '../../shared/notifyEmails.ts';
 
 // Publishes a new auction listing. The seller's identity (name, email, user id,
 // photo) is derived server-side from the authenticated account — client-supplied
@@ -83,6 +85,44 @@ export default async function (req: Request): Promise<Response> {
       status: 'active',
       bid_count: 0,
     });
+
+    // ── התראות אינטרסים: מייל מעוצב + התראת פעמון לאספנים שעוקבים אחרי הקטגוריה או המוצר ──
+    waitUntil((async () => {
+      try {
+        const cat = product.category || '';
+        const titleLc = (product.title || '').toLowerCase();
+        const alerts = await base44.asServiceRole.entities.InterestAlert.filter({ active: true }, '-created_date', 500);
+        const matched = (alerts || []).filter(a =>
+          a.owner_email && a.owner_email !== me.email &&
+          ((Array.isArray(a.categories) && a.categories.includes(cat)) ||
+          (Array.isArray(a.keywords) && a.keywords.some(k => k && titleLc.includes(String(k).toLowerCase()))))
+        ).slice(0, 50);
+        for (const a of matched) {
+          const label = (Array.isArray(a.categories) && a.categories.includes(cat))
+            ? cat
+            : (a.keywords.find(k => titleLc.includes(String(k).toLowerCase())) || 'תחומי העניין שלך');
+          const mail = interestAlertEmail(product, a.owner_name, label);
+          try {
+            await base44.asServiceRole.integrations.Core.SendEmail({ to: a.owner_email, subject: mail.subject, html: mail.html, text: mail.text });
+          } catch (e) {
+            console.error('interest alert email failed:', e?.message || e);
+          }
+          await base44.asServiceRole.entities.AppNotification.create({
+            recipient_email: (a.owner_email || '').trim().toLowerCase(),
+            recipient_name: a.owner_name || '',
+            type: 'new_match',
+            title: 'מכרז חדש בתחום שעקבת אחריו',
+            body: `${product.title} — פתיחה ב-₪${(product.starting_price || 0).toLocaleString('he-IL')}`,
+            product_id: product.id,
+            product_title: product.title,
+            product_image_url: product.image_url || '',
+            link: `/auction/${product.id}`,
+          }).catch(() => {});
+        }
+      } catch (e) {
+        console.error('interest alerts failed:', e);
+      }
+    })());
 
     return Response.json({ ok: true, product_id: product.id, seller_email: me.email });
   } catch (error) {

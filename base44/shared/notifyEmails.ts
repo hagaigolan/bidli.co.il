@@ -150,3 +150,25 @@ export function bidderCancelEmail(product, bidderName) {
     text: `שלום ${name},\n\nהמוכר ביטל את המכרז "${product.title}" שהצעת בו. ההצעה בוטלה ולא תחויב בדבר.\n\nמכרזים פעילים: ${auctionsUrl}`,
   };
 }
+
+// ── Collector: new auction matching their interests (categories / product keywords) ──
+export function interestAlertEmail(product, ownerName, reasonLabel) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(ownerName || "אספן")},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">התפרסם כרגע מכרז חדש שתואם לתחומי העניין שבחרת — <strong style="color:#e5893d;">${escHtml(reasonLabel)}</strong>. המכרז פתוח ל-24 שעות בלבד, אז שווה להציע מוקדם!</p>
+    ${productCard(product, productUrl)}`;
+  return {
+    subject: `🆕 מכרז חדש בתחום שלך: ${product.title}`,
+    html: shell({
+      title: "מכרז חדש בשבילך!",
+      heroColor: "#e5893d",
+      heroEmoji: "🆕",
+      heroLine: reasonLabel,
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "הצע מחיר עכשיו →",
+    }),
+    text: `שלום ${ownerName || "אספן"},\n\nהתפרסם מכרז חדש בתחום שעקבת אחריו (${reasonLabel}):\n\nמוצר: ${product.title}\nמחיר פתיחה: ₪${(product.starting_price || 0).toLocaleString("he-IL")}\nמשך המכרז: 24 שעות\n\nקישור למכרז: ${productUrl}`,
+  };
+}

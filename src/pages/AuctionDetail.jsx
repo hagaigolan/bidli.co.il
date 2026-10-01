@@ -451,8 +451,8 @@ export default function AuctionDetail() {
     const colors = ["#e5893d", "#3e6b8a", "#6aa3cd", "#00c853"];
     const end = Date.now() + 2000;
     const frame = () => {
-      fire({ particleCount: 7, angle: 60, spread: 65, startVelocity: 45, origin: { x: 0.15, y: 0.7 }, colors });
-      fire({ particleCount: 7, angle: 120, spread: 65, startVelocity: 45, origin: { x: 0.85, y: 0.7 }, colors });
+      fire({ particleCount: 4, angle: 60, spread: 60, startVelocity: 18, decay: 0.88, gravity: 0.4, ticks: 320, scalar: 1.2, origin: { x: 0.15, y: 0.7 }, colors });
+      fire({ particleCount: 4, angle: 120, spread: 60, startVelocity: 18, decay: 0.88, gravity: 0.4, ticks: 320, scalar: 1.2, origin: { x: 0.85, y: 0.7 }, colors });
       if (Date.now() < end) confettiRafRef.current = requestAnimationFrame(frame);
       else fire.reset();
     };

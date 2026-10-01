@@ -25,6 +25,7 @@ import LiveBidFeed from "@/components/LiveBidFeed";
 import BidLeaderboard from "@/components/BidLeaderboard";
 import SoundToggle from "@/components/SoundToggle";
 import { playBidPing, playTickTock, playHammer } from "@/lib/auctionSounds";
+import confetti from "canvas-confetti";
 import { setPageMeta } from "@/lib/seo";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
@@ -437,6 +438,27 @@ export default function AuctionDetail() {
     (product.highest_bidder_email && myEmails.includes(product.highest_bidder_email.trim().toLowerCase()))
   );
 
+  // ── אפקט זיקוקים ל-2 שניות סביב כפתור הגשת ההצעה ──
+  const confettiCanvasRef = useRef(null);
+  const confettiRafRef = useRef(null);
+  useEffect(() => () => {
+    if (confettiRafRef.current) cancelAnimationFrame(confettiRafRef.current);
+  }, []);
+  const startBidConfetti = () => {
+    const canvas = confettiCanvasRef.current;
+    if (!canvas) return;
+    const fire = confetti.create(canvas, { resize: true, useTargetWidth: true });
+    const colors = ["#e5893d", "#3e6b8a", "#6aa3cd", "#00c853"];
+    const end = Date.now() + 2000;
+    const frame = () => {
+      fire({ particleCount: 7, angle: 60, spread: 65, startVelocity: 45, origin: { x: 0.15, y: 0.7 }, colors });
+      fire({ particleCount: 7, angle: 120, spread: 65, startVelocity: 45, origin: { x: 0.85, y: 0.7 }, colors });
+      if (Date.now() < end) confettiRafRef.current = requestAnimationFrame(frame);
+      else fire.reset();
+    };
+    frame();
+  };
+
   const handleBid = async (e) => {
     e.preventDefault();
     // חסימת הגשת הצעות למשתמש שאינו מחובר
@@ -533,6 +555,7 @@ export default function AuctionDetail() {
       }
       setFlashNew(true); setTimeout(() => setFlashNew(false), 1500);
       setBidAmount(""); setBidSuccess(true);
+      startBidConfetti();
       setTimeout(() => setBidSuccess(false), 3000);
     } catch { setBidError("שגיאה, נסה שנית"); }
     finally { setBidding(false); }
@@ -782,7 +805,8 @@ export default function AuctionDetail() {
                 <p className="text-sm text-gray-400 mt-1">כל ההצעות בוטלו — מוזמנים לעיין במכרזים פעילים אחרים באתר</p>
               </div>
             ) : !ended ? (
-              <form ref={bidFormRef} onSubmit={handleBid} className="space-y-3">
+              <form ref={bidFormRef} onSubmit={handleBid} className="relative space-y-3">
+                <canvas ref={confettiCanvasRef} className="pointer-events-none absolute inset-0 z-20 h-full w-full" aria-hidden="true" />
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">שמך (אופציונלי)</label>
                   <input value={bidderName} onChange={e => setBidderName(e.target.value)}

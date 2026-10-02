@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowLeftRight, MapPin, Phone, Flame, Coins, Trash2, CheckCircle } from "lucide-react";
 
 const CONDITION_COLORS = {
@@ -8,6 +9,7 @@ const CONDITION_COLORS = {
 };
 
 export default function BarterCard({ item, isOwner, onCompleted, onDeleted }) {
+  const navigate = useNavigate();
   const imgs = [...(item.image_urls || []), item.image_url].filter(Boolean);
   const img = imgs[0];
   const cond = CONDITION_COLORS[item.condition] || CONDITION_COLORS["תקין"];
@@ -17,7 +19,8 @@ export default function BarterCard({ item, isOwner, onCompleted, onDeleted }) {
     : "";
 
   return (
-    <article className="rounded-2xl bg-white border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+    <article onClick={() => navigate(`/barter/${item.id}`)}
+      className="rounded-2xl bg-white border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
       style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
       {/* Image */}
       <div className="relative h-44 bg-gray-50">
@@ -90,14 +93,14 @@ export default function BarterCard({ item, isOwner, onCompleted, onDeleted }) {
           </div>
           <div className="flex gap-1.5 flex-shrink-0">
             {item.owner_phone && (
-              <a href={`tel:${item.owner_phone}`} aria-label="שיחה"
+              <a href={`tel:${item.owner_phone}`} aria-label="שיחה" onClick={e => e.stopPropagation()}
                 className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:scale-105"
                 style={{ background: "#3e6b8a10", color: "#3e6b8a" }}>
                 <Phone className="h-4 w-4" aria-hidden="true" />
               </a>
             )}
             {waLink && (
-              <a href={waLink} target="_blank" rel="noopener noreferrer" aria-label="וואטסאפ"
+              <a href={waLink} target="_blank" rel="noopener noreferrer" aria-label="וואטסאפ" onClick={e => e.stopPropagation()}
                 className="w-8 h-8 rounded-xl flex items-center justify-center text-white transition-all hover:scale-105"
                 style={{ background: "#25d366" }}>
                 <ArrowLeftRight className="h-4 w-4" aria-hidden="true" />
@@ -109,12 +112,12 @@ export default function BarterCard({ item, isOwner, onCompleted, onDeleted }) {
         {/* Owner tools */}
         {isOwner && item.status === "active" && (
           <div className="mt-2 flex gap-1.5">
-            <button type="button" onClick={onCompleted}
+            <button type="button" onClick={e => { e.stopPropagation(); onCompleted(); }}
               className="flex-1 flex items-center justify-center gap-1 text-[11px] font-bold py-1.5 rounded-lg border transition-all hover:bg-green-50"
               style={{ borderColor: "#22c55e55", color: "#16a34a" }}>
               <CheckCircle className="h-3 w-3" aria-hidden="true" /> הוחלף בהצלחה
             </button>
-            <button type="button" onClick={onDeleted} aria-label="מחיקה"
+            <button type="button" onClick={e => { e.stopPropagation(); onDeleted(); }} aria-label="מחיקה"
               className="w-8 rounded-lg border flex items-center justify-center transition-all hover:bg-red-50"
               style={{ borderColor: "#ef444455", color: "#ef4444" }}>
               <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />

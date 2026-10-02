@@ -84,6 +84,7 @@ export default function Header() {
               <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>דף הבית</Link>
               <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">מכרזים פעילים</Link>
               <Link to="/stocks" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">סטוקים</Link>
+              <Link to="/barter" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">בארטר</Link>
 
 
             </nav>
@@ -135,6 +136,7 @@ export default function Header() {
                     <Link to="/upload-product" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-[#e5893d] hover:bg-orange-50 rounded-xl">+ פרסם מכרז</Link>
                     <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">דף הבית</Link>
                     <Link to="/auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים פעילים</Link>
+                    <Link to="/barter" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">בארטר — החלפות</Link>
                     <Link to="/valuation" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">הערכת שווי חינם</Link>
                     <Link to="/experts" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">המומחים שלנו</Link>
                     <div className="border-t border-gray-100 my-2" />

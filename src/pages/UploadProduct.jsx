@@ -17,7 +17,7 @@ export default function UploadProduct() {
   const [form, setForm] = useState({
     title: "", description: "", category: "", subcategory: "", condition: "מצב מעולה",
     starting_price: "", buy_now_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
-    seller_payment_method: "", seller_payme_phone: "", seller_bank_details: "",
+    seller_payment_methods: [], seller_payme_phone: "", seller_bank_details: "",
     is_stock: false,
   });
   const [imageFiles, setImageFiles] = useState([]);
@@ -114,13 +114,13 @@ export default function UploadProduct() {
     if (!form.seller_name || !form.seller_email || !form.seller_phone) {
       setError("לצורך פרסום חובה להירשם עם שם, אימייל וטלפון"); return;
     }
-    if (!form.seller_payment_method) {
-      setError("יש לבחור אמצעי תשלום לקבלת הכסף מהזוכה"); return;
+    if (!form.seller_payment_methods.length) {
+      setError("יש לבחור לפחות אמצעי תשלום אחד לקבלת הכסף מהזוכה"); return;
     }
-    if (["kashcash", "bit"].includes(form.seller_payment_method) && !form.seller_payme_phone) {
+    if (form.seller_payment_methods.some(m => ["kashcash", "bit"].includes(m)) && !form.seller_payme_phone) {
       setError("יש להזין מספר טלפון לקבלת ההעברה"); return;
     }
-    if (form.seller_payment_method === "bank" && !form.seller_bank_details) {
+    if (form.seller_payment_methods.includes("bank") && !form.seller_bank_details) {
       setError("יש להזין פרטי חשבון בנק לקבלת ההעברה"); return;
     }
     if (!agreedCopyright) {
@@ -160,7 +160,8 @@ export default function UploadProduct() {
         buy_now_price: form.buy_now_price,
         location: form.location,
         seller_phone: form.seller_phone,
-        seller_payment_method: form.seller_payment_method,
+        seller_payment_method: form.seller_payment_methods[0] || "",
+        seller_payment_methods: form.seller_payment_methods,
         seller_payme_phone: form.seller_payme_phone,
         seller_bank_details: form.seller_bank_details,
         image_urls,
@@ -202,7 +203,7 @@ export default function UploadProduct() {
           {/* קבלת התשלום בהעברה ישירה */}
           <div className="mb-5 p-4 rounded-2xl border border-green-200" style={{ background: "#00c85308" }} dir="rtl">
             <h3 className="text-sm font-bold text-green-800 mb-1">התשלום יתקבל בהעברה ישירה</h3>
-            <p className="text-xs text-green-700">הזוכה יעביר אליך את סכום הזכייה דרך {PAYMENT_METHOD_LABELS[form.seller_payment_method] || "האמצעי שהגדרת"}, וההזמנה תסומן כשולמה לאחר שתאשר את קבלת הכסף באזור האישי. הכל ללא כרטיס אשראי וללא עמלות.</p>
+            <p className="text-xs text-green-700">הזוכה יעביר אליך את סכום הזכייה דרך {form.seller_payment_methods.map(m => PAYMENT_METHOD_LABELS[m]).filter(Boolean).join(" / ") || "האמצעי שהגדרת"}, וההזמנה תסומן כשולמה לאחר שתאשר את קבלת הכסף באזור האישי. הכל ללא כרטיס אשראי וללא עמלות.</p>
           </div>
 
           <div className="flex gap-3 justify-center">
@@ -211,7 +212,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",subcategory:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_method:"",seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",subcategory:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_methods:[],seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -427,19 +428,25 @@ export default function UploadProduct() {
           {/* אמצעי תשלום לקבלת הכסף */}
           <div className="p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #00c85308, #00e67605)", border: "1px solid #00c85322" }}>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">אמצעי תשלום לקבלת הכסף *</label>
-            <p className="text-xs text-gray-400 mb-3">הזוכה יעביר אליך את סכום הזכייה ישירות — ללא כרטיס אשראי וללא עמלות.</p>
+            <p className="text-xs text-gray-400 mb-3">אפשר לבחור יותר מאמצעי אחד — הזוכה יעביר אליך את סכום הזכייה ישירות, ללא כרטיס אשראי וללא עמלות.</p>
             <div className="grid grid-cols-3 gap-2 mb-3">
-              {[["kashcash", "קשקאש"], ["bit", "ביט"], ["bank", "העברה בנקאית"]].map(([value, label]) => (
-                <button key={value} type="button" onClick={() => set("seller_payment_method", value)}
-                  className="py-2.5 rounded-xl text-xs font-bold border transition-all"
-                  style={form.seller_payment_method === value
-                    ? { borderColor: "#00c853", color: "#00c853", background: "#00c85310" }
-                    : { borderColor: "#e5e7eb", color: "#6b7280", background: "white" }}>
-                  {label}
-                </button>
-              ))}
+              {[["kashcash", "קשקאש"], ["bit", "ביט"], ["bank", "העברה בנקאית"]].map(([value, label]) => {
+                const selected = form.seller_payment_methods.includes(value);
+                return (
+                  <button key={value} type="button"
+                    onClick={() => set("seller_payment_methods", selected
+                      ? form.seller_payment_methods.filter(m => m !== value)
+                      : [...form.seller_payment_methods, value])}
+                    className="py-2.5 rounded-xl text-xs font-bold border transition-all"
+                    style={selected
+                      ? { borderColor: "#00c853", color: "#00c853", background: "#00c85310" }
+                      : { borderColor: "#e5e7eb", color: "#6b7280", background: "white" }}>
+                    {selected ? "✓ " : ""}{label}
+                  </button>
+                );
+              })}
             </div>
-            {["kashcash", "bit"].includes(form.seller_payment_method) && (
+            {form.seller_payment_methods.some(m => ["kashcash", "bit"].includes(m)) && (
               <div>
                 <label className="block text-xs text-gray-500 mb-1">מספר הטלפון לקבלת ההעברה *</label>
                 <input type="tel" value={form.seller_payme_phone} onChange={e => set("seller_payme_phone", e.target.value)}
@@ -447,7 +454,7 @@ export default function UploadProduct() {
                   className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#00c85388] transition-all" dir="ltr" />
               </div>
             )}
-            {form.seller_payment_method === "bank" && (
+            {form.seller_payment_methods.includes("bank") && (
               <div>
                 <label className="block text-xs text-gray-500 mb-1">פרטי חשבון בנק *</label>
                 <textarea value={form.seller_bank_details} onChange={e => set("seller_bank_details", e.target.value)}

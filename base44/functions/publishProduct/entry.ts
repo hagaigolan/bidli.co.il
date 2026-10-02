@@ -33,7 +33,12 @@ export default async function (req: Request): Promise<Response> {
     const title = str(body.title, 200);
     const startingPrice = Number(body.starting_price);
     const buyNowPrice = body.buy_now_price != null && body.buy_now_price !== "" ? Number(body.buy_now_price) : null;
-    const paymentMethod = str(body.seller_payment_method, 20);
+    const paymentMethods = Array.isArray(body.seller_payment_methods)
+      ? body.seller_payment_methods.filter((m: any) => PAYMENT_METHODS.includes(m)).slice(0, 3)
+      : [];
+    const paymentMethod = PAYMENT_METHODS.includes(body.seller_payment_method)
+      ? body.seller_payment_method
+      : paymentMethods[0] || '';
     const paymePhone = str(body.seller_payme_phone, 40);
     const bankDetails = str(body.seller_bank_details, 500);
     const imageUrls = Array.isArray(body.image_urls)
@@ -46,10 +51,11 @@ export default async function (req: Request): Promise<Response> {
     if (buyNowPrice !== null && (!Number.isFinite(buyNowPrice) || buyNowPrice <= startingPrice)) {
       return Response.json({ error: 'buy_now_price must be above starting_price' }, { status: 400 });
     }
-    if (!PAYMENT_METHODS.includes(paymentMethod)) {
+    if (!paymentMethod) {
       return Response.json({ error: 'invalid payment method' }, { status: 400 });
     }
-    if (paymentMethod === 'bank' && !bankDetails) {
+    const methodsToStore = paymentMethods.length ? paymentMethods : [paymentMethod];
+    if (methodsToStore.includes('bank') && !bankDetails) {
       return Response.json({ error: 'bank details required' }, { status: 400 });
     }
     const subcategory = str(body.subcategory, 100);
@@ -78,6 +84,7 @@ export default async function (req: Request): Promise<Response> {
       // פרטי קבלת התשלום — קלט לקוחי לגיטימי
       seller_phone: str(body.seller_phone, 40),
       seller_payment_method: paymentMethod,
+      seller_payment_methods: methodsToStore,
       seller_payme_phone: paymePhone,
       seller_bank_details: bankDetails,
       location: str(body.location, 120),

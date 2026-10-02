@@ -20,6 +20,7 @@ export default function BarterDetail() {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [done, setDone] = useState(false);        // הוחלף בהצלחה
+  const [showPhone, setShowPhone] = useState(false);
   const [gone, setGone] = useState(false);        // נמחק
 
   useEffect(() => {
@@ -164,7 +165,12 @@ export default function BarterDetail() {
                     {item.location && (
                       <span className="flex items-center gap-1"><MapPin className="h-3 w-3" aria-hidden="true" />{item.location}</span>
                     )}
-                    {item.owner_phone && <span dir="ltr">{item.owner_phone}</span>}
+                    {item.owner_phone && (showPhone
+                      ? <span dir="ltr">{item.owner_phone}</span>
+                      : <button type="button" onClick={() => setShowPhone(true)}
+                          className="font-bold underline decoration-dotted transition-colors hover:text-[#e5893d]">
+                          הצג מספר טלפון
+                        </button>)}
                   </div>
                 </div>
                 <div className="flex gap-2">

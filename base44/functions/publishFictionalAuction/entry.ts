@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { inPublishWindow, normalizeTitle } from '../../shared/fictionalPublish.ts';
 
 // "בידלי" — publishes one realistic fictional auction per invocation.
 // Each run picks the site category with the fewest active fictional listings,
@@ -53,33 +54,6 @@ const CITIES = [
   "פתח תקווה", "נתניה", "אשדוד", "רחובות", "הרצליה",
   "כפר סבא", "בת ים", "רמת גן", "חולון", "מודיעין",
 ];
-
-function localNow() {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Jerusalem", year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", hour12: false,
-  }).formatToParts(new Date());
-  const str = (t) => parts.find(p => p.type === t)?.value || "";
-  return { dateKey: `${str("year")}-${str("month")}-${str("day")}`, hour: Number(str("hour")), minute: Number(str("minute")) };
-}
-
-// חלון יומי קבוע: 9:00 עד 22:00 (כולל), כל יום — עד שמבקשים להפסיק
-function inPublishWindow() {
-  const { hour, minute } = localNow();
-  if (hour < 9) return false;
-  if (hour > 22) return false;
-  if (hour === 22 && minute > 0) return false;
-  return true;
-}
-
-// נרמול כותרת לצורך זיהוי כפילויות — השוואה ללא תלות בריווח, בסימני פיסוק וברישיות
-function normalizeTitle(title) {
-  return String(title || "")
-    .toLowerCase()
-    .replace(/[".,:;!()\[\]״׳"׳\-–—]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 Deno.serve(async (req) => {
   try {

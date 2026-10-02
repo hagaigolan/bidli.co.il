@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
+import LiveCardStats from "@/components/LiveCardStats";
 import CategoryHero from "@/components/CategoryHero";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
@@ -31,6 +32,29 @@ export default function Category() {
   const cat = CATEGORIES[decodedName];
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("ending_soon");
+  const [condition, setCondition] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  // סינון ומיון — חיפוש חופשי, מצב פריט, מחיר מקסימלי ומיון לפי בחירה
+  const filtered = (() => {
+    let list = items;
+    const term = query.trim().toLowerCase();
+    if (term) list = list.filter((p) => (p.title || "").toLowerCase().includes(term));
+    if (condition) list = list.filter((p) => p.condition === condition);
+    if (maxPrice) list = list.filter((p) => (Number(p.current_price || p.starting_price) || 0) <= Number(maxPrice));
+    const price = (p) => Number(p.current_price || p.starting_price) || 0;
+    const sorters = {
+      ending_soon: (a, b) => new Date(a.ends_at) - new Date(b.ends_at),
+      newest: (a, b) => new Date(b.created_date) - new Date(a.created_date),
+      popular: (a, b) => (b.bid_count || 0) - (a.bid_count || 0),
+      price_low: (a, b) => price(a) - price(b),
+      price_high: (a, b) => price(b) - price(a),
+    };
+    return [...list].sort(sorters[sort] || sorters.ending_soon);
+  })();
 
   useEffect(() => {
     base44.entities.Product.filter({ category: decodedName, status: "active" }, "-created_date", 50)
@@ -88,16 +112,56 @@ export default function Category() {
           <div className="relative flex-1 w-full">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder={`חפש ב${decodedName}...`}
               className="w-full pr-10 pl-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none transition-all text-right"
               style={{ '--tw-ring-color': cat.color }}
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:border-gray-300 transition-all flex-shrink-0">
+          <button type="button" onClick={() => setShowFilters(v => !v)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-all flex-shrink-0 ${showFilters ? "text-white border-transparent" : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"}`}
+            style={showFilters ? { background: cat.color } : undefined}>
             <Filter className="h-4 w-4" />
             סינון
           </button>
         </div>
+        {showFilters && (
+          <div className="max-w-5xl mx-auto mt-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-3" dir="rtl">
+            <div>
+              <p className="text-xs font-bold text-gray-500 mb-2">מיון</p>
+              <div className="flex flex-wrap gap-2">
+                {[{ id: "ending_soon", label: "מסתיים בקרוב" }, { id: "newest", label: "חדשים" }, { id: "popular", label: "הכי הרבה הצעות" }, { id: "price_low", label: "מחיר: נמוך ← גבוה" }, { id: "price_high", label: "מחיר: גבוה ← נמוך" }].map((o) => (
+                  <button key={o.id} type="button" onClick={() => setSort(o.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${sort === o.id ? "text-white" : "bg-gray-50 text-gray-600 border border-gray-200"}`}
+                    style={sort === o.id ? { background: cat.color } : undefined}>{o.label}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-500 mb-2">מצב הפריט</p>
+              <div className="flex flex-wrap gap-2">
+                {["", "חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"].map((c) => (
+                  <button key={c || "all"} type="button" onClick={() => setCondition(c)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${condition === c ? "text-white" : "bg-gray-50 text-gray-600 border border-gray-200"}`}
+                    style={condition === c ? { background: cat.color } : undefined}>{c || "הכל"}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-500 mb-2">מחיר מקסימלי (₪)</p>
+              <input type="number" min="0" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
+                placeholder="ללא הגבלה"
+                className="w-40 px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-right" />
+            </div>
+            {(query || condition || maxPrice || sort !== "ending_soon") && (
+              <button type="button" onClick={() => { setQuery(""); setCondition(""); setMaxPrice(""); setSort("ending_soon"); }}
+                className="flex items-center gap-1 text-xs font-bold" style={{ color: "#e5893d" }}>
+                <X className="h-3.5 w-3.5" aria-hidden="true" /> איפוס כל הסינונים
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Items grid */}
@@ -114,16 +178,28 @@ export default function Category() {
           </div>
         ) : (
           <>
-            <p className="text-sm text-gray-400 mb-6">{items.length} פריטים נמצאו</p>
+            <p className="text-sm text-gray-400 mb-6">{filtered.length} פריטים נמצאו</p>
+            {filtered.length === 0 && (
+              <div className="text-center p-8 rounded-2xl border border-dashed border-gray-200">
+                <p className="text-3xl mb-2">🔍</p>
+                <h3 className="font-bold text-gray-700 mb-1">אין תוצאות לסינון שהוגדר</h3>
+                <button type="button" onClick={() => { setQuery(""); setCondition(""); setMaxPrice(""); }}
+                  className="text-sm font-bold" style={{ color: "#e5893d" }}>איפוס סינון</button>
+              </div>
+            )}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {items.map((item) => (
+              {filtered.map((item) => (
                 <Link key={item.id} to={`/auction/${item.id}`} className="bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300"
                   style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
-                  <div className="aspect-[4/3] overflow-hidden bg-gray-50">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
                     {item.image_url
                       ? <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       : <div className="w-full h-full flex items-center justify-center text-4xl">{cat.icon}</div>
                     }
+                    {(item.bid_count || 0) >= 3 && (
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
+                        style={{ background: "linear-gradient(135deg, #ef4444, #e5893d)" }}>🔥 מדובר</span>
+                    )}
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-gray-800 text-xs mb-2 line-clamp-2">{item.title}</h3>
@@ -134,6 +210,7 @@ export default function Category() {
                         הצע
                       </span>
                     </div>
+                    <LiveCardStats product={item} />
                   </div>
                 </Link>
               ))}

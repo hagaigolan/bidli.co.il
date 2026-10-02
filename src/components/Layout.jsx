@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
+import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
 import { setRobotsMeta } from "@/lib/seo";
 
@@ -39,6 +40,7 @@ export default function Layout() {
       </main>
       <Footer />
       <CookieConsent />
+      <WelcomeOfferModal />
       <AccessibilityWidget />
     </div>
   );

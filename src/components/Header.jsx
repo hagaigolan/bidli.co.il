@@ -8,6 +8,7 @@ import UserMenu from "@/components/UserMenu";
 import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { categoryImageUrl } from "@/lib/categoryImages";
+import SalesTicker from "@/components/SalesTicker";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -39,7 +40,8 @@ export default function Header() {
       {/* Top micro-bar */}
       <div className="border-b border-gray-100 bg-gray-50 relative z-[60]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-4 min-w-0 flex-1">
+            <SalesTicker />
           </div>
           <div className="flex items-center gap-3 mr-auto">
             {!isAuthenticated && (

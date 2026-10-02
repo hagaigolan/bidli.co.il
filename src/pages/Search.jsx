@@ -78,6 +78,15 @@ export default function Search() {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showSuggest, setShowSuggest] = useState(false);
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("recent_searches") || "[]"); } catch { return []; }
+  });
+
+  const saveRecent = (term) => {
+    const next = [term, ...recentSearches.filter((t) => t !== term)].slice(0, 6);
+    setRecentSearches(next);
+    localStorage.setItem("recent_searches", JSON.stringify(next));
+  };
 
   // Fetch all products once
   useEffect(() => {
@@ -110,6 +119,13 @@ export default function Search() {
     return wordIndex.filter((w) => w.toLowerCase().includes(term)).slice(0, 8);
   })();
 
+  // מכרזים תואמים — תצוגה מקדימה עם תמונה ומחיר בתוך תיבת ההצעות
+  const productMatches = (() => {
+    const term = q.trim().toLowerCase();
+    if (term.length < 2) return [];
+    return allProducts.filter((p) => (p.title || "").toLowerCase().includes(term)).slice(0, 3);
+  })();
+
   // Live filtering — starts from the 2nd character
   const results = (() => {
     const term = q.trim().toLowerCase();
@@ -125,6 +141,7 @@ export default function Search() {
     e.preventDefault();
     setShowSuggest(false);
     const term = q.trim();
+    if (term) saveRecent(term);
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   };
 
@@ -156,8 +173,21 @@ export default function Search() {
               placeholder="חפש פריטים, קטגוריות, מיקומים..."
               className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right"
             />
-            {showSuggest && suggestions.length > 0 && (
+            {showSuggest && (suggestions.length > 0 || productMatches.length > 0 || (q.trim().length < 2 && recentSearches.length > 0)) && (
               <div className="absolute z-30 top-full right-0 left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden" dir="rtl">
+                {q.trim().length < 2 && recentSearches.length > 0 && (
+                  <div className="py-1">
+                    <p className="px-4 py-1.5 text-xs font-bold text-gray-400">חיפושים אחרונים</p>
+                    {recentSearches.map((term) => (
+                      <button key={term} type="button"
+                        onMouseDown={(e) => { e.preventDefault(); setQ(term); }}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-right hover:bg-[#e5893d0a] transition-colors">
+                        <Clock className="h-3.5 w-3.5 text-gray-300" />
+                        <span className="text-gray-700">{term}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {suggestions.map((word) => {
                   const idx = word.toLowerCase().indexOf(q.trim().toLowerCase());
                   return (
@@ -180,6 +210,21 @@ export default function Search() {
                     </button>
                   );
                 })}
+                {productMatches.length > 0 && (
+                  <div className="py-1 border-t border-gray-100">
+                    <p className="px-4 py-1.5 text-xs font-bold text-gray-400">מכרזים תואמים</p>
+                    {productMatches.map((p) => (
+                      <Link key={p.id} to={`/auction/${p.id}`} onClick={() => setShowSuggest(false)}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-[#e5893d0a] transition-colors">
+                        {p.image_url
+                          ? <img src={p.image_url} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                          : <span className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">🏺</span>}
+                        <span className="flex-1 min-w-0 text-xs font-semibold text-gray-700 truncate">{p.title}</span>
+                        <span className="text-xs font-black" style={{ color: "#e5893d" }}>₪{(p.current_price || p.starting_price || 0).toLocaleString()}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </form>

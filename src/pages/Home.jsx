@@ -12,6 +12,9 @@ import ServicesStrip from "@/components/ServicesStrip";
 import CategoryGrid from "@/components/CategoryGrid";
 import CategoryCarousel from "@/components/CategoryCarousel";
 import CommunityStrip from "@/components/CommunityStrip";
+import JustForYou from "@/components/JustForYou";
+import CollectionsStrip from "@/components/CollectionsStrip";
+import LiveCardStats from "@/components/LiveCardStats";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -303,6 +306,10 @@ function UpcomingAuctionsSection({ products }) {
                   {product.image_url
                     ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
+                  {(product.bid_count || 0) >= 3 && (
+                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
+                      style={{ background: "linear-gradient(135deg, #ef4444, #e5893d)" }}>🔥 מדובר</span>
+                  )}
                 </div>
                 <div className="p-3" dir="rtl">
                   <h3 className="font-bold text-gray-900 text-xs leading-snug mb-1.5 line-clamp-1">{product.title}</h3>
@@ -316,6 +323,7 @@ function UpcomingAuctionsSection({ products }) {
                     <p className="font-black text-sm text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
                     {product.ends_at && <AuctionCountdown endsAt={product.ends_at} />}
                   </div>
+                  <LiveCardStats product={product} />
                 </div>
               </a>
             </AnimatedElement>
@@ -403,10 +411,12 @@ export default function Home() {
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection todayCount={todayCount} />
       <CategoryGrid />
+      <CollectionsStrip />
       <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
       <CategoryCarousel products={products} />
       <TrendingSection products={products} />
+      <JustForYou />
       <CommunityStrip />
       <PopularSearches />
       <ShopsSection shops={shops} />

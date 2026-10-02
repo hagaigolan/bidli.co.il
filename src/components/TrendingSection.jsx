@@ -53,7 +53,7 @@ export default function TrendingSection({ products }) {
                   : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
                 <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white flex items-center gap-1"
                   style={{ background: "linear-gradient(135deg, #ef4444, #e5893d)", boxShadow: "0 0 10px #ef444455" }}>
-                  <Flame className="h-3 w-3" /> {p.bid_count} הצעות
+                  <Flame className="h-3 w-3" /> {i === 0 ? "🏆 המוביל באתר · " : ""}{p.bid_count} הצעות
                 </span>
               </div>
               <div className="p-3" dir="rtl">

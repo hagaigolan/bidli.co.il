@@ -49,8 +49,8 @@ export default function Stocks() {
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
       <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               <TrendingUp className="h-5 w-5 text-white" />
@@ -59,7 +59,7 @@ export default function Stocks() {
           </div>
           <p className="text-gray-500 text-sm mt-1 mb-6">פריטים שאנשים מוכרים כרגע — הגש הצעה וזכה</p>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-4">
             <span className="text-sm text-gray-400">{products.length} פריטים פעילים</span>
             <Link to="/upload-product"
               className="flex items-center gap-2 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"

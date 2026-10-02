@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { Plus, Clock, MapPin, Tag, Bookmark, Map } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
 import SavedSearchModal from "@/components/SavedSearchModal";
-
-const urlParams = new URLSearchParams(window.location.search);
-const ARCHIVE_MODE = urlParams.get("view") === "archive";
-// מסננים מה-URL — מופעלים מצ'יפי החיפוש הפופולריים בדף הבית ומהחיפושים השמורים
-const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
-const PARAM_MAX = Number(urlParams.get("max")) || 0;
-const PARAM_CITY = (urlParams.get("city") || "").trim();
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -86,6 +79,15 @@ export default function Auctions() {
   const [loading, setLoading] = useState(true);
   const [showSaveSearch, setShowSaveSearch] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // מסננים מה-URL של העמוד הנוכחי — נקראים מחדש בכל ניווט, כך שצ'יפי החיפוש
+  // הפופולריים והחיפושים השמורים מסננים בדיוק לפי הבחירה שנשלחה בקישור
+  const urlParams = new URLSearchParams(location.search);
+  const ARCHIVE_MODE = urlParams.get("view") === "archive";
+  const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
+  const PARAM_MAX = Number(urlParams.get("max")) || 0;
+  const PARAM_CITY = (urlParams.get("city") || "").trim();
 
   useEffect(() => {
     base44.entities.Product.list("-created_date", 50)
@@ -125,7 +127,8 @@ export default function Auctions() {
   const active = products.filter(p => {
     if (p.status === "cancelled" || new Date(p.ends_at) <= new Date()) return false;
     if (PARAM_CATEGORY && p.category !== PARAM_CATEGORY) return false;
-    if (PARAM_MAX && (p.starting_price || 0) > PARAM_MAX) return false;
+    // סינון לפי המחיר בפועל כרגע (המחיר הנוכחי, או ההתחלתי כשאין הצעות)
+    if (PARAM_MAX && (p.current_price || p.starting_price || 0) > PARAM_MAX) return false;
     if (PARAM_CITY && !(p.location || "").includes(PARAM_CITY)) return false;
     return true;
   });

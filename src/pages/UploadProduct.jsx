@@ -181,7 +181,11 @@ export default function UploadProduct() {
       }).catch(() => {});
       setDone(true);
     } catch (err) {
-      setError("שגיאה בהעלאה, נסה שנית");
+      // הצגת הסיבה האמיתית: העלאת תמונה נכשלה / השרת דחה את הפרסום / תקלת תקשורת
+      const reason = err?.message ? String(err.message) : "";
+      setError(reason
+        ? `שגיאה בהעלאה, נסה שנית — ${reason}`
+        : "שגיאה בהעלאה, נסה שנית");
     } finally {
       setLoading(false);
     }

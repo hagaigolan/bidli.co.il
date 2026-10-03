@@ -168,17 +168,8 @@ export default function UploadProduct() {
       });
       if (res?.seller_email) localStorage.setItem("seller_email", res.seller_email);
       // מעקב אירועים: פרסום מוצר שהסתיים בהצלחה (ללא נתונים מזהים)
-      base44.analytics.track({
-        eventName: "product_listing_submitted",
-        properties: {
-          category: form.category || "",
-          subcategory: form.subcategory || "",
-          starting_price: Number(form.starting_price) || 0,
-          has_buy_now_price: Boolean(form.buy_now_price),
-          is_stock: form.is_stock,
-          image_count: image_urls.length,
-        },
-      }).catch(() => {});
+      // המעקב לא יכול להפיל את הפרסום — track אינו מחזיר Promise בכל גרסה
+      try { base44.analytics.track({ eventName: "product_listing_submitted" }); } catch {}
       setDone(true);
     } catch (err) {
       // הצגת הסיבה האמיתית: העלאת תמונה נכשלה / השרת דחה את הפרסום / תקלת תקשורת

@@ -170,6 +170,14 @@ export default function UploadProduct() {
       // מעקב אירועים: פרסום מוצר שהסתיים בהצלחה (ללא נתונים מזהים)
       // המעקב לא יכול להפיל את הפרסום — track אינו מחזיר Promise בכל גרסה
       try { base44.analytics.track({ eventName: "product_listing_submitted" }); } catch {}
+      // אירוע המרה של Google Ads — נשלח רק לאחר פרסום מוצלח (המוצר נוצר בפועל בשרת)
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-997724217/zz41CLG2z40dELmg4NsD',
+          value: 0.0,
+          currency: 'ILS',
+        });
+      }
       setDone(true);
     } catch (err) {
       // הצגת הסיבה האמיתית: העלאת תמונה נכשלה / השרת דחה את הפרסום / תקלת תקשורת

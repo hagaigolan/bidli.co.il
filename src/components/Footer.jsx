@@ -119,6 +119,7 @@ export default function Footer() {
             <Link to="/terms?tab=returns" className="hover:text-gray-500 transition-colors">מדיניות החזרים</Link>
             <Link to="/terms?tab=shipping" className="hover:text-gray-500 transition-colors">משלוחים והספקה</Link>
             <Link to="/terms?tab=accessibility" className="hover:text-gray-500 transition-colors">הצהרת נגישות</Link>
+            <Link to="/terms?tab=affiliate" className="hover:text-gray-500 transition-colors">גילוי נאות שותפים</Link>
           </div>
         </div>
       </div>

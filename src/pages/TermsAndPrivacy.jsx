@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp, Cookie, RotateCcw, Truck, Accessibility } from "lucide-react";
-import { COOKIE_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS } from "@/lib/policyDocs";
+import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp, Cookie, RotateCcw, Truck, Accessibility, ExternalLink } from "lucide-react";
+import { COOKIE_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS, AFFILIATE_DISCLOSURE_SECTIONS } from "@/lib/policyDocs";
 
 const LAST_UPDATED = "9 בספטמבר 2026";
 const PLATFORM_NAME = "bidli";
@@ -204,6 +204,7 @@ const TABS = [
   { id: "returns", label: "מדיניות החזרים", Icon: RotateCcw },
   { id: "shipping", label: "משלוחים והספקה", Icon: Truck },
   { id: "accessibility", label: "הצהרת נגישות", Icon: Accessibility },
+  { id: "affiliate", label: "גילוי נאות שותפים", Icon: ExternalLink },
 ];
 
 const PRELUDES = {
@@ -213,6 +214,7 @@ const PRELUDES = {
   returns: { title: `מדיניות החזרים וביטולים — ${PLATFORM_NAME}`, desc: "זכויות הביטול וההחזר נקבעות בהתאם לסוג המוכר — עוסק או מוכר פרטי." },
   shipping: { title: `מדיניות משלוחים והספקה — ${PLATFORM_NAME}`, desc: "המסירה נקבעת ישירות בין הקונה למוכר. הפלטפורמה אינה צד למסירה." },
   accessibility: { title: `הצהרת נגישות — ${PLATFORM_NAME}`, desc: "אנו פועלים להנגשת האתר בהתאם לתקן הנגישות WCAG 2.1 AA." },
+  affiliate: { title: `גילוי נאות שותפים — ${PLATFORM_NAME}`, desc: "כיצד אנו מסמנים קישורי שותפים ומקבלים עמלות מצדדים שלישיים." },
 };
 
 const DOC_SECTIONS = {
@@ -222,6 +224,7 @@ const DOC_SECTIONS = {
   returns: [sections[2], ...RETURNS_POLICY_SECTIONS],
   shipping: SHIPPING_POLICY_SECTIONS,
   accessibility: ACCESSIBILITY_POLICY_SECTIONS,
+  affiliate: AFFILIATE_DISCLOSURE_SECTIONS,
 };
 
 function Section({ section }) {

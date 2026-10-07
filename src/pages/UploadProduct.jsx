@@ -39,6 +39,28 @@ export default function UploadProduct() {
     setAuthChecked(true);
   }, [isAuthenticated]);
 
+  // שמירה אוטומטית — שחזור טיוטה שמורה מהמכשיר (אם אין טיוטת פרסום חוזר)
+  useEffect(() => {
+    if (localStorage.getItem("republish_draft")) return;
+    try {
+      const d = JSON.parse(localStorage.getItem("bidli_upload_draft") || "null");
+      if (!d) return;
+      setForm(f => ({
+        ...f,
+        ...d,
+        seller_payment_methods: Array.isArray(d.seller_payment_methods) ? d.seller_payment_methods : [],
+      }));
+    } catch {}
+  }, []);
+
+  // שמירה אוטומטית — שמירת הטופס למכשיר בכל שינוי (עם דיליי קצר)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try { localStorage.setItem("bidli_upload_draft", JSON.stringify(form)); } catch {}
+    }, 400);
+    return () => clearTimeout(t);
+  }, [form]);
+
   // פרסום חוזר — טעינת פרטי מכרז קודם לעריכה מחדש
   useEffect(() => {
     const draft = localStorage.getItem("republish_draft");
@@ -178,6 +200,8 @@ export default function UploadProduct() {
           currency: 'ILS',
         });
       }
+      // ניקוי טיוטת השמירה האוטומטית — הפרסום הושלם
+      localStorage.removeItem("bidli_upload_draft");
       setDone(true);
     } catch (err) {
       // הצגת הסיבה האמיתית: העלאת תמונה נכשלה / השרת דחה את הפרסום / תקלת תקשורת
@@ -525,6 +549,7 @@ export default function UploadProduct() {
             <><Upload className="h-4 w-4" /> פרסם מכרז</>
           )}
         </button>
+        <p className="text-[11px] text-gray-400 text-center">הפרטים שמילאת נשמרים אוטומטית במכשיר שלך — גם אם תצא מהעמוד</p>
       </form>
 
       {showLoginModal && (

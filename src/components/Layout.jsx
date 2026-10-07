@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
 import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
+import IdleLogout from "./IdleLogout";
 import { setRobotsMeta } from "@/lib/seo";
 
 // עמודים פרטיים/פנימיים — נמנעים מאינדוקס בגוגל
@@ -42,6 +43,7 @@ export default function Layout() {
       <CookieConsent />
       <WelcomeOfferModal />
       <AccessibilityWidget />
+      <IdleLogout />
     </div>
   );
 }

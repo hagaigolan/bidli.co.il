@@ -3,6 +3,8 @@ import { setPageMeta } from "@/lib/seo";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
+import HoneypotField, { useAntiBot } from "@/components/HoneypotField";
+import { containsProfanity } from "@/lib/profanity";
 
 const CONTACT_EMAIL = "mitugplus@gmail.com";
 const TOPICS = ["שאלה כללית", "מכירת פריט בפלטפורמה", "תמיכה בהזמנה קיימת", "שיתוף פעולה עסקי"];
@@ -14,6 +16,8 @@ export default function Contact() {
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
   const [consent, setConsent] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const { isBot } = useAntiBot(4);
 
   useEffect(() => {
     setPageMeta({
@@ -26,6 +30,12 @@ export default function Contact() {
 
   const submit = async (e) => {
     e.preventDefault();
+    // הגנת אנטי-בוט: שדה דבש שהוזן או שליחה מיידית מדי — בוט. מדמים הצלחה בלי שליחה.
+    if (isBot(honeypot)) { setSent(true); return; }
+    if (containsProfanity(`${form.name} ${form.message}`)) {
+      setError("ההודעה מכילה תוכן לא הולם — נא לנסח מחדש");
+      return;
+    }
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       setError("יש למלא שם, אימייל והודעה");
       return;
@@ -107,6 +117,7 @@ export default function Contact() {
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
+              <HoneypotField value={honeypot} onChange={setHoneypot} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">שם *</label>

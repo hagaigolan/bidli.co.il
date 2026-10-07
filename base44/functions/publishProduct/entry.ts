@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { waitUntil } from 'base44:runtime';
 import { interestAlertEmail } from '../../shared/notifyEmails.ts';
+import { sanitizeText, containsProfanity } from '../../shared/contentSafety.ts';
 
 // Publishes a new auction listing. The seller's identity (name, email, user id,
 // photo) is derived server-side from the authenticated account — client-supplied
@@ -11,7 +12,8 @@ import { interestAlertEmail } from '../../shared/notifyEmails.ts';
 const CONDITIONS = ["חדש", "מצב מעולה", "מצב טוב", "מצב בינוני", "לא תקין"];
 const PAYMENT_METHODS = ["kashcash", "bit", "bank"];
 
-const str = (v: any, max = 5000) => (v == null ? "" : String(v).trim().slice(0, max));
+// כל קלט הטקסט עובר ניקוי XSS (הסרת תגיות, תכונות אירוע ותווי בקרה)
+const str = (v: any, max = 5000) => sanitizeText(v, max);
 
 export default async function (req: Request): Promise<Response> {
   try {
@@ -63,10 +65,17 @@ export default async function (req: Request): Promise<Response> {
     if (condition && !CONDITIONS.includes(condition)) {
       return Response.json({ error: 'invalid condition' }, { status: 400 });
     }
+    const description = str(body.description);
+    const location = str(body.location, 120);
+
+    // סינון מילים פוגעניות — חסימת פרסום תוכן לא הולם
+    if (containsProfanity(`${title} ${description} ${location}`)) {
+      return Response.json({ error: 'profanity' }, { status: 400 });
+    }
 
     const product = await base44.asServiceRole.entities.Product.create({
       title,
-      description: str(body.description),
+      description,
       category: str(body.category, 100),
       subcategory,
       condition: condition || undefined,
@@ -87,7 +96,7 @@ export default async function (req: Request): Promise<Response> {
       seller_payment_methods: methodsToStore,
       seller_payme_phone: paymePhone,
       seller_bank_details: bankDetails,
-      location: str(body.location, 120),
+      location,
       ends_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       status: 'active',
       bid_count: 0,

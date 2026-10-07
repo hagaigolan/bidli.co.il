@@ -8,9 +8,10 @@ import ProfileStatsCard from "@/components/ProfileStatsCard";
 import ProfileInterests from "@/components/ProfileInterests";
 import SavedSearchesList from "@/components/SavedSearchesList";
 import { useAuth } from "@/lib/AuthContext";
+import AccountDeleteModal from "@/components/AccountDeleteModal";
 import {
   Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
-  Trophy, XCircle, RefreshCw
+  Trophy, XCircle, RefreshCw, Trash2
 } from "lucide-react";
 
 function useCountdown(endsAt) {
@@ -126,6 +127,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [editingProfile, setEditingProfile] = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const [profileMeta, setProfileMeta] = useState(() => ({
     name: localStorage.getItem("bidder_name") || "",
     email: localStorage.getItem("bidder_email") || "",
@@ -324,6 +326,19 @@ export default function Profile() {
               <RefreshCw className="h-3 w-3" /> רענן נתונים
             </button>
           </>
+        )}
+
+        {/* אזור מסוכן — מחיקת חשבון */}
+        <div className="mt-10 pt-6 border-t border-gray-100 text-center">
+          <button onClick={() => setShowDeleteAccount(true)}
+            className="text-xs text-red-500 hover:text-red-700 transition-colors inline-flex items-center gap-1.5">
+            <Trash2 className="h-3.5 w-3.5" /> מחיקת החשבון
+          </button>
+          <p className="text-[11px] text-gray-400 mt-1">מחיקת כל הנתונים שלך מהפלטפורמה — פעולה בלתי הפיכה</p>
+        </div>
+
+        {showDeleteAccount && (
+          <AccountDeleteModal onClose={() => setShowDeleteAccount(false)} />
         )}
       </div>
     </div>

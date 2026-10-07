@@ -63,7 +63,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    if (!inPublishWindow()) {
+    // קמפיין זמני יכול לבקש פרסום מחוץ לחלון היומי (allow_outside_window=true)
+    const bodyArgs = await req.json().catch(() => ({}));
+    if (!inPublishWindow() && !bodyArgs?.allow_outside_window) {
       return Response.json({ ok: true, skipped: "outside_publish_window" });
     }
 

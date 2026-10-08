@@ -438,7 +438,7 @@ export default function AuctionDetail() {
     (product.highest_bidder_email && myEmails.includes(product.highest_bidder_email.trim().toLowerCase()))
   );
 
-  // ── אפקט זיקוקים ל-2 שניות סביב כפתור הגשת ההצעה ──
+  // ── אפקט זיקוקים איטי ומיוחד ל-3 שניות סביב כפתור הגשת ההצעה ──
   const confettiCanvasRef = useRef(null);
   const confettiRafRef = useRef(null);
   useEffect(() => () => {
@@ -448,11 +448,24 @@ export default function AuctionDetail() {
     const canvas = confettiCanvasRef.current;
     if (!canvas) return;
     const fire = confetti.create(canvas, { resize: true, useTargetWidth: true });
-    const colors = ["#e5893d", "#3e6b8a", "#6aa3cd", "#00c853"];
-    const end = Date.now() + 2000;
+    const colors = ["#e5893d", "#e8b04a", "#3e6b8a", "#6aa3cd", "#00c853", "#ffffff"];
+    const end = Date.now() + 3000;
+    let flip = false;
     const frame = () => {
-      fire({ particleCount: 4, angle: 60, spread: 60, startVelocity: 18, decay: 0.88, gravity: 0.4, ticks: 320, scalar: 1.2, origin: { x: 0.15, y: 0.7 }, colors });
-      fire({ particleCount: 4, angle: 120, spread: 60, startVelocity: 18, decay: 0.88, gravity: 0.4, ticks: 320, scalar: 1.2, origin: { x: 0.85, y: 0.7 }, colors });
+      // שכבה 1 — כוכבים ולבבונים גדולים שנופלים לאט משני צדי הכפתור
+      fire({
+        particleCount: 3, angle: flip ? 60 : 120, spread: 55, startVelocity: 12,
+        decay: 0.93, gravity: 0.18, ticks: 600, scalar: 1.8,
+        shapes: ["star", "circle"], drift: flip ? 0.6 : -0.6,
+        origin: { x: flip ? 0.12 : 0.88, y: 0.65 }, colors,
+      });
+      // שכבה 2 — ניצוצות זהב קטנים המרחפים ישר כלפי מעלה במרכז
+      fire({
+        particleCount: 2, angle: 90, spread: 100, startVelocity: 8,
+        decay: 0.94, gravity: 0.12, ticks: 700, scalar: 1.1,
+        origin: { x: 0.5, y: 0.8 }, colors: ["#e8b04a", "#e5893d", "#ffffff"],
+      });
+      flip = !flip;
       if (Date.now() < end) confettiRafRef.current = requestAnimationFrame(frame);
       else fire.reset();
     };

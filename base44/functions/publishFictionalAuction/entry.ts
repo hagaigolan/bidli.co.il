@@ -99,14 +99,15 @@ Deno.serve(async (req) => {
     const existingTitles = [...new Set(existing.map(p => normalizeTitle(p.title)).filter(Boolean))];
     const existingTitleSet = new Set(existingTitles);
 
-    // Generate a realistic fictional listing with the LLM
-    const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `צור מודעת מכרז פיקטיבית ריאליסטית אחת בעברית עבור אתר מכרזים ישראלי, בקטגוריה "${category}".
+    // Generate a realistic fictional listing with the LLM — up to 3 attempts.
+    // אם הכותרת שנוצרה כפולה של כותרת קיימת, מנסים שוב במקום לדלג על הפרסום.
+    const generateListing = (extraHint = "") => base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt: `${extraHint}צור מודעת מכרז פיקטיבית ריאליסטית אחת בעברית עבור אתר מכרזים ישראלי, בקטגוריה "${category}".
 דרישות:
 - כותרת קצרה ומושכת בעברית עם פרט מזהה של הפריט (יצרן/תקופה/סוג).
 - הפריט חייב לשקף מוצרים חמים בשוק הישראלי בחודש האחרון, מותאם לקטגוריה "${category}". דוגמאות טרנדים: ${TRENDING_ITEM_HINTS.join("; ")}.
 - אם הקטגוריה היא אספנות/נומיסמטיקה/בולים/יודאיקה/ספרים/אחר — העדף פריטים בעלי עניין רחב וביקוש עדכני (מהדורות מיוחדות, סטים פופולריים, פריטי מזכרת מבוקשים) במקום אספנות נישתית כבדה.
-- הכותרת חייבת להיות פריט שונה ולא דומה לכותרות הבאות שכבר פורסמו באתר: ${existingTitles.slice(-30).join(" | ") || "(אין עדיין)"}.
+- הכותרת חייבת להיות פריט שונה ולא דומה לכותרות הבאות שכבר פורסמו באתר: ${existingTitles.slice(-60).join(" | ") || "(אין עדיין)"}.
 - תיאור אמין של 2-3 משפטים: מצב, רקע, מה מיוחד בפריט.
 - מחיר התחלתי ריאלי בשקלים לפריט כזה בשוק הישראלי (למשל: תכשיטים 300–5,000, אמנות 500–15,000, נומיסמטיקה ומטבעות 200–3,000, ספרים ובולים 100–1,500, עיצוב הבית 200–4,000, אופנה 150–2,500, יודאיקה 300–8,000, אספנות 200–6,000, שעונים 500–20,000, כלי נגינה 500–30,000, יין ואלכוהול 150–3,000, אלקטרוניקה 100–8,000, רכבים 15,000–90,000, נדל"ן 350,000–2,500,000, אחר 100–3,000).
 - מחיר "קנה עכשיו" גבוה משמעותית מהמחיר ההתחלתי.
@@ -127,9 +128,14 @@ Deno.serve(async (req) => {
         required: ["title", "description", "starting_price", "buy_now_price", "location", "condition", "image_prompt"],
       },
     });
+    let llm = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      llm = await generateListing(attempt === 0 ? "" : "הכותרת שהצעת בניסיון הקודם כבר קיימת באתר. הצע פריט שונה לגמרי שאינו מופיע ברשימת הכותרות. ");
+      if (llm?.title && !existingTitleSet.has(normalizeTitle(llm.title))) break;
+    }
 
-    // חסימה קשיחה — אם הכותרת שנוצרה זהה לכותרת קיימת, לא מפרסמים (מניעת כפילויות)
-    if (existingTitleSet.has(normalizeTitle(llm.title))) {
+    // חסימה קשיחה — אם אחרי 3 ניסיונות עדיין כפול, לא מפרסמים (מניעת כפילויות)
+    if (!llm?.title || existingTitleSet.has(normalizeTitle(llm.title))) {
       return Response.json({ ok: true, skipped: "duplicate_title" });
     }
 

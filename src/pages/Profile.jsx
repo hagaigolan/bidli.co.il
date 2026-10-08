@@ -5,6 +5,7 @@ import SalesManager from "@/components/SalesManager";
 import SellerAuctionEditor from "@/components/SellerAuctionEditor";
 import ProfileEditModal from "@/components/ProfileEditModal";
 import ProfileStatsCard from "@/components/ProfileStatsCard";
+import AchievementsCard from "@/components/AchievementsCard";
 import ProfileInterests from "@/components/ProfileInterests";
 import SavedSearchesList from "@/components/SavedSearchesList";
 import { useAuth } from "@/lib/AuthContext";
@@ -220,6 +221,10 @@ export default function Profile() {
         {(profileMeta.email || authUser?.email) && (
           <ProfileStatsCard email={(profileMeta.email || authUser?.email).trim()} />
         )}
+
+        <AchievementsCard
+          email={(profileMeta.email || authUser?.email || "").trim()}
+          name={profileMeta.name || authUser?.full_name || ""} />
 
         <ProfileInterests />
 

@@ -18,6 +18,7 @@ import LiveCardStats from "@/components/LiveCardStats";
 import LiveStatsBar from "@/components/LiveStatsBar";
 import InviteFriendsSection from "@/components/InviteFriendsSection";
 import HowItWorksStrip from "@/components/HowItWorksStrip";
+import CollectorQuiz from "@/components/CollectorQuiz";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -424,6 +425,7 @@ export default function Home() {
       <JustForYou />
       <CommunityStrip />
       <PopularSearches />
+      <CollectorQuiz />
       <InviteFriendsSection />
       <ShopsSection shops={shops} />
       <ServicesStrip />

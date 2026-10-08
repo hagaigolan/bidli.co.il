@@ -65,6 +65,8 @@ Deno.serve(async (req) => {
 
     // קמפיין זמני יכול לבקש פרסום מחוץ לחלון היומי (allow_outside_window=true)
     const bodyArgs = await req.json().catch(() => ({}));
+    // קמפיין פרסום מרוכז — burst50 = מכרז שנספר לקמפיין 50 המכרזים הנוספים
+    const campaign = bodyArgs?.campaign === "burst50" ? "burst50" : "";
     if (!inPublishWindow() && !bodyArgs?.allow_outside_window) {
       return Response.json({ ok: true, skipped: "outside_publish_window" });
     }
@@ -73,6 +75,11 @@ Deno.serve(async (req) => {
     const existing = await base44.asServiceRole.entities.Product.filter({
       seller_user_id: { $regex: `^${SELLER_USER_ID_PREFIX}` },
     });
+    // ספירת מכרזי הקמפיין — חסימה אחרי 50 פרסומים נוספים (מעבר לקיימים)
+    const burstCount = campaign ? existing.filter(p => p.campaign === "burst50").length : 0;
+    if (campaign && burstCount >= 50) {
+      return Response.json({ ok: true, skipped: "campaign_complete" });
+    }
     const idx = existing.length;
     // הקטגוריה עם הכי מעט מכרזים פיקטיביים פעילים — מבטיח כיסוי של כל הקטגוריות
     const active = existing.filter(p => p.status !== "cancelled");
@@ -167,12 +174,38 @@ Deno.serve(async (req) => {
       ends_at: endsAt,
       status: "active",
       bid_count: 0,
+      ...(campaign ? { campaign } : {}),
     });
+
+    // סיום קמפיין 50 המכרזים — מייל סיכום לאדמינים ברגע שהושלם הפרסום ה-50
+    if (campaign && burstCount + 1 === 50) {
+      try {
+        const admins = await base44.asServiceRole.entities.User.filter({ role: "admin" });
+        const html = `<!DOCTYPE html><html dir="rtl" lang="he"><body style="font-family:Arial,sans-serif;background:#f4f4f5;padding:24px;direction:rtl">
+<div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb">
+<div style="background:#111827;color:#ffffff;padding:18px 28px"><strong style="font-size:16px">bidli</strong></div>
+<div style="padding:28px">
+<h1 style="font-size:20px;margin:0 0 8px;color:#111827">קמפיין 50 המכרזים הנוספים הושלם 🎉</h1>
+<p style="font-size:14px;color:#111827;line-height:1.6;margin:0 0 4px">כל 50 המכרזים החדשים פורסמו בהצלחה, מעבר למכרזים הקיימים באתר.</p>
+<p style="font-size:13px;color:#6b7280;line-height:1.6;margin:0 0 16px">סה"כ מכרזים פיקטיביים באתר כרגע: ${existing.length + 1} · הקמפיין עצר אוטומטית ולא יפרסם עוד.</p>
+<a href="https://bidli.co.il/auctions" style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:16px">צפייה במכרזים</a>
+</div>
+</div></body></html>`;
+        for (const admin of admins) {
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: admin.email,
+            subject: "קמפיין 50 המכרזים הנוספים הושלם",
+            html,
+          }).catch(() => {});
+        }
+      } catch {}
+    }
 
     return Response.json({
       ok: true,
       published: { id: product.id, title: product.title, category, seller_name: sellerName, location: city, starting_price: startingPrice, image_url: img.url },
       total_fictional: existing.length + 1,
+      burst_published: campaign ? burstCount + 1 : undefined,
     });
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });

@@ -451,23 +451,28 @@ export default function AuctionDetail() {
     const fire = confetti.create(canvas, { resize: true, useTargetWidth: true });
     const colors = ["#e5893d", "#e8b04a", "#3e6b8a", "#6aa3cd", "#00c853", "#ffffff"];
     const end = Date.now() + 3000;
-    let flip = false;
+    let lastLaunch = 0;
+    let lastBurst = 0;
     const frame = () => {
-      // שכבה 1 — כוכבים ולבבונים גדולים שנופלים לאט משני צדי הכפתור
-      fire({
-        particleCount: 3, angle: flip ? 60 : 120, spread: 55, startVelocity: 12,
-        decay: 0.93, gravity: 0.18, ticks: 600, scalar: 1.8,
-        shapes: ["star", "circle"], drift: flip ? 0.6 : -0.6,
-        origin: { x: flip ? 0.12 : 0.88, y: 0.65 }, colors,
-      });
-      // שכבה 2 — ניצוצות זהב קטנים המרחפים ישר כלפי מעלה במרכז
-      fire({
-        particleCount: 2, angle: 90, spread: 100, startVelocity: 8,
-        decay: 0.94, gravity: 0.12, ticks: 700, scalar: 1.1,
-        origin: { x: 0.5, y: 0.8 }, colors: ["#e8b04a", "#e5893d", "#ffffff"],
-      });
-      flip = !flip;
-      if (Date.now() < end) confettiRafRef.current = requestAnimationFrame(frame);
+      const now = Date.now();
+      // שיגור — זיקוק אמיתי שעף מהתחתית לשמיים
+      if (now - lastLaunch > 280) {
+        lastLaunch = now;
+        const x = 0.2 + Math.random() * 0.6;
+        fire({ particleCount: 3, angle: 90, spread: 24, startVelocity: 52, decay: 0.91, gravity: 0.9, ticks: 90, scalar: 1.5, shapes: ["circle"], origin: { x, y: 1 }, colors: ["#e8b04a", "#e5893d", "#ffffff"] });
+        // הבהוב בקצה הזיקוק — ניצוץ לבן קטן וקצר שנשאר מאחורי השיגור
+        fire({ particleCount: 2, angle: 90, spread: 40, startVelocity: 46, decay: 0.9, gravity: 0.9, ticks: 40, scalar: 0.7, shapes: ["circle"], origin: { x: x + 0.02, y: 0.97 }, colors: ["#ffffff", "#fff3d6"] });
+      }
+      // פיצוץ — התפרצות עיגולית איטית בשמיים
+      if (now - lastBurst > 650) {
+        lastBurst = now;
+        const bx = 0.15 + Math.random() * 0.7;
+        const by = 0.15 + Math.random() * 0.35;
+        fire({ particleCount: 38, angle: 90, spread: 360, startVelocity: 16, decay: 0.93, gravity: 0.25, ticks: 420, scalar: 1.3, shapes: ["circle"], origin: { x: bx, y: by }, colors });
+        // הבהוב בקצות הזיקוק — ניצוצות לבנים קצרים סביב הפיצוץ
+        fire({ particleCount: 12, angle: 90, spread: 360, startVelocity: 13, decay: 0.9, gravity: 0.2, ticks: 90, scalar: 0.6, shapes: ["circle"], origin: { x: bx, y: by }, colors: ["#ffffff", "#fff3d6"] });
+      }
+      if (now < end) confettiRafRef.current = requestAnimationFrame(frame);
       else fire.reset();
     };
     frame();

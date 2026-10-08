@@ -39,6 +39,7 @@ import Valuation from './pages/Valuation';
 import AuctionsMap from './pages/AuctionsMap';
 import Barter from './pages/Barter';
 import BarterDetail from './pages/BarterDetail';
+import Landing from './pages/Landing';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -107,6 +108,7 @@ const AuthenticatedApp = () => {
         <Route path="/auctions-map" element={<AuctionsMap />} />
         <Route path="/barter" element={<Barter />} />
         <Route path="/barter/:id" element={<BarterDetail />} />
+        <Route path="/landing/:slug" element={<Landing />} />
         {/* Add your page Route elements here */}
       </Route>
       <Route path="*" element={<PageNotFound />} />

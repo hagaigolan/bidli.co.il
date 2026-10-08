@@ -15,6 +15,8 @@ import CommunityStrip from "@/components/CommunityStrip";
 import JustForYou from "@/components/JustForYou";
 import CollectionsStrip from "@/components/CollectionsStrip";
 import LiveCardStats from "@/components/LiveCardStats";
+import LiveStatsBar from "@/components/LiveStatsBar";
+import InviteFriendsSection from "@/components/InviteFriendsSection";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -410,6 +412,7 @@ export default function Home() {
   return (
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection todayCount={todayCount} />
+      <LiveStatsBar />
       <CategoryGrid />
       <CollectionsStrip />
       <DealsEndingSoon products={products} />
@@ -419,6 +422,7 @@ export default function Home() {
       <JustForYou />
       <CommunityStrip />
       <PopularSearches />
+      <InviteFriendsSection />
       <ShopsSection shops={shops} />
       <ServicesStrip />
       <TrustSection />

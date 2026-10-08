@@ -24,7 +24,7 @@ import AutoBidPanel from "@/components/AutoBidPanel";
 import LiveBidFeed from "@/components/LiveBidFeed";
 import BidLeaderboard from "@/components/BidLeaderboard";
 import SoundToggle from "@/components/SoundToggle";
-import { playBidPing, playTickTock, playHammer } from "@/lib/auctionSounds";
+import { playBidPing, playTickTock, playHammer, playFireworks } from "@/lib/auctionSounds";
 import confetti from "canvas-confetti";
 import { setPageMeta } from "@/lib/seo";
 
@@ -445,6 +445,7 @@ export default function AuctionDetail() {
     if (confettiRafRef.current) cancelAnimationFrame(confettiRafRef.current);
   }, []);
   const startBidConfetti = () => {
+    playFireworks();
     const canvas = confettiCanvasRef.current;
     if (!canvas) return;
     const fire = confetti.create(canvas, { resize: true, useTargetWidth: true });

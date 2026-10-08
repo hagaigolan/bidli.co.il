@@ -1,0 +1,831 @@
+{
+  "name": "Bidli Fictional Burst 50x",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "Asia/Jerusalem",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "after_count",
+      "ends_on_date": null,
+      "ends_after_count": 1
+    }
+  },
+  "description": "\u05e7\u05de\u05e4\u05d9\u05d9\u05df \u05d7\u05d3-\u05e4\u05e2\u05de\u05d9: 50 \u05de\u05db\u05e8\u05d6\u05d9\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9\u05d9\u05dd \u05d1\u05e8\u05d9\u05e6\u05d4 \u05d0\u05d7\u05ea \u05e8\u05e6\u05d5\u05e4\u05d4 \u2014 \u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d4, \u05de\u05d5\u05db\u05e8 \u05d5\u05e2\u05d9\u05e8 \u05e9\u05d5\u05e0\u05d9\u05dd \u05d1\u05db\u05dc \u05e4\u05e8\u05e1\u05d5\u05dd, \u05de\u05d7\u05d5\u05e5 \u05dc\u05d7\u05dc\u05d5\u05df \u05d4\u05d9\u05d5\u05de\u05d9 \u05d4\u05e8\u05d2\u05d9\u05dc.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "bidli_fictional_burst_50x",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "publish_1": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_2",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 1",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_2": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_3",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 2",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_3": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_4",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 3",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_4": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_5",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 4",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_5": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_6",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 5",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_6": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_7",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 6",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_7": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_8",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 7",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_8": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_9",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 8",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_9": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_10",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 9",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_10": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_11",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 10",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_11": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_12",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 11",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_12": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_13",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 12",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_13": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_14",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 13",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_14": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_15",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 14",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_15": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_16",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 15",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_16": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_17",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 16",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_17": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_18",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 17",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_18": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_19",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 18",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_19": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_20",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 19",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_20": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_21",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 20",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_21": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_22",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 21",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_22": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_23",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 22",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_23": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_24",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 23",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_24": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_25",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 24",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_25": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_26",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 25",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_26": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_27",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 26",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_27": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_28",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 27",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_28": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_29",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 28",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_29": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_30",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 29",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_30": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_31",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 30",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_31": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_32",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 31",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_32": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_33",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 32",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_33": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_34",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 33",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_34": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_35",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 34",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_35": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_36",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 35",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_36": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_37",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 36",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_37": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_38",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 37",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_38": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_39",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 38",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_39": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_40",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 39",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_40": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_41",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 40",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_41": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_42",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 41",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_42": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_43",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 42",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_43": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_44",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 43",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_44": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_45",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 44",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_45": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_46",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 45",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_46": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_47",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 46",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_47": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_48",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 47",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_48": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_49",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 48",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_49": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "publish_50",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 49",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      },
+      {
+        "publish_50": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "publishFictionalAuction",
+            "args": {
+              "allow_outside_window": true
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "\u05de\u05db\u05e8\u05d6 50",
+            "description": "\u05e4\u05e8\u05e1\u05d5\u05dd \u05e4\u05d9\u05e7\u05d8\u05d9\u05d1\u05d9"
+          }
+        }
+      }
+    ]
+  }
+}

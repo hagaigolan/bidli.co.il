@@ -5,7 +5,7 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
-import { TrendingUp, Gavel, CheckCircle, XCircle, DollarSign, Users, ShieldAlert, Lock } from "lucide-react";
+import { TrendingUp, Gavel, CheckCircle, XCircle, DollarSign, Users, ShieldAlert, Lock, UserPlus, ArrowLeftRight } from "lucide-react";
 import { getFeeConfig } from "@/functions/getFeeConfig";
 import ClosedSalesSection from "@/components/admin/ClosedSalesSection";
 import MonthlySalesChart from "@/components/admin/MonthlySalesChart";
@@ -66,6 +66,10 @@ export default function AdminDashboard() {
   const [outcomeData, setOutcomeData] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [feeRate, setFeeRate] = useState(0);
+  const [barterStats, setBarterStats] = useState({ active: 0, completed: 0, total: 0 });
+  const [barterDailyData, setBarterDailyData] = useState([]);
+  const [usersThisWeek, setUsersThisWeek] = useState(0);
+  const [usersDailyData, setUsersDailyData] = useState([]);
 
   const checkPin = () => {
     if (pinInput === SECRET_PIN) {
@@ -81,10 +85,12 @@ export default function AdminDashboard() {
     setLoading(true);
     getFeeConfig().then(r => setFeeRate(r?.data?.seller_commission_rate ?? 0)).catch(() => {});
     try {
-      const [products, bids, escrows] = await Promise.all([
+      const [products, bids, escrows, barters, users] = await Promise.all([
         base44.entities.Product.list("-created_date", 500),
         base44.entities.Bid.list("-created_date", 200),
         base44.entities.Escrow.list("-created_date", 200),
+        base44.entities.BarterItem.list("-created_date", 500),
+        base44.entities.User.list("-created_date", 1000),
       ]);
 
       // Core stats
@@ -125,6 +131,37 @@ export default function AdminDashboard() {
         if (dayMap[key]) dayMap[key]["מכרזים"]++;
       });
       setDailyData(Object.values(dayMap));
+
+      // משתמשים חדשים — ספירת שבוע + טרנד יומי (14 ימים)
+      const weekAgo = now - 7 * 86400000;
+      setUsersThisWeek(users.filter(u => new Date(u.created_date).getTime() >= weekAgo).length);
+      const barterMap = {};
+      const usersMap = {};
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now - i * 86400000);
+        const key = `${d.getDate()}/${d.getMonth() + 1}`;
+        barterMap[key] = 0;
+        usersMap[key] = 0;
+      }
+      barters.forEach(b => {
+        const d = new Date(b.created_date);
+        const key = `${d.getDate()}/${d.getMonth() + 1}`;
+        if (key in barterMap) barterMap[key]++;
+      });
+      users.forEach(u => {
+        const d = new Date(u.created_date);
+        const key = `${d.getDate()}/${d.getMonth() + 1}`;
+        if (key in usersMap) usersMap[key]++;
+      });
+      setBarterDailyData(Object.entries(barterMap).map(([date, v]) => ({ date, "בארטר": v })));
+      setUsersDailyData(Object.entries(usersMap).map(([date, v]) => ({ date, "משתמשים חדשים": v })));
+
+      // סטטוסי בארטר
+      setBarterStats({
+        active: barters.filter(b => b.status === "active").length,
+        completed: barters.filter(b => b.status === "completed").length,
+        total: barters.length,
+      });
 
       // By category
       const catMap = {};
@@ -225,6 +262,7 @@ export default function AdminDashboard() {
           <StatCard icon={Gavel} label="מכרזים פעילים" value={stats.activeAuctions} sub={`מתוך ${stats.totalProducts} סה״כ`} color="#2d4f68" />
           <StatCard icon={CheckCircle} label="אחוז הצלחה" value={`${successRate}%`} sub={`${stats.endedWithWinner} מכרזים הסתיימו עם זוכה`} color="#00c853" />
           <StatCard icon={ShieldAlert} label="כספים מוקפאים" value={`₪${Math.round(stats.frozenEscrow).toLocaleString()}`} sub="ב-Escrow כרגע" color="#ff6600" />
+          <StatCard icon={UserPlus} label="משתמשים חדשים השבוע" value={usersThisWeek} sub="נרשמו ב-7 הימים האחרונים" color="#6aa3cd" />
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -305,6 +343,58 @@ export default function AdminDashboard() {
               <Bar dataKey="מכרזים" fill="#3e6b8a" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* פעילות בארטר + משתמשים חדשים */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* Barter activity */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6">
+            <div className="flex items-center gap-2 mb-5">
+              <ArrowLeftRight className="h-4 w-4" style={{ color: "#3e6b8a" }} />
+              <h2 className="text-sm font-black text-gray-900">היקף פעילות בארטר — 14 ימים אחרונים</h2>
+            </div>
+            <div className="flex gap-2 mb-4">
+              <span className="text-xs px-2.5 py-1 rounded-full font-bold" style={{ background: "#00c85315", color: "#00c853" }}>{barterStats.active} פעילים</span>
+              <span className="text-xs px-2.5 py-1 rounded-full font-bold" style={{ background: "#3e6b8a15", color: "#3e6b8a" }}>{barterStats.completed} הושלמו</span>
+              <span className="text-xs px-2.5 py-1 rounded-full font-bold bg-gray-100 text-gray-500">{barterStats.total} סה״כ</span>
+            </div>
+            {barterDailyData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={barterDailyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} allowDecimals={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="בארטר" fill="#3e6b8a" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-40 flex items-center justify-center text-gray-300 text-sm">אין נתונים עדיין</div>
+            )}
+          </div>
+
+          {/* New users */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6">
+            <div className="flex items-center gap-2 mb-5">
+              <UserPlus className="h-4 w-4" style={{ color: "#00c853" }} />
+              <h2 className="text-sm font-black text-gray-900">משתמשים חדשים — 14 ימים אחרונים</h2>
+            </div>
+            <p className="text-xs text-gray-400 mb-4">{usersThisWeek} נרשמו בשבוע האחרון</p>
+            {usersDailyData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={usersDailyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} allowDecimals={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line type="monotone" dataKey="משתמשים חדשים" stroke="#00c853" strokeWidth={2.5} dot={{ r: 3, fill: "#00c853" }} />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-40 flex items-center justify-center text-gray-300 text-sm">אין נתונים עדיין</div>
+            )}
+          </div>
         </div>
 
         {/* Monthly sales volume */}

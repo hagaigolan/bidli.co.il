@@ -106,7 +106,7 @@ export default function NotificationBell() {
 
       {open && (
         <div dir="rtl"
-          className="absolute left-0 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-gray-100 bg-white shadow-2xl overflow-hidden z-50">
+          className="fixed left-2 right-2 top-16 sm:absolute sm:left-0 sm:right-auto sm:top-auto sm:mt-2 sm:w-80 rounded-2xl border border-gray-100 bg-white shadow-2xl overflow-hidden z-50">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
             <h3 className="text-sm font-black text-gray-900">התראות</h3>
             {unread > 0 && (

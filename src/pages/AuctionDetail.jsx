@@ -20,6 +20,7 @@ import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import View3DButton from "@/components/View3DButton";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
+import WinnerContactCard from "@/components/WinnerContactCard";
 import AutoBidPanel from "@/components/AutoBidPanel";
 import LiveBidFeed from "@/components/LiveBidFeed";
 import BidLeaderboard from "@/components/BidLeaderboard";
@@ -915,6 +916,9 @@ export default function AuctionDetail() {
                 )}
               </div>
             )}
+
+            {/* ── זוכה — פרטי קשר של המוכר עם לחצני שיחה וואטסאפ ── */}
+            {ended && !cancelled && iAmBuyer && <WinnerContactCard product={product} />}
 
             {/* Meta */}
             <div className="space-y-2 pt-2 border-t border-gray-100">

@@ -17,6 +17,7 @@ import CollectionsStrip from "@/components/CollectionsStrip";
 import LiveCardStats from "@/components/LiveCardStats";
 import LiveStatsBar from "@/components/LiveStatsBar";
 import InviteFriendsSection from "@/components/InviteFriendsSection";
+import HowItWorksStrip from "@/components/HowItWorksStrip";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -413,6 +414,7 @@ export default function Home() {
     <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
       <HeroSection todayCount={todayCount} />
       <LiveStatsBar />
+      <HowItWorksStrip />
       <CategoryGrid />
       <CollectionsStrip />
       <DealsEndingSoon products={products} />

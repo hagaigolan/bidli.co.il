@@ -84,7 +84,59 @@ export default function AdminAuctionsSection({ onSendEmail }) {
         </div>
       )}
 
-      <div className="rounded-2xl border border-gray-100 overflow-hidden">
+      {/* ── מובייל: כרטיסים ── */}
+      <div className="sm:hidden space-y-2.5">
+        {filtered.slice(0, 100).map(p => (
+          <div key={p.id} className="rounded-2xl border border-gray-100 bg-white p-3.5"
+            style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}>
+            <div className="flex items-start gap-3 mb-2">
+              {p.image_url
+                ? <img src={p.image_url} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                : <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-xl">🏺</div>}
+              <div className="flex-1 min-w-0">
+                <a href={`/auction/${p.id}`} className="block font-bold text-sm text-gray-800 hover:text-[#e5893d] transition-colors line-clamp-2">
+                  {p.title || "—"}
+                </a>
+                <p className="text-xs text-gray-400 truncate mt-0.5">{p.seller_name || "—"}{p.seller_email ? ` · ${p.seller_email}` : ""}</p>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded-full font-bold flex-shrink-0 mt-0.5"
+                style={p.status === "cancelled"
+                  ? { background: "#ef444415", color: "#ef4444" }
+                  : p.status === "active"
+                    ? { background: "#00c85315", color: "#00c853" }
+                    : { background: "#f3f4f6", color: "#6b7280" }}>
+                {STATUS_LABELS[p.status] || p.status}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+              <span className="font-black text-gray-900">₪{(p.current_price || p.starting_price || 0).toLocaleString()}</span>
+              <span className="font-bold">{p.bid_count || 0} הצעות</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {p.seller_email && (
+                <button onClick={() => onSendEmail(p.seller_email)} className={btnCls}
+                  style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
+                  <Mail className="h-3 w-3 inline ml-1" aria-hidden="true" /> מייל
+                </button>
+              )}
+              {p.status !== "cancelled" && (
+                <button onClick={() => cancelAuction(p)} disabled={busy === p.id} className={btnCls}
+                  style={{ borderColor: "#f9731644", color: "#ea580c", background: "#f9731608" }}>
+                  {busy === p.id ? <Loader2 className="h-3 w-3 inline animate-spin" aria-hidden="true" />
+                    : <><XCircle className="h-3 w-3 inline ml-1" aria-hidden="true" /> בטל</>}
+                </button>
+              )}
+              <button onClick={() => deleteAuction(p)} disabled={busy === p.id} className={btnCls}
+                style={{ borderColor: "#ef444444", color: "#ef4444", background: "#ef444408" }}>
+                <Trash2 className="h-3 w-3 inline ml-1" aria-hidden="true" /> מחק
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── דסקטופ: טבלה ── */}
+      <div className="hidden sm:block rounded-2xl border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

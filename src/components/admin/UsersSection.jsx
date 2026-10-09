@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { sendBanEmail } from "@/lib/adminEmails";
-import { Mail, ShieldCheck, ShieldOff, Loader2, Ban, RotateCcw } from "lucide-react";
+import { Mail, ShieldCheck, ShieldOff, Loader2, Ban, RotateCcw, Eye } from "lucide-react";
+import UserDetailModal from "@/components/admin/UserDetailModal";
 
 const btnCls = "text-xs font-bold px-3 py-1.5 rounded-xl border transition-all disabled:opacity-50 whitespace-nowrap";
 

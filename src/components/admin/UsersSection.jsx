@@ -71,7 +71,59 @@ export default function UsersSection({ onSendEmail }) {
           {msg}
         </div>
       )}
-      <div className="rounded-2xl border border-gray-100 overflow-hidden">
+      {/* ── מובייל: כרטיסים ── */}
+      <div className="sm:hidden space-y-2.5">
+        {users.map(u => (
+          <div key={u.id} onClick={() => setDetailUser(u)}
+            className="rounded-2xl border border-gray-100 bg-white p-3.5 cursor-pointer"
+            style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}>
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="min-w-0">
+                <p className="font-bold text-sm text-gray-900 truncate">{u.full_name || "—"}</p>
+                <p className="text-xs text-gray-400 truncate" dir="ltr">{u.email || "—"}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-bold"
+                  style={u.role === "admin" ? { background: "#3e6b8a15", color: "#3e6b8a" } : { background: "#f3f4f6", color: "#6b7280" }}>
+                  {u.role === "admin" ? "אדמין" : "משתמש"}
+                </span>
+                {u.is_banned
+                  ? <span className="text-[11px] px-2 py-0.5 rounded-full font-bold text-white" style={{ background: "#ef4444" }}>מושהה</span>
+                  : <span className="text-[11px] px-2 py-0.5 rounded-full font-bold text-white" style={{ background: "#00c853" }}>פעיל</span>}
+              </div>
+            </div>
+            <div onClick={e => e.stopPropagation()} className="flex flex-wrap gap-1.5">
+              <button onClick={() => setDetailUser(u)}
+                className="text-xs font-bold px-3 py-1.5 rounded-xl border transition-all whitespace-nowrap"
+                style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
+                <Eye className="h-3 w-3 inline ml-1" aria-hidden="true" /> פעילות
+              </button>
+              {u.email && (
+                <button onClick={() => onSendEmail(u.email)} className={btnCls}
+                  style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
+                  <Mail className="h-3 w-3 inline ml-1" aria-hidden="true" /> מייל
+                </button>
+              )}
+              <button onClick={() => toggleBan(u)} disabled={busy === u.id} className={btnCls}
+                style={u.is_banned
+                  ? { borderColor: "#00c85344", color: "#00c853", background: "#00c85308" }
+                  : { borderColor: "#ef444444", color: "#ef4444", background: "#ef444408" }}>
+                {busy === u.id ? <Loader2 className="h-3 w-3 inline animate-spin" aria-hidden="true" />
+                  : u.is_banned ? <><RotateCcw className="h-3 w-3 inline ml-1" aria-hidden="true" /> שחרר</>
+                    : <><Ban className="h-3 w-3 inline ml-1" aria-hidden="true" /> השהה</>}
+              </button>
+              <button onClick={() => toggleRole(u)} disabled={busy === u.id} className={btnCls}
+                style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
+                <ShieldOff className="h-3 w-3 inline ml-1" aria-hidden="true" />
+                {u.role === "admin" ? "הסר אדמין" : "מנה אדמין"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── דסקטופ: טבלה ── */}
+      <div className="hidden sm:block rounded-2xl border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

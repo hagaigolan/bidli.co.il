@@ -70,24 +70,24 @@ export default function AdminManagement() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1">
           <button onClick={() => setTab("users")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "users" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex-shrink-0 whitespace-nowrap ${tab === "users" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
             style={tab === "users" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <Users className="h-4 w-4" aria-hidden="true" /> משתמשים
           </button>
           <button onClick={() => setTab("auctions")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "auctions" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex-shrink-0 whitespace-nowrap ${tab === "auctions" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
             style={tab === "auctions" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <Gavel className="h-4 w-4" aria-hidden="true" /> מכרזים
           </button>
           <button onClick={() => setTab("magazine")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "magazine" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex-shrink-0 whitespace-nowrap ${tab === "magazine" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
             style={tab === "magazine" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <BookOpen className="h-4 w-4" aria-hidden="true" /> מגזין
           </button>
           <button onClick={() => setTab("experts")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === "experts" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex-shrink-0 whitespace-nowrap ${tab === "experts" ? "text-white" : "text-gray-600 border border-gray-200 bg-white"}`}
             style={tab === "experts" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}>
             <GraduationCap className="h-4 w-4" aria-hidden="true" /> מומחים
           </button>

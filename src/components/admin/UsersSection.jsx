@@ -11,6 +11,7 @@ export default function UsersSection({ onSendEmail }) {
   const [users, setUsers] = useState(null);
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState("");
+  const [detailUser, setDetailUser] = useState(null);
 
   useEffect(() => {
     base44.entities.User.list("-created_date", 200)
@@ -84,9 +85,16 @@ export default function UsersSection({ onSendEmail }) {
             </thead>
             <tbody>
               {users.map(u => (
-                <tr key={u.id} className="border-t border-gray-50 hover:bg-gray-50/50">
+                <tr key={u.id} className="border-t border-gray-50 hover:bg-gray-50/50 cursor-pointer" onClick={() => setDetailUser(u)}>
                   <td className="px-4 py-3 font-semibold text-gray-800">{u.full_name || "—"}</td>
-                  <td className="px-4 py-3 text-gray-600" dir="ltr">{u.email || "—"}</td>
+                  <td className="px-4 py-3 text-gray-600" dir="ltr">
+                    {u.email || "—"}
+                    <button onClick={() => setDetailUser(u)}
+                      className="mr-2 text-[11px] font-bold px-2 py-0.5 rounded-lg border transition-all"
+                      style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
+                      <Eye className="h-3 w-3 inline ml-1" aria-hidden="true" /> פעילות
+                    </button>
+                  </td>
                   <td className="px-4 py-3">
                     <span className="text-xs px-2 py-0.5 rounded-full font-bold"
                       style={u.role === "admin"
@@ -102,7 +110,7 @@ export default function UsersSection({ onSendEmail }) {
                       <span className="text-xs px-2 py-0.5 rounded-full font-bold text-white" style={{ background: "#00c853" }}>פעיל</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                     <div className="flex gap-1.5">
                       {u.email && (
                         <button onClick={() => onSendEmail(u.email)} className={btnCls}
@@ -132,6 +140,10 @@ export default function UsersSection({ onSendEmail }) {
         </div>
       </div>
       {users.length === 0 && <p className="text-center text-sm text-gray-400 py-8">אין משתמשים רשומים</p>}
+
+      {detailUser && (
+        <UserDetailModal user={detailUser} onClose={() => setDetailUser(null)} />
+      )}
     </div>
   );
 }

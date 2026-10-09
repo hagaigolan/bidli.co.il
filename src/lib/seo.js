@@ -20,9 +20,10 @@ export function setRobotsMeta(noindex) {
   upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
 }
 
-export function setPageMeta({ title, description, image, noindex, jsonLd } = {}) {
+export function setPageMeta({ title, description, image, noindex, keywords, jsonLd } = {}) {
   document.title = title || DEFAULT_TITLE;
   upsertMeta("name", "description", description || DEFAULT_DESCRIPTION);
+  if (keywords && Array.isArray(keywords)) upsertMeta("name", "keywords", keywords.filter(Boolean).join(", "));
   setRobotsMeta(!!noindex);
 
   const url = window.location.href;
@@ -58,9 +59,13 @@ export function setPageMeta({ title, description, image, noindex, jsonLd } = {})
 export function setPageJsonLd(jsonLd) {
   document.head.querySelectorAll('script[data-seo-jsonld]').forEach(el => el.remove());
   if (!jsonLd) return;
-  const script = document.createElement("script");
-  script.type = "application/ld+json";
-  script.setAttribute("data-seo-jsonld", "true");
-  script.textContent = JSON.stringify(jsonLd);
-  document.head.appendChild(script);
+  // מקבל גרף אחד או מערך של גרפים — כל אחד נכתב כבלוק JSON-LD נפרד
+  const graphs = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+  graphs.forEach(graph => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.setAttribute("data-seo-jsonld", "true");
+    script.textContent = JSON.stringify(graph);
+    document.head.appendChild(script);
+  });
 }

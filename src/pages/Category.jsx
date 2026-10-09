@@ -63,30 +63,41 @@ export default function Category() {
       .finally(() => setLoading(false));
   }, [decodedName]);
 
-  // SEO: כותרת ותיאור ייחודיים לכל קטגוריה
+  // SEO: כותרת ותיאור ייחודיים לכל קטגוריה, עם מספר המכרזים החיים
   useEffect(() => {
     if (!cat) return;
     setPageMeta({
-      title: `מכרזי ${decodedName} — קנה ומכור במכרז אונליין | bidli`,
-      description: `${cat.description} מכרזים חיים של ${decodedName} ב-bidli, פורטל המכרזים בישראל — הצע מחיר בזמן אמת, המכרזים נסגרים תוך 24 שעות.`,
+      title: `מכרזי ${decodedName} אונליין — ${items.length} מכרזים פעילים | bidli`,
+      description: `${cat.description} ${items.length} מכרזים חיים של ${decodedName} ב-bidli, פורטל המכרזים בישראל — הצע מחיר בזמן אמת, המכרזים נסגרים תוך 24 שעות.`,
+      keywords: [`מכרזי ${decodedName}`, `לקנות ${decodedName}`, `${decodedName} בישראל`, decodedName + " יד שנייה", "מכרז אונליין"],
     });
-  }, [decodedName]);
+  }, [decodedName, items.length]);
 
   // SEO: ItemList — נתונים מובנים של פריטי הקטגוריה לתוצאות עשירות בגוגל
   useEffect(() => {
     if (!items.length) return;
-    setPageJsonLd({
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      name: `מכרזי ${decodedName} ב-bidli`,
-      numberOfItems: items.length,
-      itemListElement: items.slice(0, 25).map((item, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: `${window.location.origin}/auction/${item.id}`,
-        name: item.title,
-      })),
-    });
+    setPageJsonLd([
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: `מכרזי ${decodedName} ב-bidli`,
+        numberOfItems: items.length,
+        itemListElement: items.slice(0, 25).map((item, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${window.location.origin}/auction/${item.id}`,
+          name: item.title,
+        })),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "bidli", item: window.location.origin },
+          { "@type": "ListItem", position: 2, name: decodedName },
+        ],
+      },
+    ]);
   }, [items, decodedName]);
 
   if (!cat) {

@@ -271,26 +271,41 @@ export default function AuctionDetail() {
     const price = Number(product.current_price || product.starting_price || 0);
     const isActive = product.status === "active" && new Date(product.ends_at) > new Date();
     const cleanDesc = String(product.description || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
+    const catKw = product.category ? [product.category, `מכרז ${product.category}`, `לקנות ${product.category}`] : [];
     setPageMeta({
-      title: `${product.title} — מכרז אונליין${product.category ? ` של ${product.category}` : ""} | bidli`,
-      description: cleanDesc || `${product.title} במכרז אונליין ב-bidli. מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? ` · ${product.location}` : ""} · ${product.bid_count || 0} הצעות.`,
+      title: `${product.title} — מכרז ${product.category || "אונליין"} חי ב-bidli${product.location ? ` | ${product.location}` : ""}`,
+      description: cleanDesc
+        ? `${cleanDesc} מכרז חי ב-bidli — מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? `, ${product.location}` : ""} · ${product.bid_count || 0} הצעות${isActive ? " · הצע מחיר עכשיו לפני סגירת המכרז" : ""}.`
+        : `${product.title} במכרז אונליין ב-bidli. מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? ` · ${product.location}` : ""} · ${product.bid_count || 0} הצעות.`,
       image: product.image_url,
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name: product.title,
-        description: cleanDesc || product.title,
-        image: product.image_urls || (product.image_url ? [product.image_url] : undefined),
-        category: product.category,
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "ILS",
-          price,
-          availability: isActive ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-          url: window.location.href,
-          priceValidUntil: product.ends_at,
+      keywords: [product.title, product.subcategory, product.location, ...catKw, "מכרז אונליין", "מכרזים בישראל"],
+      jsonLd: [
+        {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.title,
+          description: cleanDesc || product.title,
+          image: product.image_urls || (product.image_url ? [product.image_url] : undefined),
+          category: product.category,
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "ILS",
+            price,
+            availability: isActive ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+            url: window.location.href,
+            priceValidUntil: product.ends_at,
+          },
         },
-      },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "bidli", item: window.location.origin },
+            product.category ? { "@type": "ListItem", position: 2, name: product.category, item: `${window.location.origin}/category/${encodeURIComponent(product.category)}` } : undefined,
+            { "@type": "ListItem", position: product.category ? 3 : 2, name: product.title },
+          ].filter(Boolean),
+        },
+      ],
     });
   }, [product?.id, product?.current_price, product?.status]);
 

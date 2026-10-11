@@ -6,7 +6,7 @@ import { inPublishWindow, normalizeTitle } from '../../shared/fictionalPublish.t
 // so every category gets covered before any repeats — and always a category
 // different from the previous listing. Invoked every 30 minutes by the
 // "Bidli Fictional Sales" scheduled workflow, and on demand by the "bidli"
-// in-app agent. Publishes only inside the daily 9:00–22:00 window
+// in-app agent. Publishes only inside the daily 8:00–22:00 window
 // (Asia/Jerusalem) and no-ops outside it.
 
 // כל הקטגוריות הרשומות באתר (src/lib/productMeta.js) — שום קטגוריה לא נשארת ריקה

@@ -12,7 +12,7 @@ export function localNow() {
 // חלון יומי קבוע: 9:00 עד 22:00 (כולל), כל יום
 export function inPublishWindow() {
   const { hour, minute } = localNow();
-  if (hour < 9) return false;
+  if (hour < 8) return false;
   if (hour > 22) return false;
   if (hour === 22 && minute > 0) return false;
   return true;

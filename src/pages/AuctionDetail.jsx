@@ -336,6 +336,8 @@ export default function AuctionDetail() {
           notify_phone: localStorage.getItem("notif_phone") || "",
         });
         setFavSaved(true);
+        // התראה במייל למוכר שהפריט שלו נשמר במועדפים
+        base44.functions.invoke("notifySellerFavorite", { product_id: product.id }).catch(() => {});
       }
     } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
   };

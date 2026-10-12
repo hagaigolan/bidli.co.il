@@ -184,6 +184,34 @@ export function bidderCancelEmail(product, bidderName) {
   };
 }
 
+// ── Seller: their item was saved to a user's favorites ──
+export function sellerFavoriteEmail(product, saverName) {
+  const productUrl = `${APP_BASE_URL}/auction/${product.id}`;
+  const name = saverName || "משתמש באתר";
+  const body = `
+    <p style="margin:0 0 6px;font-size:16px;font-weight:800;color:#18181b;">שלום ${escHtml(product.seller_name || "מוכר")},</p>
+    <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#3f3f46;">❤️ <strong>${escHtml(name)}</strong> שמר כרגע את הפריט שלך <strong style="color:#e5893d;">${escHtml(product.title)}</strong> ברשימת המועדפים — סימן שיש בו עניין אמיתי!</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:14px;margin:16px 0;" dir="rtl">
+      <tr><td style="padding:14px 16px;font-size:14px;line-height:1.9;color:#9d174d;">
+        <strong>💡 טיפ:</strong> כל שומר במועדפים הוא קונה פוטנציאלי. שתף את המכרז בקבוצות ובין מכרים, והיערך להצעות בשעות הסיום — רוב ההצעות מגיעות ברגע האחרון!
+      </td></tr>
+    </table>
+    ${productCard(product, productUrl)}`;
+  return {
+    subject: `❤️ ${escHtml(product.title)} נשמר במועדפים`,
+    html: shell({
+      title: "הפריט שלך נשמר במועדפים!",
+      heroColor: "#e5893d",
+      heroEmoji: "❤️",
+      heroLine: "קונה פוטנציאלי עוקב אחרי המכרז שלך",
+      bodyHtml: body,
+      ctaUrl: productUrl,
+      ctaLabel: "צפה במכרז שלך →",
+    }),
+    text: `שלום ${product.seller_name || "מוכר"},\n\n${name} שמר את "${product.title}" ברשימת המועדפים — סימן שיש בו עניין אמיתי!\n\nקישור למכרז: ${productUrl}\n\nהיערך להצעות בשעות הסיום.`,
+  };
+}
+
 // ── Collector: new auction matching their interests (categories / product keywords) ──
 export function interestAlertEmail(product, ownerName, reasonLabel) {
   const productUrl = `${APP_BASE_URL}/auction/${product.id}`;

@@ -104,13 +104,24 @@ export default function AdminAuctionsSection({ onSendEmail }) {
             </button>
           ))}
         </div>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#e5893d88]">
-          <option value="all">כל הסטטוסים</option>
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+          <button onClick={() => setStatusFilter("all")}
+            className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all flex-shrink-0 ${
+              statusFilter === "all" ? "text-white" : "bg-white text-gray-600 border-gray-200 hover:text-[#e5893d]"
+            }`}
+            style={statusFilter === "all" ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)", borderColor: "transparent" } : undefined}>
+            כל הסטטוסים
+          </button>
           {Object.entries(STATUS_LABELS).map(([key, label]) => (
-            <option key={key} value={key}>{label}</option>
+            <button key={key} onClick={() => setStatusFilter(key)}
+              className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all flex-shrink-0 ${
+                statusFilter === key ? "text-white" : "bg-white text-gray-600 border-gray-200 hover:text-[#e5893d]"
+              }`}
+              style={statusFilter === key ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)", borderColor: "transparent" } : undefined}>
+              {label}
+            </button>
           ))}
-        </select>
+        </div>
         {(ownerFilter !== "all" || statusFilter !== "all") && (
           <button onClick={() => { setOwnerFilter("all"); setStatusFilter("all"); }}
             className="text-xs font-semibold text-gray-400 hover:text-gray-700 transition-colors">

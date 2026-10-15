@@ -18,7 +18,7 @@ export default function AdminAuctionsSection({ onSendEmail }) {
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState("");
   const [search, setSearch] = useState("");
-  const [ownerFilter, setOwnerFilter] = useState("all"); // all | mine | others
+  const [ownerFilter, setOwnerFilter] = useState("all"); // all | mine | others | real
   const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
@@ -68,10 +68,13 @@ export default function AdminAuctionsSection({ onSendEmail }) {
   const isMine = (p) =>
     (p.seller_email && user?.email && p.seller_email.trim().toLowerCase() === user.email.trim().toLowerCase()) ||
     (p.seller_user_id && user?.id && p.seller_user_id === user.id);
+  const isFictional = (p) => (p.seller_user_id || "").startsWith("bidli-agent");
 
   const term = search.trim().toLowerCase();
   const filtered = products
-    .filter(p => ownerFilter === "all" || (ownerFilter === "mine" ? isMine(p) : !isMine(p)))
+    .filter(p =>
+      ownerFilter === "all" ||
+      (ownerFilter === "mine" ? isMine(p) : ownerFilter === "real" ? !isFictional(p) : !isMine(p)))
     .filter(p => statusFilter === "all" || p.status === statusFilter)
     .filter(p => !term ||
       (p.title || "").toLowerCase().includes(term) ||
@@ -94,6 +97,7 @@ export default function AdminAuctionsSection({ onSendEmail }) {
             { id: "all", label: "הכול" },
             { id: "mine", label: "המכרזים שלי" },
             { id: "others", label: "של אחרים" },
+            { id: "real", label: "אמיתיים בלבד" },
           ].map(o => (
             <button key={o.id} onClick={() => setOwnerFilter(o.id)}
               className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all ${

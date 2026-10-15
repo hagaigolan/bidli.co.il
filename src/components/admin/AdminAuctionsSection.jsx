@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { sendCancelEmail } from "@/lib/adminEmails";
 import { Mail, Loader2, XCircle, Trash2, Search } from "lucide-react";
 
@@ -12,10 +13,13 @@ const STATUS_LABELS = {
 
 // ניהול מכרזים — ביטול מכרז של כל מוכר, מחיקה ומייל למוכר
 export default function AdminAuctionsSection({ onSendEmail }) {
+  const { user } = useAuth();
   const [products, setProducts] = useState(null);
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState("");
   const [search, setSearch] = useState("");
+  const [ownerFilter, setOwnerFilter] = useState("all"); // all | mine | others
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     base44.entities.Product.list("-created_date", 300)
@@ -61,13 +65,18 @@ export default function AdminAuctionsSection({ onSendEmail }) {
     </div>
   );
 
+  const isMine = (p) =>
+    (p.seller_email && user?.email && p.seller_email.trim().toLowerCase() === user.email.trim().toLowerCase()) ||
+    (p.seller_user_id && user?.id && p.seller_user_id === user.id);
+
   const term = search.trim().toLowerCase();
-  const filtered = term
-    ? products.filter(p =>
-        (p.title || "").toLowerCase().includes(term) ||
-        (p.seller_name || "").toLowerCase().includes(term) ||
-        (p.seller_email || "").toLowerCase().includes(term))
-    : products;
+  const filtered = products
+    .filter(p => ownerFilter === "all" || (ownerFilter === "mine" ? isMine(p) : !isMine(p)))
+    .filter(p => statusFilter === "all" || p.status === statusFilter)
+    .filter(p => !term ||
+      (p.title || "").toLowerCase().includes(term) ||
+      (p.seller_name || "").toLowerCase().includes(term) ||
+      (p.seller_email || "").toLowerCase().includes(term));
 
   return (
     <div dir="rtl">
@@ -76,6 +85,38 @@ export default function AdminAuctionsSection({ onSendEmail }) {
         <input value={search} onChange={e => setSearch(e.target.value)}
           placeholder="חפש לפי כותרת, מוכר או אימייל..."
           className="w-full pr-10 pl-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
+      </div>
+
+      {/* ── סינון: בעלות + סטטוס ── */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex gap-1.5">
+          {[
+            { id: "all", label: "הכול" },
+            { id: "mine", label: "המכרזים שלי" },
+            { id: "others", label: "של אחרים" },
+          ].map(o => (
+            <button key={o.id} onClick={() => setOwnerFilter(o.id)}
+              className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all ${
+                ownerFilter === o.id ? "text-white" : "bg-white text-gray-600 border-gray-200 hover:text-[#e5893d]"
+              }`}
+              style={ownerFilter === o.id ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)", borderColor: "transparent" } : undefined}>
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#e5893d88]">
+          <option value="all">כל הסטטוסים</option>
+          {Object.entries(STATUS_LABELS).map(([key, label]) => (
+            <option key={key} value={key}>{label}</option>
+          ))}
+        </select>
+        {(ownerFilter !== "all" || statusFilter !== "all") && (
+          <button onClick={() => { setOwnerFilter("all"); setStatusFilter("all"); }}
+            className="text-xs font-semibold text-gray-400 hover:text-gray-700 transition-colors">
+            איפוס סינון
+          </button>
+        )}
       </div>
 
       {msg && (

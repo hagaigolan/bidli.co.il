@@ -134,6 +134,8 @@ function HeroSection({ todayCount = 0 }) {
       <div className="relative z-10 flex justify-center gap-2 pb-6">
         {carouselImages.map((_, i) => (
           <button key={i} onClick={() => setCurrentSlide(i)}
+            aria-label={`עבור לשקף ${i + 1} מתוך ${carouselImages.length}`}
+            aria-current={i === currentSlide}
             className="rounded-full transition-all duration-300"
             style={{ width: i === currentSlide ? 24 : 8, height: 8, background: i === currentSlide ? "#e5893d" : "#d1d5db" }} />
         ))}

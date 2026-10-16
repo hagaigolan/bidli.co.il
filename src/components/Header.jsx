@@ -9,6 +9,7 @@ import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { categoryImageUrl } from "@/lib/categoryImages";
 import SalesTicker from "@/components/SalesTicker";
+import { MAIN_NAV } from "@/lib/navLinks";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -83,12 +84,12 @@ export default function Header() {
 
             {/* Nav links */}
             <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
-              <Link to="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === "/" ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>דף הבית</Link>
-              <Link to="/auctions" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">מכרזים פעילים</Link>
-              <Link to="/stocks" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">סטוקים</Link>
-              <Link to="/barter" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#e5893d] hover:bg-orange-50 rounded-lg transition-colors">בארטר</Link>
-
-
+              {MAIN_NAV.map(item => (
+                <Link key={item.path} to={item.path}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === item.path ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>
+                  {item.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Actions */}
@@ -161,7 +162,7 @@ export default function Header() {
               className="flex-shrink-0 flex flex-col items-center gap-1 group">
               <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] lg:group-hover:scale-[3] lg:group-hover:z-20 transition-all duration-300"
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
-                <img src={link.img} alt={link.label} className="w-full h-full object-cover" />
+                <img src={link.img} alt="" className="w-full h-full object-cover" />
               </div>
               <span className="text-xs text-gray-600 group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
             </Link>

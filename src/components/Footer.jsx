@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Smartphone, ArrowRight } from "lucide-react";
 import logoWordmark from "@/assets/logo-wordmark.png";
+import { MAIN_NAV } from "@/lib/navLinks";
 
 export default function Footer() {
   return (
@@ -58,18 +59,16 @@ export default function Footer() {
                 <Mail className="h-3 w-3" />
                 <a href="mailto:mitugplus@gmail.com" className="hover:text-gray-700 transition-colors">mitugplus@gmail.com</a>
               </div>
-              <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium mt-2 transition-colors" style={{ color: "#e5893d" }}>
-                צור קשר <ArrowRight className="h-3 w-3 rotate-180" />
-              </Link>
             </div>
 
             {/* Navigation */}
             <div>
               <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">ניווט</h3>
               <nav className="flex flex-col gap-2">
-                <Link to="/" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">דף הבית</Link>
-                {["מכרזים","חנויות","יודאיקה","רכבים","נדל\"ן","תעשייה"].map(l => (
-                  <a key={l} href="#" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</a>
+                {MAIN_NAV.map(item => (
+                  <Link key={item.path} to={item.path} className="text-xs text-gray-500 hover:text-gray-900 transition-colors">
+                    {item.label}
+                  </Link>
                 ))}
               </nav>
             </div>
@@ -79,7 +78,7 @@ export default function Footer() {
               <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">קטגוריות</h3>
               <nav className="flex flex-col gap-2">
                 {["אמנות","יודאיקה","אספנות","נומיסמטיקה ופילטליה","תכשיטים","עיצוב הבית","אופנה"].map(l => (
-                  <a key={l} href="#" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</a>
+                  <Link key={l} to={`/auctions?category=${encodeURIComponent(l)}`} className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</Link>
                 ))}
               </nav>
             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star, Ban } from "lucide-react";
+import { ArrowRight, Clock, MapPin, User, TrendingUp, CheckCircle, Award, Eye, Zap, Bell, BellOff, MessageSquare, Heart, Pencil, RotateCcw, Star, Ban, Instagram } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 import { parseDbDate } from "@/lib/time";
 import { isAnyEmailBanned } from "@/lib/banCheck";
@@ -27,6 +27,7 @@ import BidLeaderboard from "@/components/BidLeaderboard";
 import SoundToggle from "@/components/SoundToggle";
 import { playBidPing, playTickTock, playHammer, playFireworks } from "@/lib/auctionSounds";
 import confetti from "canvas-confetti";
+import { syncProductGalleryInstagram } from "@/functions/syncProductGalleryInstagram";
 import { setPageMeta } from "@/lib/seo";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
@@ -254,6 +255,8 @@ export default function AuctionDetail() {
   const [reviewDirection, setReviewDirection] = useState("buyer");
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
+  const [igSharing, setIgSharing] = useState(false);
+  const [igMsg, setIgMsg] = useState("");
   // ── 7. notifications opt-in ──
   const [notifEnabled, setNotifEnabled] = useState(() => !!localStorage.getItem("notif_channels"));
   const [showNotifModal, setShowNotifModal] = useState(false);
@@ -340,6 +343,18 @@ export default function AuctionDetail() {
         base44.functions.invoke("notifySellerFavorite", { product_id: product.id }).catch(() => {});
       }
     } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
+  };
+
+  // ── שיתוף גלריית המכרז לחשבון האינסטגרם העסקי ──
+  const handleInstagramShare = async () => {
+    if (!product || igSharing) return;
+    setIgSharing(true); setIgMsg("");
+    try {
+      const res = await syncProductGalleryInstagram({ product_id: product.id });
+      if (res.data?.ok) setIgMsg("הגלריה פורסמה באינסטגרם ✓");
+      else setIgMsg(res.data?.error ? `שיתוף נכשל: ${res.data.error}` : "שיתוף נכשל, נסה שנית");
+    } catch { setIgMsg("שיתוף נכשל, נסה שנית"); }
+    finally { setIgSharing(false); }
   };
 
   // בדיקה אם המשתמש כבר דירג את הצד השני במכרז זה (הדירוג ההדדי נפתח לאחר המסירה)
@@ -790,6 +805,15 @@ export default function AuctionDetail() {
               </button>
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
               <ShareButton product={product} />
+              {canEdit && !product.seller_user_id?.startsWith("bidli-agent") && (
+                <button type="button" onClick={handleInstagramShare} disabled={igSharing}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"
+                  style={{ background: "white", borderColor: "#e5e7eb", color: "#3e6b8a" }}>
+                  <Instagram className="h-4 w-4" aria-hidden="true" />
+                  {igSharing ? "מפרסם באינסטגרם..." : "פרסום הגלריה באינסטגרם"}
+                </button>
+              )}
+              {igMsg && <p className="text-xs text-gray-500 mt-1.5">{igMsg}</p>}
             </div>
 
             {/* ── FOMO BANNER ── */}

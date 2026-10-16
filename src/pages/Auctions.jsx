@@ -81,13 +81,6 @@ export default function Auctions() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showSaveSearch, setShowSaveSearch] = useState(false);
-  // מסנני העמוד — מאותחלים מפרמטרי ה-URL (קישורים חיצוניים עם סינון נשמרים)
-  const [filterCategory, setFilterCategory] = useState(PARAM_CATEGORY);
-  const [filterMin, setFilterMin] = useState(0);
-  const [filterMax, setFilterMax] = useState(PARAM_MAX);
-  const [filterCondition, setFilterCondition] = useState("");
-  const [filterCity, setFilterCity] = useState(PARAM_CITY);
-  const [endingSoon, setEndingSoon] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -98,6 +91,14 @@ export default function Auctions() {
   const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
   const PARAM_MAX = Number(urlParams.get("max")) || 0;
   const PARAM_CITY = (urlParams.get("city") || "").trim();
+
+  // מסנני העמוד — מאותחלים מפרמטרי ה-URL (קישורים חיצוניים עם סינון נשמרים)
+  const [filterCategory, setFilterCategory] = useState(PARAM_CATEGORY);
+  const [filterMin, setFilterMin] = useState(0);
+  const [filterMax, setFilterMax] = useState(PARAM_MAX);
+  const [filterCondition, setFilterCondition] = useState("");
+  const [filterCity, setFilterCity] = useState(PARAM_CITY);
+  const [endingSoon, setEndingSoon] = useState(false);
 
   useEffect(() => {
     base44.entities.Product.list("-created_date", 50)

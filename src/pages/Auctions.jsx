@@ -162,7 +162,7 @@ export default function Auctions() {
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">{ARCHIVE_MODE ? "ארכיון מכרזים" : "כל המכרזים"}</h1>
+            <h1 className="text-2xl font-black text-gray-900">{ARCHIVE_MODE ? "ארכיון מכרזים" : "מכרזים פעילים"}</h1>
             <p className="text-sm text-gray-400 mt-1">{ARCHIVE_MODE ? `${ended.length} מכרזים שהסתיימו` : `${active.length} מכרזים פעילים`}</p>
           </div>
           <button onClick={() => navigate("/upload-product")}

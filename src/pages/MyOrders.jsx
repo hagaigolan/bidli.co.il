@@ -24,6 +24,15 @@ function getOrderStatus(product) {
   return { label: "בטיפול", color: "#f97316", bg: "#f9731615", icon: Hourglass };
 }
 
+// סטטוס מסירה — נגזר מהסטטוס ומתאריכי השילוח והמסירה של הפריט
+function getDeliveryStatus(product) {
+  if (["delivered", "released"].includes(product.status) || product.delivered_at)
+    return { label: "נמסר ✓", color: "#22c55e", bg: "#22c55e15" };
+  if (product.shipped_at)
+    return { label: "נשלח — בדרך אליך", color: "#3e6b8a", bg: "#3e6b8a15" };
+  return { label: "מסירה: תיאום מול המוכר", color: "#6b7280", bg: "#f3f4f6" };
+}
+
 function OrderRow({ product, feeRate, onReload }) {
   const cfg = getOrderStatus(product);
   const Icon = cfg.icon;
@@ -59,6 +68,13 @@ function OrderRow({ product, feeRate, onReload }) {
             <Icon className="h-3 w-3" />
             <span className="text-xs font-bold whitespace-nowrap">{cfg.label}</span>
           </div>
+          {(() => {
+            const d = getDeliveryStatus(product);
+            return (
+              <div className="px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                style={{ background: d.bg, color: d.color }}>{d.label}</div>
+            );
+          })()}
           <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowBreakdown(s => !s); }}
             className="flex items-center gap-0.5 text-xs font-semibold transition-colors"
             style={{ color: showBreakdown ? "#3e6b8a" : "#9ca3af" }}>
@@ -175,8 +191,8 @@ export default function MyOrders() {
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(async (authed) => {
-      if (!authed) { setMe(false); return; }
-      try { setMe(await base44.auth.me()); } catch { setMe(false); }
+      if (!authed) { navigate("/login"); return; }
+      try { setMe(await base44.auth.me()); } catch { navigate("/login"); }
     });
   }, []);
 
@@ -245,8 +261,8 @@ export default function MyOrders() {
               <Package className="h-7 w-7" style={{ color: "#3e6b8a" }} />
             </div>
             <div>
-              <h1 className="text-xl font-black text-gray-900">ההזמנות שלי</h1>
-              <p className="text-sm text-gray-400">זכיות, מכרזים שיצרתי והצעות שהגשתי — הכל במקום אחד</p>
+              <h1 className="text-xl font-black text-gray-900">הדשבורד האישי שלי</h1>
+              <p className="text-sm text-gray-400">המכרזים שלי, הזכיות שלי ומעקב תשלום ומסירה — הכל במקום אחד</p>
             </div>
           </div>
         </div>
@@ -271,9 +287,9 @@ export default function MyOrders() {
           <>
             <div className="flex flex-wrap gap-2 mb-6" dir="rtl">
               {[
-                { id: "orders", label: "זכיות והזמנות", count: orders.length },
-                { id: "created", label: "מכרזים שיצרתי", count: myAuctions.length },
-                { id: "bids", label: "הצעות שהגשתי", count: myBids.length },
+                { id: "orders", label: "הזכיות שלי", count: orders.length },
+                { id: "created", label: "המכרזים שלי", count: myAuctions.length },
+                { id: "bids", label: "מעקב", count: myBids.length },
               ].map(t => (
                 <button key={t.id} type="button" onClick={() => setTab(t.id)}
                   className="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all"

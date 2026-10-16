@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Search as SearchIcon, ArrowRight, MapPin, Tag, Clock } from "lucide-react";
+import LiveCardStats from "@/components/LiveCardStats";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -65,6 +66,7 @@ function ResultCard({ product }) {
           </div>
           <span className="text-xs text-gray-400">{product.bid_count || 0} הצעות</span>
         </div>
+        <LiveCardStats product={product} />
       </div>
     </Link>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Heart } from "lucide-react";
+import LiveCardStats from "@/components/LiveCardStats";
 import { getOwnerKey } from "@/lib/favorites";
 
 // "בשבילך" — המלצות אישיות לפי הקטגוריות שהמשתמש שמר במועדפים
@@ -52,6 +53,7 @@ export default function JustForYou() {
               <div className="p-2.5">
                 <p className="font-bold text-gray-900 text-xs leading-snug line-clamp-1 mb-1">{p.title}</p>
                 <p className="font-black text-sm text-gray-900">₪{(p.current_price || p.starting_price || 0).toLocaleString()}</p>
+                <LiveCardStats product={p} />
               </div>
             </Link>
           ))}

@@ -6,6 +6,7 @@ import { Plus, Clock, MapPin, Tag, Bookmark, Map } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
 import SavedSearchModal from "@/components/SavedSearchModal";
 import AuctionsFilterPanel from "@/components/AuctionsFilterPanel";
+import LiveCardStats from "@/components/LiveCardStats";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -70,6 +71,7 @@ function AuctionCard({ product }) {
           </div>
           <span className="text-xs text-gray-400">{product.bid_count || 0} הצעות</span>
         </div>
+        <LiveCardStats product={product} />
       </div>
     </Link>
   );

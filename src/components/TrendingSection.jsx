@@ -1,5 +1,6 @@
 import { Flame, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
+import LiveCardStats from "@/components/LiveCardStats";
 
 // מדור "המדוברים כרגע באתר" — המכרזים הפעילים עם הכי הרבה הצעות (נתונים אמיתיים)
 function MiniCountdown({ endsAt }) {
@@ -68,6 +69,7 @@ export default function TrendingSection({ products }) {
                   <p className="font-black text-sm text-gray-900">₪{(p.current_price || p.starting_price || 0).toLocaleString()}</p>
                   {p.ends_at && <MiniCountdown endsAt={p.ends_at} />}
                 </div>
+                <LiveCardStats product={p} />
               </div>
             </a>
           ))}

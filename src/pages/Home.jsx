@@ -7,6 +7,8 @@ import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 import DealsEndingSoon, { getEndingSoonDeals } from "@/components/DealsEndingSoon";
 import TrustSection from "@/components/TrustSection";
 import ProtectedDealSection from "@/components/ProtectedDealSection";
+import RecentlySold from "@/components/RecentlySold";
+import HomeSkeleton from "@/components/HomeSkeleton";
 import PopularSearches from "@/components/PopularSearches";
 import TrendingSection from "@/components/TrendingSection";
 import ServicesStrip from "@/components/ServicesStrip";
@@ -415,14 +417,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`transition-opacity duration-500 bg-white ${loading ? "opacity-0" : "opacity-100"}`}>
+    <div className="bg-white">
       <HeroSection todayCount={todayCount} />
       <LiveStatsBar />
+      {loading && <HomeSkeleton />}
       <HowItWorksStrip />
       <CategoryGrid />
       <CollectionsStrip />
       <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
+      <RecentlySold />
       <CategoryCarousel products={products} />
       <TrendingSection products={products} />
       <JustForYou />

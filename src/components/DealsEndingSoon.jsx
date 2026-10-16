@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Flame } from "lucide-react";
+import LiveCardStats from "@/components/LiveCardStats";
 
 function DealCountdown({ endsAt }) {
   const calc = () => {
@@ -86,6 +87,7 @@ export default function DealsEndingSoon({ products }) {
                 <p className="text-xs text-gray-400 mt-1">
                   {(p.bid_count || 0) === 0 ? "טרם קיבל הצעות — היה הראשון!" : `${p.bid_count} הצעות בלבד`}
                 </p>
+                <LiveCardStats product={p} />
               </div>
             </Link>
           ))}

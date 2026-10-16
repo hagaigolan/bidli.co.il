@@ -10,7 +10,7 @@ import LoginRequiredModal from "@/components/LoginRequiredModal";
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
 import { SUBCATEGORIES } from "@/lib/subcategories";
 import { isAnyEmailBanned } from "@/lib/banCheck";
-const PAYMENT_METHOD_LABELS = { kashcash: "קשקאש", bit: "ביט", bank: "העברה בנקאית" };
+const PAYMENT_METHOD_LABELS = { kashcash: "קש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
   const navigate = useNavigate();
@@ -457,7 +457,7 @@ export default function UploadProduct() {
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">אמצעי תשלום לקבלת הכסף *</label>
             <p className="text-xs text-gray-400 mb-3">אפשר לבחור יותר מאמצעי אחד — הזוכה יעביר אליך את סכום הזכייה ישירות, ללא כרטיס אשראי וללא עמלות.</p>
             <div className="grid grid-cols-3 gap-2 mb-3">
-              {[["kashcash", "קשקאש"], ["bit", "ביט"], ["bank", "העברה בנקאית"]].map(([value, label]) => {
+              {[["kashcash", "קש"], ["bit", "ביט"], ["bank", "העברה בנקאית"]].map(([value, label]) => {
                 const selected = form.seller_payment_methods.includes(value);
                 return (
                   <button key={value} type="button"

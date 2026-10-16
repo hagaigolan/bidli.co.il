@@ -6,6 +6,7 @@ import { setPageMeta } from "@/lib/seo";
 import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
 import DealsEndingSoon, { getEndingSoonDeals } from "@/components/DealsEndingSoon";
 import TrustSection from "@/components/TrustSection";
+import ProtectedDealSection from "@/components/ProtectedDealSection";
 import PopularSearches from "@/components/PopularSearches";
 import TrendingSection from "@/components/TrendingSection";
 import ServicesStrip from "@/components/ServicesStrip";
@@ -431,6 +432,7 @@ export default function Home() {
       <InviteFriendsSection />
       <ShopsSection shops={shops} />
       <ServicesStrip />
+      <ProtectedDealSection />
       <TrustSection />
       </div>
   );

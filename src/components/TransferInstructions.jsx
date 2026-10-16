@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Copy, Check, Smartphone, Landmark, Banknote } from "lucide-react";
 
 const METHOD_META = {
-  kashcash: { label: "קשקאש", icon: Smartphone },
+  kashcash: { label: "קש", icon: Smartphone },
   bit: { label: "ביט", icon: Smartphone },
   bank: { label: "העברה בנקאית", icon: Landmark },
 };

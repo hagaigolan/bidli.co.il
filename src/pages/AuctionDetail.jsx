@@ -24,6 +24,7 @@ import WinnerContactCard from "@/components/WinnerContactCard";
 import AutoBidPanel from "@/components/AutoBidPanel";
 import BidStatusBanner from "@/components/BidStatusBanner";
 import WinTermsInfo from "@/components/WinTermsInfo";
+import ProtectedDealSection from "@/components/ProtectedDealSection";
 import LiveBidFeed from "@/components/LiveBidFeed";
 import BidLeaderboard from "@/components/BidLeaderboard";
 import SoundToggle from "@/components/SoundToggle";
@@ -1060,6 +1061,7 @@ export default function AuctionDetail() {
       {/* ── RELATED PRODUCTS + ARTICLE ── */}
       {product?.category && (
         <div className="max-w-5xl mx-auto px-4 pb-12">
+          <ProtectedDealSection />
           <RelatedProducts category={product.category} excludeId={product.id} />
           <RelatedArticle category={product.category} />
           <SoldSimilar category={product.category} excludeId={product.id} />

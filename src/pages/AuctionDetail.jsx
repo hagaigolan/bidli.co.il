@@ -22,6 +22,8 @@ import View3DButton from "@/components/View3DButton";
 import CancelAuctionModal from "@/components/CancelAuctionModal";
 import WinnerContactCard from "@/components/WinnerContactCard";
 import AutoBidPanel from "@/components/AutoBidPanel";
+import BidStatusBanner from "@/components/BidStatusBanner";
+import WinTermsInfo from "@/components/WinTermsInfo";
 import LiveBidFeed from "@/components/LiveBidFeed";
 import BidLeaderboard from "@/components/BidLeaderboard";
 import SoundToggle from "@/components/SoundToggle";
@@ -460,6 +462,9 @@ export default function AuctionDetail() {
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;
+  // מציע שהגיש הצעה במכרז זה אך אינו מוביל כרגע — עקפו אותו
+  const bidOnThis = myEmails.length > 0 && bids.some(b => myEmails.includes((b.bidder_email || "").trim().toLowerCase()));
+  const isOutbid = bidOnThis && !isLeading;
   // דירוג הדדי — זמין לאחר שהמוצר סופק לקונה
   const deliveredToBuyer = product && ["delivered", "released"].includes(product.status);
   const myEmails = [
@@ -866,7 +871,15 @@ export default function AuctionDetail() {
                 <p className="text-sm text-gray-400 mt-1">כל ההצעות בוטלו — מוזמנים לעיין במכרזים פעילים אחרים באתר</p>
               </div>
             ) : !ended ? (
-              <form ref={bidFormRef} onSubmit={handleBid} className="relative space-y-3">
+              <>
+              <BidStatusBanner
+                isLeading={isLeading}
+                isOutbid={isOutbid}
+                currentLeader={product.highest_bidder}
+                onBidAgain={() => bidFormRef.current?.scrollIntoView({ behavior: "smooth" })}
+              />
+              <WinTermsInfo />
+              <form ref={bidFormRef} onSubmit={handleBid} className="relative space-y-3 mt-3">
                 <canvas ref={confettiCanvasRef} className="pointer-events-none absolute inset-0 z-20 h-full w-full" aria-hidden="true" />
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">שמך (אופציונלי)</label>
@@ -881,15 +894,19 @@ export default function AuctionDetail() {
                     className="w-full px-4 py-3 text-lg font-bold bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right" />
                 </div>
 
-                {/* Quick bid buttons */}
+                {/* Quick bid chips — אחוזים מעל המחיר הנוכחי */}
                 <div className="flex gap-2">
-                  {[minBid, minBid + 50, minBid + 100].map(amt => (
-                    <button key={amt} type="button" onClick={() => setBidAmount(String(amt))}
-                      className="flex-1 text-xs py-2 rounded-xl border font-bold transition-all hover:scale-105"
-                      style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
-                      ₪{amt.toLocaleString()}
-                    </button>
-                  ))}
+                  {[5, 10, 15].map(pct => {
+                    const amt = Math.ceil((product.current_price || product.starting_price || 0) * (1 + pct / 100));
+                    return (
+                      <button key={pct} type="button" onClick={() => setBidAmount(String(amt))}
+                        className="flex-1 py-2 rounded-xl border font-bold transition-all hover:scale-105"
+                        style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
+                        <span className="block text-sm">+{pct}%</span>
+                        <span className="block text-[11px] font-semibold text-gray-500">₪{amt.toLocaleString()}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {bidError && <p className="text-xs text-red-500">{bidError}</p>}
@@ -928,6 +945,7 @@ export default function AuctionDetail() {
                   <AutoBidPanel product={product} onRequireLogin={() => setShowLoginModal(true)} />
                 )}
               </form>
+              </>
             ) : (
               <div className="rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden">
                 <div className="p-4 text-center border-b border-gray-100">

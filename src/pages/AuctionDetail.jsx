@@ -463,15 +463,15 @@ export default function AuctionDetail() {
   const minBid = product ? (product.current_price || product.starting_price || 0) + 1 : 1;
   const myName = bidderName || localStorage.getItem("bidder_name");
   const isLeading = !!myName && product?.highest_bidder === myName;
+  const myEmails = [
+    (localStorage.getItem("bidder_email") || "").trim().toLowerCase(),
+    (authUser?.email || "").trim().toLowerCase(),
+  ].filter(Boolean);
   // מציע שהגיש הצעה במכרז זה אך אינו מוביל כרגע — עקפו אותו
   const bidOnThis = myEmails.length > 0 && bids.some(b => myEmails.includes((b.bidder_email || "").trim().toLowerCase()));
   const isOutbid = bidOnThis && !isLeading;
   // דירוג הדדי — זמין לאחר שהמוצר סופק לקונה
   const deliveredToBuyer = product && ["delivered", "released"].includes(product.status);
-  const myEmails = [
-    (localStorage.getItem("bidder_email") || "").trim().toLowerCase(),
-    (authUser?.email || "").trim().toLowerCase(),
-  ].filter(Boolean);
   const iAmBuyer = !!product?.highest_bidder && (
     (myName && product.highest_bidder.trim() === myName.trim()) ||
     (product.highest_bidder_email && myEmails.includes(product.highest_bidder_email.trim().toLowerCase()))

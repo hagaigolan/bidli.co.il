@@ -142,6 +142,14 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 .animate-neon-pulse { animation: neon-pulse 2s ease-in-out infinite; }
 .animate-float { animation: float 3s ease-in-out infinite; }
 
+/* ── Leaflet: מניעת שבירת אריחי המפה על ידי איפוס התמונות של Tailwind ── */
+.leaflet-container .leaflet-tile,
+.leaflet-container img.leaflet-tile,
+.leaflet-container .leaflet-pane img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
 /* ── Accessibility: visible keyboard focus ── */
 :focus-visible {
   outline: 2px solid #3e6b8a;

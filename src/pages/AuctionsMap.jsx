@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { lookupCityCoords } from "@/lib/cityCoords";
 import { ArrowRight, MapPin } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -17,6 +17,20 @@ const pinIcon = (label) => L.divIcon({
   iconSize: [0, 0],
   iconAnchor: [30, 14],
 });
+
+// מיקוד המפה אוטומטית על המכרזים הפעילים — כך מפת ישראל נראית מלאה וכל הפינים במסגרת
+function MapAdjuster({ pins }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!pins.length) return;
+    const bounds = L.latLngBounds(pins.map(p => [p.coords.lat, p.coords.lng]));
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 9 });
+    // תיקון תצוגה כשגודל המכל מתעדכן אחרי הרינדור הראשוני (אריחים אפורים)
+    const t = setTimeout(() => map.invalidateSize(), 150);
+    return () => clearTimeout(t);
+  }, [map, pins]);
+  return null;
+}
 
 export default function AuctionsMap() {
   const [pins, setPins] = useState(null);
@@ -78,12 +92,13 @@ export default function AuctionsMap() {
           </div>
         ) : (
           <>
-            <div className="rounded-2xl overflow-hidden border border-gray-200" style={{ height: "60vh", minHeight: 380 }}>
+            <div className="rounded-2xl overflow-hidden border border-gray-200" style={{ height: "70vh", minHeight: 420 }}>
               <MapContainer center={CENTER} zoom={7} scrollWheelZoom style={{ height: "100%", width: "100%" }} dir="ltr">
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                <MapAdjuster pins={pins} />
                 {pins.map(p => (
                   <Marker key={p.id} position={[p.coords.lat, p.coords.lng]} icon={pinIcon(`₪${(p.current_price || p.starting_price || 0).toLocaleString()}`)}>
                     <Popup>

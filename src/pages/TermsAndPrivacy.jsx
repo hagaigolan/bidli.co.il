@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp, Cookie, RotateCcw, Truck, Accessibility, ExternalLink } from "lucide-react";
-import { COOKIE_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS, AFFILIATE_DISCLOSURE_SECTIONS } from "@/lib/policyDocs";
+import { COOKIE_POLICY_SECTIONS, PRIVACY_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS, AFFILIATE_DISCLOSURE_SECTIONS } from "@/lib/policyDocs";
 
-const LAST_UPDATED = "9 בספטמבר 2026";
+const LAST_UPDATED = "17 באוקטובר 2026";
 const PLATFORM_NAME = "bidli";
 const COMPANY_NAME = "bidli בע\"מ";
 const CONTACT_EMAIL = "mitugplus@gmail.com";
@@ -217,7 +217,7 @@ const PRELUDES = {
 
 const DOC_SECTIONS = {
   terms: sections.map(s => s).filter(Boolean),
-  privacy: [PLATFORM_STATUS_SECTION, sections[4]],
+  privacy: PRIVACY_POLICY_SECTIONS,
   cookies: COOKIE_POLICY_SECTIONS,
   returns: [sections[2], ...RETURNS_POLICY_SECTIONS],
   shipping: SHIPPING_POLICY_SECTIONS,

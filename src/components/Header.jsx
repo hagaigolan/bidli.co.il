@@ -101,8 +101,9 @@ export default function Header() {
               )}
               <NotificationBell />
               <UserMenu />
-              <Link to="/upload-product" className="hidden sm:block btn-neon text-white text-xs font-bold px-4 py-2 rounded-xl">
-                + פרסם מכרז
+              <Link to="/upload-product" className="btn-neon text-white text-xs font-bold px-3 sm:px-4 py-2 rounded-xl whitespace-nowrap">
+                <span className="sm:hidden">+ פרסם</span>
+                <span className="hidden sm:inline">+ פרסם מכרז</span>
               </Link>
 
               {/* Mobile menu */}

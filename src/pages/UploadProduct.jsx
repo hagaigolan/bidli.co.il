@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap } from "lucide-react";
+import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap, Sparkles } from "lucide-react";
+import { improveDescription } from "@/functions/improveDescription";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 import GuidedPublishChat from "@/components/GuidedPublishChat";
 import { useAuth } from "@/lib/AuthContext";
@@ -32,6 +33,8 @@ export default function UploadProduct() {
   const [agreedCopyright, setAgreedCopyright] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const { isAuthenticated } = useAuth();
+  const [improving, setImproving] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   useEffect(() => {
     // משתמש שאינו מחובר מנסה לפרסם — פופאפ התחברות במקום העברה שקטה
@@ -108,6 +111,26 @@ export default function UploadProduct() {
   }
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  // ── שדרוג תיאור המוצר באמצעות AI ──
+  const handleImproveDescription = async () => {
+    if (!form.description.trim() || !form.title.trim()) {
+      setAiError("יש למלא כותרת ותיאור קצר לפני השדרוג");
+      return;
+    }
+    setImproving(true); setAiError("");
+    try {
+      const res = await improveDescription({
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        condition: form.condition,
+      });
+      if (res?.data?.description) set("description", res.data.description);
+      else setAiError(res?.data?.error || "שדרוג התיאור נכשל, נסה שנית");
+    } catch { setAiError("שדרוג התיאור נכשל, נסה שנית"); }
+    finally { setImproving(false); }
+  };
 
   const handleImage = (e) => {
     const files = Array.from(e.target.files || []);
@@ -357,6 +380,18 @@ export default function UploadProduct() {
               placeholder="תאר את המוצר בפירוט — מצב, גיל, מידות, היסטוריה..."
               rows={4}
               className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right resize-none" />
+            <div className="flex items-center justify-between gap-2 mt-1.5">
+              <span className="text-xs text-gray-400">{aiError ? "" : "ה-AI ירחיב את התיאור שלך לכמה שורות מפורטות"}</span>
+              <button type="button" onClick={handleImproveDescription} disabled={improving}
+                aria-label="לשפר באמצעות AI את תיאור המוצר"
+                className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border transition-all hover:scale-[1.02] disabled:opacity-60"
+                style={{ borderColor: "#e5893d44", color: "#e5893d", background: "#e5893d08" }}>
+                {improving
+                  ? (<><div className="w-3 h-3 border-2 border-[#e5893d44] border-t-[#e5893d] rounded-full animate-spin" /> משפר תיאור...</>)
+                  : (<><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> לשפר באמצעות AI</>)}
+              </button>
+            </div>
+            {aiError && <p className="text-xs text-red-500 mt-1">{aiError}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-4">

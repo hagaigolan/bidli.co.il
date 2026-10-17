@@ -3,6 +3,7 @@ import { waitUntil } from 'base44:runtime';
 import { interestAlertEmail } from '../../shared/notifyEmails.ts';
 import { sanitizeText, containsProfanity } from '../../shared/contentSafety.ts';
 import { postProductToInstagram } from '../../shared/instagramSync.ts';
+import { notifyProductPublishedToFacebook } from '../../shared/facebookPublish.ts';
 
 // Publishes a new auction listing. The seller's identity (name, email, user id,
 // photo) is derived server-side from the authenticated account — client-supplied
@@ -143,6 +144,9 @@ export default async function (req: Request): Promise<Response> {
 
     // ── סנכרון גלריית המוצר לחשבון האינסטגרם העסקי — best effort, לא חוסם את הפרסום ──
     waitUntil(postProductToInstagram(base44, product).catch((e: any) => console.error('instagram sync failed:', e?.message || e)));
+
+    // ── התראת פרסום ל-webhook הפייסבוק — best effort, נשלחת פעם אחת בלבד לכל מוצר ──
+    waitUntil(notifyProductPublishedToFacebook(base44, product));
 
     return Response.json({ ok: true, product_id: product.id, seller_email: me.email });
   } catch (error) {

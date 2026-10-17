@@ -95,8 +95,8 @@ export default function AuctionsMap() {
             <div className="rounded-2xl overflow-hidden border border-gray-200" style={{ height: "70vh", minHeight: 420 }}>
               <MapContainer center={CENTER} zoom={7} scrollWheelZoom style={{ height: "100%", width: "100%" }} dir="ltr">
                 <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 />
                 <MapAdjuster pins={pins} />
                 {pins.map(p => (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap, Sparkles } from "lucide-react";
@@ -37,6 +37,8 @@ export default function UploadProduct() {
   const [agreedTerms, setAgreedTerms] = useState(false);
   const { isAuthenticated } = useAuth();
   const [improving, setImproving] = useState(false);
+  // המרת micro-conversion חד-פעמית: "התחלת פרסום מוצר" — נורה עם הפוקוס הראשון על הטופס
+  const startPublishFiredRef = useRef(false);
   const [aiError, setAiError] = useState("");
 
   // מטא-תגיות SEO ייעודיות לעמוד הפרסום (רק לעמוד זה)
@@ -122,6 +124,15 @@ export default function UploadProduct() {
   }
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  // מעקב Google Ads: "התחלת פרסום מוצר" — פעם אחת בלבד בכל טעינת עמוד
+  const fireStartPublishConversion = () => {
+    if (startPublishFiredRef.current) return;
+    startPublishFiredRef.current = true;
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', { 'send_to': 'AW-997724217/EfS8CNbasaAdELmg4NsD' });
+    }
+  };
 
   // ── שדרוג תיאור המוצר באמצעות AI ──
   const handleImproveDescription = async () => {
@@ -302,7 +313,7 @@ export default function UploadProduct() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-8 space-y-6 pb-28 sm:pb-8">
+      <form onSubmit={handleSubmit} onFocusCapture={fireStartPublishConversion} className="max-w-2xl mx-auto px-4 py-8 space-y-6 pb-28 sm:pb-8">
         <UploadTrustStrip />
         <UploadProgress
           hasDetails={!!(form.title && form.starting_price)}

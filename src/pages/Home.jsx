@@ -22,6 +22,7 @@ import LiveStatsBar from "@/components/LiveStatsBar";
 import InviteFriendsSection from "@/components/InviteFriendsSection";
 import HowItWorksStrip from "@/components/HowItWorksStrip";
 import CollectorQuiz from "@/components/CollectorQuiz";
+import TelegramBanner from "@/components/TelegramBanner";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -418,6 +419,7 @@ export default function Home() {
 
   return (
     <div className="bg-white">
+      <TelegramBanner />
       <HeroSection todayCount={todayCount} />
       <LiveStatsBar />
       {loading && <HomeSkeleton />}

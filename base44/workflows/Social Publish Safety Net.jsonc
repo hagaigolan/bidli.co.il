@@ -1,0 +1,51 @@
+{
+  "name": "Social Publish Safety Net",
+  "description": "\u05e8\u05e9\u05ea \u05d1\u05d8\u05d9\u05d7\u05d5\u05ea: \u05db\u05dc \u05de\u05d5\u05e6\u05e8 \u05e9\u05d4\u05e4\u05da \u05e4\u05e2\u05d9\u05dc \u05d5\u05dc\u05d0 \u05e0\u05e9\u05dc\u05d7 \u05e2\u05d3\u05d9\u05d9\u05df \u05dc-webhook \u05d4\u05e4\u05d9\u05d9\u05e1\u05d1\u05d5\u05e7 (fb_posted_at \u05e8\u05d9\u05e7) \u05e0\u05e9\u05dc\u05d7 \u05dc\u05d0\u05d5\u05d8\u05d5\u05de\u05e6\u05d9\u05d9\u05ea \u05d4\u05e4\u05e8\u05e1\u05d5\u05dd \u05d4\u05d7\u05d1\u05e8\u05ea\u05d9 \u05d1\u05d3\u05d9\u05d5\u05e7 \u05e4\u05e2\u05dd \u05d0\u05d7\u05ea \u2014 \u05db\u05d5\u05dc\u05dc \u05de\u05d5\u05e6\u05e8\u05d9\u05dd \u05e9\u05e0\u05d5\u05e6\u05e8\u05d5 \u05d9\u05e9\u05d9\u05e8\u05d5\u05ea \u05d1-DB \u05d5\u05dc\u05d0 \u05e2\u05d1\u05e8\u05d5 \u05d3\u05e8\u05da publishProduct.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Product",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"active\" and .trigger.data.fb_posted_at == null }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "social_publish_safety_net",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "wait_before_send": {
+          "wait": "PT1M",
+          "then": "send_social_publish",
+          "x-base44": {
+            "title": "\u05d4\u05de\u05ea\u05e0\u05d4 \u05e7\u05e6\u05e8\u05d4",
+            "description": "\u05de\u05d0\u05e4\u05e9\u05e8 \u05dc-publishProduct \u05dc\u05e1\u05de\u05df fb_posted_at \u05e7\u05d5\u05d3\u05dd \u2014 \u05de\u05d5\u05e0\u05e2 \u05e9\u05dc\u05d9\u05d7\u05d4 \u05db\u05e4\u05d5\u05dc\u05d4"
+          }
+        }
+      },
+      {
+        "send_social_publish": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "socialPublishSafetyNet",
+            "args": {
+              "product_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "\u05e9\u05dc\u05d9\u05d7\u05ea webhook \u05e4\u05e8\u05e1\u05d5\u05dd \u05d7\u05d1\u05e8\u05ea\u05d9",
+            "description": "\u05e9\u05d5\u05dc\u05d7 product.published \u05dc-webhook \u05d5\u05de\u05e1\u05de\u05df fb_posted_at"
+          }
+        }
+      }
+    ]
+  }
+}

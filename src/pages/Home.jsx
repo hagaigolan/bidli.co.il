@@ -18,6 +18,7 @@ import CommunityStrip from "@/components/CommunityStrip";
 import JustForYou from "@/components/JustForYou";
 import LiveCardStats from "@/components/LiveCardStats";
 import LiveStatsBar from "@/components/LiveStatsBar";
+import AdBanner from "@/components/AdBanner";
 import InviteFriendsSection from "@/components/InviteFriendsSection";
 import HowItWorksStrip from "@/components/HowItWorksStrip";
 import CollectorQuiz from "@/components/CollectorQuiz";
@@ -421,6 +422,7 @@ export default function Home() {
     <div className="bg-white">
       <TelegramBanner />
       <HeroSection todayCount={todayCount} />
+      <AdBanner />
       <LiveStatsBar />
       <div className="max-w-6xl mx-auto px-4">
         <RecentlyViewed className="mt-6" />

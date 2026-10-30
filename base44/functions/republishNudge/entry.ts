@@ -23,6 +23,34 @@ export default async function (req: Request): Promise<Response> {
     const dryRun = !!body?.dry_run;
 
     const now = Date.now();
+
+    // ── שליחת בדיקה: מייל "פרסם שוב" לדוגמה אל הכתובת שב-request בלבד ──
+    const testEmail = String(body?.test_email || '').trim();
+    if (testEmail) {
+      const own = await base44.asServiceRole.entities.Product
+        .filter({ seller_email: user.email }, '-created_date', 5).catch(() => []);
+      const real = (own || []).find(p => p && p.image_url);
+      const sample = {
+        id: real?.id || 'sample-republish',
+        title: real?.title || 'ציור שמן מקורי — נוף ירושלמי, חתום',
+        image_url: real?.image_url || '',
+        starting_price: real?.starting_price || 750,
+        category: real?.category || 'אמנות',
+        condition: real?.condition || 'מצב מעולה',
+        seller_name: user.full_name || real?.seller_name || '',
+        ends_at: new Date(now - AFTER_DAYS * DAY).toISOString(),
+      };
+      const mail = republishNudgeEmail(sample);
+      const result = await base44.asServiceRole.integrations.Core.SendEmail({
+        to: testEmail,
+        subject: `[בדיקה] ${mail.subject}`,
+        html: mail.html,
+        text: mail.text,
+        category: 'transactional',
+      });
+      return Response.json({ ok: true, test: true, sent_to: testEmail, subject: mail.subject, used_product: real?.id || null, result });
+    }
+
     const from = new Date(now - CATCHUP_DAYS * DAY).toISOString();
     const to = new Date(now - AFTER_DAYS * DAY).toISOString();
 

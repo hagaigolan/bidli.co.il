@@ -5,7 +5,9 @@ import { Gift, MessageCircle, Link2, Check } from "lucide-react";
 // הזמנת חברים — שיתוף קישור ההרשמה דרך וואטסאפ או העתקה, עם מעקב אירועים
 export default function InviteFriendsSection() {
   const [copied, setCopied] = useState(false);
-  const url = `${window.location.origin}/`;
+  // קישור ההזמנה נושא את המזמין — כדי שנוכל לייחס הרשמות שהגיעו ממנו
+  const ref = (localStorage.getItem("bidder_email") || "").trim().toLowerCase();
+  const url = `${window.location.origin}/${ref ? `?ref=${encodeURIComponent(ref)}` : ""}`;
   const text = encodeURIComponent(
     `גליתי אתר מכרזים מעולה בעברית — bidli. מכרזים חיים של אמנות, תכשיטים ואספנות, כל מכרז נסגר תוך 24 שעות וההשתתפות חינם. הירשם כאן: ${url}`
   );

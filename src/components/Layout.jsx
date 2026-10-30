@@ -7,6 +7,7 @@ import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
 import IdleLogout from "./IdleLogout";
 import CompareBar from "./CompareBar";
+import ReferralCapture from "./ReferralCapture";
 import { setRobotsMeta } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -37,7 +38,13 @@ export default function Layout() {
     const key = `login_stamped_${user.id}`;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
-    base44.auth.updateMe({ last_login_at: new Date().toISOString() }).catch(() => {});
+    // ייחוס הרשמה שהגיעה מהזמנת חבר — נשמר פעם אחת על הפרופיל
+    const ref = localStorage.getItem("bidli_ref");
+    const payload = { last_login_at: new Date().toISOString() };
+    if (ref && !user?.referred_by && ref.toLowerCase() !== (user?.email || "").toLowerCase()) {
+      payload.referred_by = ref;
+    }
+    base44.auth.updateMe(payload).catch(() => {});
   }, [isAuthenticated, user?.id]);
 
   return (
@@ -48,6 +55,7 @@ export default function Layout() {
       >
         דלג לתוכן הראשי
       </a>
+      <ReferralCapture />
       <Header />
       <main id="main-content" className="flex-1">
         <Outlet />

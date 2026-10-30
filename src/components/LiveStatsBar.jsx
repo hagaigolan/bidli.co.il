@@ -58,9 +58,9 @@ export default function LiveStatsBar() {
 
   return (
     <section className="py-5 bg-white border-b border-gray-100" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-3 sm:grid-cols-5 gap-3">
+      <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-x-6 gap-y-4">
         {blocks.map(({ icon: Icon, value, text, label, color }) => (
-          <div key={label} className="flex flex-col items-center text-center gap-1">
+          <div key={label} className="flex flex-col items-center text-center gap-1 min-w-[100px] flex-1 max-w-[190px]">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: color + "14", border: `1px solid ${color}33` }}>
               <Icon className="h-4 w-4" style={{ color }} />
             </div>

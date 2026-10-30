@@ -28,6 +28,8 @@ export default function UploadProduct() {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [isRepublish, setIsRepublish] = useState(false);
+  const [republishLoading, setRepublishLoading] = useState(false);
+  const [republishMissing, setRepublishMissing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -72,11 +74,13 @@ export default function UploadProduct() {
 
   // שמירה אוטומטית — שמירת הטופס למכשיר בכל שינוי (עם דיליי קצר)
   useEffect(() => {
+    // בזמן טעינת מכרז לפרסום חוזר (או אם הפריט לא נמצא) — לא דורסים את הטיוטה בטופס ריק
+    if (republishLoading || republishMissing) return;
     const t = setTimeout(() => {
       try { localStorage.setItem("bidli_upload_draft", JSON.stringify(form)); } catch {}
     }, 400);
     return () => clearTimeout(t);
-  }, [form]);
+  }, [form, republishLoading, republishMissing]);
 
   // פרסום חוזר — טעינת פרטי מכרז קודם לעריכה מחדש
   useEffect(() => {
@@ -107,8 +111,9 @@ export default function UploadProduct() {
   useEffect(() => {
     const republishId = new URLSearchParams(window.location.search).get("republish");
     if (!republishId) return;
+    setRepublishLoading(true);
     base44.entities.Product.get(republishId).then(p => {
-      if (!p) return;
+      if (!p?.id) { setRepublishMissing(true); return; }
       setForm(f => ({
         ...f,
         title: p.title || "",
@@ -131,7 +136,8 @@ export default function UploadProduct() {
       const urls = (Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : (p.image_url ? [p.image_url] : [])).filter(Boolean);
       setExistingImages(urls);
       setIsRepublish(true);
-    }).catch(() => {});
+    }).catch(() => setRepublishMissing(true))
+      .finally(() => setRepublishLoading(false));
   }, []);
 
   // איתור אוטומטי של פרטי המוכר מהפרופיל האישי (אין לדרוס פרטים שכבר מולאו — למשל בפרסום חוזר)
@@ -365,6 +371,18 @@ export default function UploadProduct() {
             ...(fields.location ? { location: fields.location } : {}),
           }))}
         />
+        {republishLoading && (
+          <div className="flex items-center gap-2 p-4 rounded-2xl bg-gray-50 border border-gray-100 text-sm text-gray-500">
+            <div className="w-4 h-4 border-2 border-gray-200 border-t-[#e5893d] rounded-full animate-spin" />
+            טוען את פרטי המכרז לפרסום חוזר...
+          </div>
+        )}
+        {republishMissing && (
+          <div className="p-4 rounded-2xl" style={{ background: "#fffbeb", border: "1px solid #fde68a" }} dir="rtl">
+            <p className="text-sm font-bold text-amber-800 mb-0.5">לא הצלחנו לטעון את המכרז לפרסום חוזר</p>
+            <p className="text-xs text-amber-700">הפריט אינו זמין במערכת. אפשר למלא את הפרטים ידנית, או לפתוח את המכרז שלך מתוך "המכירות שלי".</p>
+          </div>
+        )}
         {isRepublish && (
           <div className="p-4 rounded-2xl" style={{ background: "#e5893d08", border: "1px solid #e5893d33" }} dir="rtl">
             <p className="text-sm font-bold text-gray-800 mb-0.5">🔄 מכרז חוזר</p>

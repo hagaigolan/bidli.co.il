@@ -27,13 +27,23 @@ export default async function (req: Request): Promise<Response> {
     // ── שליחת בדיקה: מייל "פרסם שוב" לדוגמה אל הכתובת שב-request בלבד ──
     const testEmail = String(body?.test_email || '').trim();
     if (testEmail) {
-      const own = await base44.asServiceRole.entities.Product
-        .filter({ seller_email: user.email }, '-created_date', 5).catch(() => []);
-      const real = (own || []).find(p => p && p.image_url);
+      // עדיף מוצר אמיתי עם תמונה — כדי שקישורי הבדיקה יעבדו בפועל ויטענו את הפריט
+      const explicitId = String(body?.test_product_id || '').trim();
+      let real = explicitId
+        ? await base44.asServiceRole.entities.Product.get(explicitId).catch(() => null)
+        : null;
+      if (!real) {
+        const own = await base44.asServiceRole.entities.Product
+          .filter({ seller_email: user.email }, '-created_date', 5).catch(() => []);
+        const recent = await base44.asServiceRole.entities.Product
+          .filter({}, '-created_date', 20).catch(() => []);
+        real = [...(own || []), ...(recent || [])].find(p => p && p.id && p.image_url) || null;
+      }
+      // בבדיקה אפשר להצביע ישירות על מוצר קיים (המזהה והפרטים מגיעים ב-request)
       const sample = {
-        id: real?.id || 'sample-republish',
-        title: real?.title || 'ציור שמן מקורי — נוף ירושלמי, חתום',
-        image_url: real?.image_url || '',
+        id: explicitId || real?.id || 'sample-republish',
+        title: String(body?.test_title || '').trim() || real?.title || 'ציור שמן מקורי — נוף ירושלמי, חתום',
+        image_url: String(body?.test_image || '').trim() || real?.image_url || '',
         starting_price: real?.starting_price || 750,
         category: real?.category || 'אמנות',
         condition: real?.condition || 'מצב מעולה',

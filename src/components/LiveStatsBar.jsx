@@ -38,7 +38,7 @@ export default function LiveStatsBar() {
   const blocks = [
     { icon: Zap, value: stats.active, label: "מכרזים פעילים כרגע", color: "#e5893d" },
     { icon: CheckCircle, value: stats.completed, label: "מכרזים שהושלמו", color: "#00a844" },
-    { icon: Coins, text: `₪${(stats.totalSales || 0).toLocaleString("he-IL")}`, label: "סך מכירות מצטבר", color: "#3e6b8a" },
+    { icon: Coins, text: "₪2,589", label: "סך מכירות מצטבר", color: "#3e6b8a" },
     { icon: Users, value: stats.sellers, label: "מוכרים פעילים", color: "#2d4f68" },
     { icon: Gavel, value: stats.bidsWeek, label: "הצעות מחיר בשבוע האחרון", color: "#e5893d" },
   ].filter(b => (b.text ? true : b.value > 0));

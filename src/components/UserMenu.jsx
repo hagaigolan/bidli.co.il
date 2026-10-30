@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { ChevronDown, LogOut, MessageCircleQuestion, Package, ShieldCheck, Store, User as UserIcon } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, MessageCircleQuestion, Package, ShieldCheck, Store, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -73,6 +73,12 @@ export default function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/my-center" className="flex items-center gap-2 cursor-pointer">
+            <LayoutDashboard className="h-4 w-4 text-[#e5893d]" />
+            <span>המרכז שלי</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
             <UserIcon className="h-4 w-4 text-[#e5893d]" />

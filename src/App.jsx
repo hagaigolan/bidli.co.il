@@ -40,6 +40,7 @@ import AuctionsMap from './pages/AuctionsMap';
 import Barter from './pages/Barter';
 import BarterDetail from './pages/BarterDetail';
 import Landing from './pages/Landing';
+import MyCenter from './pages/MyCenter';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/articles/:id" element={<ArticleDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-center" element={<MyCenter />} />
         <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
         <Route path="/my-sales" element={<MySales />} />
         <Route path="/favorites" element={<Favorites />} />

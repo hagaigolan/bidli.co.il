@@ -5,6 +5,8 @@ import { Zap, CheckCircle, Coins, Users, Gavel } from "lucide-react";
 // בסיס היסטורי — המכירות והמכרזים שהושלמו מצטברים מעליו מהמכרזים שנמכרים בפועל
 const BASE_COMPLETED = 29;
 const BASE_TOTAL_SALES = 2589;
+// מועד קביעת הבסיס — רק מכרזים שנמכרו מאז נספרים ומתווספים אליו
+const BASE_SALES_AT = "2026-10-30T22:00:00.000Z";
 
 // מדדי חיים בראש דף הבית — מדדים חיוביים בלבד; המד נסתר כשאין נתונים חיוביים להציג
 export default function LiveStatsBar() {
@@ -17,9 +19,14 @@ export default function LiveStatsBar() {
       base44.entities.Product.count({ status: "active", ends_at: { $gte: nowIso } }),
       base44.entities.Product.aggregate({
         query: {
-          $or: [
-            { status: { $in: ["paid", "escrow", "delivered", "released"] } },
-            { status: "ended", highest_bidder: { $ne: "" } },
+          $and: [
+            {
+              $or: [
+                { status: { $in: ["paid", "escrow", "delivered", "released"] } },
+                { status: "ended", highest_bidder: { $ne: "" } },
+              ],
+            },
+            { updated_date: { $gte: BASE_SALES_AT } },
           ],
         },
         sum: "current_price",

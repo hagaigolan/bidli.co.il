@@ -16,7 +16,6 @@ import CategoryGrid from "@/components/CategoryGrid";
 import CategoryCarousel from "@/components/CategoryCarousel";
 import CommunityStrip from "@/components/CommunityStrip";
 import JustForYou from "@/components/JustForYou";
-import CollectionsStrip from "@/components/CollectionsStrip";
 import LiveCardStats from "@/components/LiveCardStats";
 import LiveStatsBar from "@/components/LiveStatsBar";
 import InviteFriendsSection from "@/components/InviteFriendsSection";
@@ -429,7 +428,6 @@ export default function Home() {
       {loading && <HomeSkeleton />}
       <HowItWorksStrip />
       <CategoryGrid />
-      <CollectionsStrip />
       <DealsEndingSoon products={products} />
       <UpcomingAuctionsSection products={products} />
       <RecentlySold />

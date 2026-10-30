@@ -95,10 +95,10 @@ export default function Footer() {
 
               </nav>
               <div className="border-t border-gray-100 pt-4">
-                <p className="text-xs text-gray-500 mb-1">יש לך משהו למכור?</p>
-                <a href="#" className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "#6aa3cd" }}>
-                  צור קשר עם בתי המכרזים <ArrowRight className="h-3 w-3 rotate-180" />
-                </a>
+                <p className="text-xs text-gray-500 mb-1">מעוניין לפרסם פרסומת באתר?</p>
+                <Link to="/contact?topic=advertising" className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "#6aa3cd" }}>
+                  השאר פרטים <ArrowRight className="h-3 w-3 rotate-180" />
+                </Link>
               </div>
             </div>
           </div>

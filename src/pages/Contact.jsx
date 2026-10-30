@@ -7,11 +7,15 @@ import HoneypotField, { useAntiBot } from "@/components/HoneypotField";
 import { containsProfanity } from "@/lib/profanity";
 
 const CONTACT_EMAIL = "mitugplus@gmail.com";
-const TOPICS = ["שאלה כללית", "מכירת פריט בפלטפורמה", "תמיכה בהזמנה קיימת", "שיתוף פעולה עסקי"];
+const TOPICS = ["שאלה כללית", "מכירת פריט בפלטפורמה", "תמיכה בהזמנה קיימת", "שיתוף פעולה עסקי", "פרסום וחסות באתר"];
+const AD_TOPIC = "פרסום וחסות באתר";
 
 export default function Contact() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", topic: TOPICS[0], message: "" });
+  const [form, setForm] = useState(() => {
+    const topic = new URLSearchParams(window.location.search).get("topic");
+    return { name: "", email: "", topic: topic === "advertising" ? AD_TOPIC : TOPICS[0], message: "" };
+  });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);

@@ -7,6 +7,7 @@ import { SellerFomoBlock } from "@/components/SellerFomo";
 import SavedSearchModal from "@/components/SavedSearchModal";
 import AuctionsFilterPanel from "@/components/AuctionsFilterPanel";
 import LiveCardStats from "@/components/LiveCardStats";
+import CompareButton from "@/components/CompareButton";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -40,6 +41,8 @@ function CountdownBadge({ endsAt, small }) {
 function AuctionCard({ product }) {
   const ended = new Date(product.ends_at) < new Date();
   return (
+    <div className="relative">
+      <CompareButton productId={product.id} />
     <Link to={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300 card-neon"
       style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
@@ -74,6 +77,7 @@ function AuctionCard({ product }) {
         <LiveCardStats product={product} />
       </div>
     </Link>
+    </div>
   );
 }
 

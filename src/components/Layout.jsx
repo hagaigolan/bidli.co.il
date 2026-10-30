@@ -6,6 +6,7 @@ import CookieConsent from "./CookieConsent";
 import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
 import IdleLogout from "./IdleLogout";
+import CompareBar from "./CompareBar";
 import { setRobotsMeta } from "@/lib/seo";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -52,6 +53,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <CompareBar />
       <CookieConsent />
       <WelcomeOfferModal />
       <AccessibilityWidget />

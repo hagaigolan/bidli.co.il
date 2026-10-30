@@ -16,6 +16,7 @@ import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 import ProductChat from "@/components/ProductChat";
 import ShareButton from "@/components/ShareButton";
+import CompareButton from "@/components/CompareButton";
 import ProductEditModal from "@/components/ProductEditModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import View3DButton from "@/components/View3DButton";
@@ -811,6 +812,7 @@ export default function AuctionDetail() {
               </button>
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
               <ShareButton product={product} />
+              <CompareButton productId={product.id} variant="inline" />
               {canEdit && !product.seller_user_id?.startsWith("bidli-agent") && (
                 <button type="button" onClick={handleInstagramShare} disabled={igSharing}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"

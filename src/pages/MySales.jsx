@@ -5,6 +5,7 @@ import {
   ArrowRight, RefreshCw, Store, Gavel, CheckCircle, Hourglass
 } from "lucide-react";
 import SaleRow from "@/components/SaleRow";
+import SellerChecklist from "@/components/SellerChecklist";
 import { parseDbDate } from "@/lib/time";
 
 // "המכירות שלי" — all auctions the current user published,
@@ -111,6 +112,8 @@ export default function MySales() {
                 </div>
               ))}
             </div>
+
+            <SellerChecklist products={sales} />
 
             {sales.length === 0 ? (
               <div className="text-center py-12">

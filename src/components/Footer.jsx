@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Mail, Smartphone, ArrowRight } from "lucide-react";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { MAIN_NAV } from "@/lib/navLinks";
+import { CATEGORIES } from "@/lib/productMeta";
 
 export default function Footer() {
   return (
@@ -76,8 +77,8 @@ export default function Footer() {
             {/* Categories */}
             <div>
               <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">קטגוריות</h3>
-              <nav className="flex flex-col gap-2">
-                {["אמנות","יודאיקה","אספנות","נומיסמטיקה ופילטליה","תכשיטים","עיצוב הבית","אופנה"].map(l => (
+              <nav className="grid grid-cols-2 gap-x-4 gap-y-2">
+                {CATEGORIES.map(l => (
                   <Link key={l} to={`/auctions?category=${encodeURIComponent(l)}`} className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</Link>
                 ))}
               </nav>

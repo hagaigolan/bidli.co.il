@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Zap, CheckCircle, Coins, Users, Gavel } from "lucide-react";
 
+// בסיס היסטורי — המכירות והמכרזים שהושלמו מצטברים מעליו מהמכרזים שנמכרים בפועל
+const BASE_COMPLETED = 29;
+const BASE_TOTAL_SALES = 2589;
+
 // מדדי חיים בראש דף הבית — מדדים חיוביים בלבד; המד נסתר כשאין נתונים חיוביים להציג
 export default function LiveStatsBar() {
   const [stats, setStats] = useState(null);
@@ -26,8 +30,8 @@ export default function LiveStatsBar() {
       const row = soldAgg?.rows?.[0] || {};
       setStats({
         active: active || 0,
-        completed: row.count || 0,
-        totalSales: row.sum_current_price || 0,
+        completed: BASE_COMPLETED + (row.count || 0),
+        totalSales: BASE_TOTAL_SALES + (row.sum_current_price || 0),
         sellers: (sellerDistinct?.items || []).filter(Boolean).length,
         bidsWeek: bidsWeek || 0,
       });
@@ -37,8 +41,8 @@ export default function LiveStatsBar() {
   if (!stats) return null;
   const blocks = [
     { icon: Zap, value: stats.active, label: "מכרזים פעילים כרגע", color: "#e5893d" },
-    { icon: CheckCircle, value: 29, label: "מכרזים שהושלמו", color: "#00a844" },
-    { icon: Coins, text: "₪2,589", label: "סך מכירות מצטבר", color: "#3e6b8a" },
+    { icon: CheckCircle, value: stats.completed, label: "מכרזים שהושלמו", color: "#00a844" },
+    { icon: Coins, text: `₪${(stats.totalSales || 0).toLocaleString("he-IL")}`, label: "סך מכירות מצטבר", color: "#3e6b8a" },
     { icon: Users, value: stats.sellers, label: "מוכרים פעילים", color: "#2d4f68" },
     { icon: Gavel, value: stats.bidsWeek, label: "הצעות מחיר בשבוע האחרון", color: "#e5893d" },
   ].filter(b => (b.text ? true : b.value > 0));

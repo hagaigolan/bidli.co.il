@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { sendBanEmail } from "@/lib/adminEmails";
 import { Mail, ShieldCheck, ShieldOff, Loader2, Ban, RotateCcw, Eye } from "lucide-react";
 import UserDetailModal from "@/components/admin/UserDetailModal";
+import UsersStats, { formatLastLogin } from "@/components/admin/UsersStats";
 
 const btnCls = "text-xs font-bold px-3 py-1.5 rounded-xl border transition-all disabled:opacity-50 whitespace-nowrap";
 
@@ -14,7 +15,7 @@ export default function UsersSection({ onSendEmail }) {
   const [detailUser, setDetailUser] = useState(null);
 
   useEffect(() => {
-    base44.entities.User.list("-created_date", 200)
+    base44.entities.User.list("-created_date", 1000)
       .then(setUsers)
       .catch(() => setUsers([]));
   }, []);
@@ -71,6 +72,7 @@ export default function UsersSection({ onSendEmail }) {
           {msg}
         </div>
       )}
+      <UsersStats users={users} />
       {/* ── מובייל: כרטיסים ── */}
       <div className="sm:hidden space-y-2.5">
         {users.map(u => (
@@ -81,6 +83,7 @@ export default function UsersSection({ onSendEmail }) {
               <div className="min-w-0">
                 <p className="font-bold text-sm text-gray-900 truncate">{u.full_name || "—"}</p>
                 <p className="text-xs text-gray-400 truncate" dir="ltr">{u.email || "—"}</p>
+                <p className="text-[11px] text-gray-400 mt-1">התחברות אחרונה: {formatLastLogin(u.last_login_at)}</p>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <span className="text-[11px] px-2 py-0.5 rounded-full font-bold"
@@ -130,6 +133,7 @@ export default function UsersSection({ onSendEmail }) {
               <tr className="bg-gray-50 text-xs text-gray-400">
                 <th className="px-4 py-2.5 text-right font-semibold">משתמש</th>
                 <th className="px-4 py-2.5 text-right font-semibold">אימייל</th>
+                <th className="px-4 py-2.5 text-right font-semibold">התחברות אחרונה</th>
                 <th className="px-4 py-2.5 text-right font-semibold">הרשאה</th>
                 <th className="px-4 py-2.5 text-right font-semibold">סטטוס</th>
                 <th className="px-4 py-2.5 text-right font-semibold">פעולות</th>
@@ -147,6 +151,7 @@ export default function UsersSection({ onSendEmail }) {
                       <Eye className="h-3 w-3 inline ml-1" aria-hidden="true" /> פעילות
                     </button>
                   </td>
+                  <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{formatLastLogin(u.last_login_at)}</td>
                   <td className="px-4 py-3">
                     <span className="text-xs px-2 py-0.5 rounded-full font-bold"
                       style={u.role === "admin"

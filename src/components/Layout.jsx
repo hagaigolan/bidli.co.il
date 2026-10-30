@@ -7,6 +7,8 @@ import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
 import IdleLogout from "./IdleLogout";
 import { setRobotsMeta } from "@/lib/seo";
+import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 
 // עמודים פרטיים/פנימיים — נמנעים מאינדוקס בגוגל
 const PRIVATE_PREFIXES = [
@@ -21,11 +23,21 @@ const PRIVATE_PREFIXES = [
 
 export default function Layout() {
   const location = useLocation();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const isPrivate = PRIVATE_PREFIXES.some(p => location.pathname.startsWith(p));
     setRobotsMeta(isPrivate);
   }, [location.pathname]);
+
+  // תיעוד מועד ההתחברות האחרון — פעם אחת בכל סשן של משתמש מחובר
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+    const key = `login_stamped_${user.id}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    base44.auth.updateMe({ last_login_at: new Date().toISOString() }).catch(() => {});
+  }, [isAuthenticated, user?.id]);
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">

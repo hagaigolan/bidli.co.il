@@ -21,11 +21,11 @@ export default function AdBanner() {
           />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.80) 45%, rgba(255,255,255,0.18) 100%)" }}
+            style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.93) 50%, rgba(255,255,255,0.35) 100%)" }}
           />
-          <div className="relative z-10 flex items-center justify-between gap-4 px-5 sm:px-10 py-6 sm:py-9">
+          <div className="relative z-10 flex flex-col items-center text-center gap-4 px-5 sm:px-10 py-7 sm:py-10">
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center justify-center gap-2 mb-2">
                 <Megaphone className="h-4 w-4" style={{ color: "#e5893d" }} aria-hidden="true" />
                 <span className="text-[11px] font-bold tracking-wide" style={{ color: "#3e6b8a" }}>
                   שטח פרסום
@@ -34,7 +34,7 @@ export default function AdBanner() {
               <p className="text-xl sm:text-3xl font-black text-gray-900 leading-tight">
                 מעוניין לפרסם כאן?
               </p>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1.5 max-w-md">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1.5 max-w-md mx-auto">
                 הצג את העסק שלך בפני קהילת אספנים, סוחרי אמנות ורוכשי עתיקות מכל הארץ.
               </p>
             </div>

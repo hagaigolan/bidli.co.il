@@ -23,6 +23,7 @@ import InviteFriendsSection from "@/components/InviteFriendsSection";
 import HowItWorksStrip from "@/components/HowItWorksStrip";
 import CollectorQuiz from "@/components/CollectorQuiz";
 import TelegramBanner from "@/components/TelegramBanner";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -422,6 +423,9 @@ export default function Home() {
       <TelegramBanner />
       <HeroSection todayCount={todayCount} />
       <LiveStatsBar />
+      <div className="max-w-6xl mx-auto px-4">
+        <RecentlyViewed className="mt-6" />
+      </div>
       {loading && <HomeSkeleton />}
       <HowItWorksStrip />
       <CategoryGrid />

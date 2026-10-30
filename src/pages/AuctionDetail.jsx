@@ -33,6 +33,9 @@ import { playBidPing, playTickTock, playHammer, playFireworks } from "@/lib/auct
 import confetti from "canvas-confetti";
 import { syncProductGalleryInstagram } from "@/functions/syncProductGalleryInstagram";
 import { setPageMeta } from "@/lib/seo";
+import { getProductFaqs } from "@/lib/productFaq";
+import { recordRecentlyViewed } from "@/lib/recentlyViewed";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -272,6 +275,11 @@ export default function AuctionDetail() {
     }).catch(() => {}).finally(() => setLoading(false));
   }, [id]);
 
+  // שמירת הפריט בהיסטוריית הצפייה — עבור רצועת "נצפו לאחרונה"
+  useEffect(() => {
+    if (product?.id) recordRecentlyViewed(product);
+  }, [product?.id]);
+
   // ── SEO: מטא-תגיות ונתונים מובנים (Product/Offer) לעמוד המכרז ──
   useEffect(() => {
     if (!product) return;
@@ -311,6 +319,15 @@ export default function AuctionDetail() {
             product.category ? { "@type": "ListItem", position: 2, name: product.category, item: `${window.location.origin}/category/${encodeURIComponent(product.category)}` } : undefined,
             { "@type": "ListItem", position: product.category ? 3 : 2, name: product.title },
           ].filter(Boolean),
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: getProductFaqs(product).map(f => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         },
       ],
     });
@@ -613,6 +630,13 @@ export default function AuctionDetail() {
         }
       }
       setFlashNew(true); setTimeout(() => setFlashNew(false), 1500);
+      // מדידת המרה: הצעה שנשמרה בפועל (ללא נתונים מזהים)
+      try {
+        base44.analytics.track({
+          eventName: "bid_placed",
+          properties: { category: product.category || "", price: newPrice },
+        });
+      } catch {}
       setBidAmount(""); setBidSuccess(true);
       startBidConfetti();
       setTimeout(() => setBidSuccess(false), 3000);
@@ -667,6 +691,13 @@ export default function AuctionDetail() {
         status: "won",
       });
       setProduct(p => ({ ...p, ...updateData }));
+      // מדידת המרה: רכישה מיידית ב"קנה עכשיו"
+      try {
+        base44.analytics.track({
+          eventName: "buy_now_used",
+          properties: { category: product.category || "" },
+        });
+      } catch {}
     } catch { setBidError("שגיאה, נסה שנית"); }
     finally { setBidding(false); }
   };
@@ -1067,6 +1098,7 @@ export default function AuctionDetail() {
           <RelatedProducts category={product.category} excludeId={product.id} />
           <RelatedArticle category={product.category} />
           <SoldSimilar category={product.category} excludeId={product.id} />
+          <RecentlyViewed excludeId={product.id} />
         </div>
       )}
 

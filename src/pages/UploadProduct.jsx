@@ -276,6 +276,13 @@ export default function UploadProduct() {
       // מעקב אירועים: פרסום מוצר שהסתיים בהצלחה (ללא נתונים מזהים)
       // המעקב לא יכול להפיל את הפרסום — track אינו מחזיר Promise בכל גרסה
       try { base44.analytics.track({ eventName: "product_listing_submitted" }); } catch {}
+      // מדידת KPI: מכרז שנוצר בפועל (ללא נתונים מזהים)
+      try {
+        base44.analytics.track({
+          eventName: "auction_published",
+          properties: { category: form.category || "" },
+        });
+      } catch {}
       // אירוע המרה של Google Ads — נשלח רק לאחר פרסום מוצלח (המוצר נוצר בפועל בשרת)
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {

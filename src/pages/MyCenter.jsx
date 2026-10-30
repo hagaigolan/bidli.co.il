@@ -13,7 +13,7 @@ export default function MyCenter() {
   const { isAuthenticated, user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(Date.now());
-  const [data, setData] = useState({ leading: [], outbid: [], ending: [], matches: [], myAmounts: {} });
+  const [data, setData] = useState({ leading: [], outbid: [], ending: [], matches: [], myAmounts: {}, weeklyBids: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -77,8 +77,11 @@ export default function MyCenter() {
         matches = (found?.items || []).filter((p) => isLiveAuction(p) && !ids.includes(p.id)).slice(0, 4);
       }
 
+      const weekAgo = Date.now() - 7 * DAY;
+      const weeklyBids = myBids.filter((b) => new Date(b.created_date).getTime() > weekAgo).length;
+
       if (cancelled) return;
-      setData({ leading, outbid, ending: ending.slice(0, 4), matches, myAmounts });
+      setData({ leading, outbid, ending: ending.slice(0, 4), matches, myAmounts, weeklyBids });
       setLoading(false);
     };
     load().catch(() => setLoading(false));
@@ -131,6 +134,20 @@ export default function MyCenter() {
           </div>
         ) : (
           <>
+            {/* ── הפעילות שלך בשבוע האחרון ── */}
+            <div className="grid grid-cols-3 gap-2.5 mb-6">
+              {[
+                { label: "הצעות השבוע", value: data.weeklyBids },
+                { label: "מוביל כרגע", value: data.leading.length },
+                { label: "עקפו אותך", value: data.outbid.length },
+              ].map((s) => (
+                <div key={s.label} className="rounded-2xl border border-gray-100 bg-gray-50 px-3 py-3 text-center">
+                  <p className="text-xl font-black text-gray-900 leading-none">{s.value}</p>
+                  <p className="text-[11px] text-gray-500 mt-1">{s.label}</p>
+                </div>
+              ))}
+            </div>
+
             {data.outbid.length > 0 && (
               <CenterSection icon={AlertTriangle} title="עקפו אותך" subtitle="ההצעה שלך כבר לא הגבוהה — אפשר לחזור ולהוביל" accent="#dc2626">
                 {data.outbid.slice(0, 3).map((p) => (

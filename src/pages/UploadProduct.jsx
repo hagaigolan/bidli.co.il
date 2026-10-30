@@ -55,9 +55,10 @@ export default function UploadProduct() {
     setAuthChecked(true);
   }, [isAuthenticated]);
 
-  // שמירה אוטומטית — שחזור טיוטה שמורה מהמכשיר (אם אין טיוטת פרסום חוזר)
+  // שמירה אוטומטית — שחזור טיוטה שמורה מהמכשיר (אם אין טיוטת פרסום חוזר או בקשת "פרסם שוב" מהמייל)
   useEffect(() => {
     if (localStorage.getItem("republish_draft")) return;
+    if (new URLSearchParams(window.location.search).get("republish")) return;
     try {
       const d = JSON.parse(localStorage.getItem("bidli_upload_draft") || "null");
       if (!d) return;
@@ -100,6 +101,37 @@ export default function UploadProduct() {
       setExistingImages(urls);
       setIsRepublish(true);
     } catch {}
+  }, []);
+
+  // "פרסם שוב" מהמייל — טעינת המכרז שהסתיים עם התמונות והפרטים, לעריכה ולפרסום מחדש בלחיצה
+  useEffect(() => {
+    const republishId = new URLSearchParams(window.location.search).get("republish");
+    if (!republishId) return;
+    base44.entities.Product.get(republishId).then(p => {
+      if (!p) return;
+      setForm(f => ({
+        ...f,
+        title: p.title || "",
+        description: p.description || "",
+        category: p.category || "",
+        subcategory: p.subcategory || "",
+        condition: p.condition || f.condition,
+        location: p.location || "",
+        starting_price: p.starting_price != null ? String(p.starting_price) : "",
+        buy_now_price: p.buy_now_price != null ? String(p.buy_now_price) : "",
+        seller_name: f.seller_name || p.seller_name || "",
+        seller_email: f.seller_email || p.seller_email || "",
+        seller_phone: f.seller_phone || p.seller_phone || "",
+        seller_payment_methods: Array.isArray(p.seller_payment_methods) && p.seller_payment_methods.length
+          ? p.seller_payment_methods
+          : (p.seller_payment_method ? [p.seller_payment_method] : []),
+        seller_payme_phone: p.seller_payme_phone || "",
+        seller_bank_details: p.seller_bank_details || "",
+      }));
+      const urls = (Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : (p.image_url ? [p.image_url] : [])).filter(Boolean);
+      setExistingImages(urls);
+      setIsRepublish(true);
+    }).catch(() => {});
   }, []);
 
   // איתור אוטומטי של פרטי המוכר מהפרופיל האישי (אין לדרוס פרטים שכבר מולאו — למשל בפרסום חוזר)

@@ -33,12 +33,12 @@ export default function CompareButton({ productId, variant = "card" }) {
         type="button"
         onClick={handle}
         aria-pressed={active}
-        className="inline-flex flex-shrink-0 items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all hover:scale-[1.02]"
+        className="flex w-full flex-col sm:w-auto sm:inline-flex sm:flex-shrink-0 sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-[11px] sm:text-xs font-bold leading-tight text-center border transition-all hover:scale-[1.02]"
         style={active
           ? { background: "#2d4f6815", borderColor: "#2d4f68", color: "#2d4f68" }
           : { background: "white", borderColor: "#e5e7eb", color: "#6b7280" }}
       >
-        {active ? <Check className="h-4 w-4" aria-hidden="true" /> : <ArrowLeftRight className="h-4 w-4" aria-hidden="true" />}
+        {active ? <Check className="h-4 w-4 flex-shrink-0" aria-hidden="true" /> : <ArrowLeftRight className="h-4 w-4 flex-shrink-0" aria-hidden="true" />}
         {active ? "בהשוואה — לחץ להסרה" : "הוסף להשוואה"}
       </button>
     );

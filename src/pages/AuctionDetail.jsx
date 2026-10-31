@@ -882,7 +882,7 @@ export default function AuctionDetail() {
               )}
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
               {/* ── שיתוף בוואטסאפ, העתקת קישור והוספה להשוואה — שורה אחת ── */}
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="mt-3 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
                 <ShareButton product={product} />
                 <CompareButton productId={product.id} variant="inline" />
               </div>

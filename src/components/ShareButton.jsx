@@ -16,14 +16,15 @@ export default function ShareButton({ product }) {
   };
 
   return (
-    <div className="flex flex-1 min-w-0 gap-2" dir="rtl">
+    <div className="contents sm:flex sm:flex-1 sm:min-w-0 sm:gap-2" dir="rtl">
       <a href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noreferrer"
-        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap text-green-700 border-2 border-green-200 bg-green-50 hover:bg-green-100 transition-all">
-        <MessageCircle className="h-4 w-4" /> שתף בוואטסאפ
+        className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-[11px] sm:text-xs font-bold leading-tight text-center text-green-700 border-2 border-green-200 bg-green-50 hover:bg-green-100 transition-all sm:flex-1 sm:min-w-0">
+        <MessageCircle className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+        <span>שתף בוואטסאפ</span>
       </a>
       <button type="button" onClick={copyLink}
-        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
-        {copied ? <><Check className="h-4 w-4" /> הוקדם</> : <><Link2 className="h-4 w-4" /> העתק קישור</>}
+        className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-[11px] sm:text-xs font-bold leading-tight text-center border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all sm:flex-shrink-0">
+        {copied ? <><Check className="h-4 w-4 flex-shrink-0" aria-hidden="true" /> <span>הועתק</span></> : <><Link2 className="h-4 w-4 flex-shrink-0" aria-hidden="true" /> <span>העתק קישור</span></>}
       </button>
     </div>
   );

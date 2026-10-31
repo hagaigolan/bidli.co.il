@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import SalesManager from "@/components/SalesManager";
 import SellerAuctionEditor from "@/components/SellerAuctionEditor";
@@ -11,7 +11,7 @@ import SavedSearchesList from "@/components/SavedSearchesList";
 import { useAuth } from "@/lib/AuthContext";
 import AccountDeleteModal from "@/components/AccountDeleteModal";
 import {
-  Clock, TrendingUp, Award, Package, ChevronLeft, ArrowRight, Heart,
+  Clock, TrendingUp, Award, Package, ChevronLeft, Heart,
   Trophy, XCircle, RefreshCw, Trash2
 } from "lucide-react";
 
@@ -122,7 +122,6 @@ function BidRow({ bid, product, onReload }) {
 }
 
 export default function Profile() {
-  const navigate = useNavigate();
   const [bids, setBids] = useState([]);
   const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
@@ -186,9 +185,6 @@ export default function Profile() {
     <div className="min-h-screen bg-white" dir="rtl">
       <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-2xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
-            <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
-          </button>
           <div className="flex items-center gap-4">
             {profileMeta.photo
               ? <img src={profileMeta.photo} alt={profileMeta.name || "פרופיל"} className="w-14 h-14 rounded-2xl object-cover" style={{ border: "1px solid #e5893d33" }} />

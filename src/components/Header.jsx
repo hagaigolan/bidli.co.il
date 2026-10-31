@@ -11,6 +11,40 @@ import { categoryImageUrl } from "@/lib/categoryImages";
 import SalesTicker from "@/components/SalesTicker";
 import { MAIN_NAV } from "@/lib/navLinks";
 
+// כותרות המסכים המשניים — מוצגות בכותרת המובייל לצד כפתור החזרה
+const SECONDARY_TITLES = {
+  "/auctions": "מכרזים פעילים",
+  "/barter": "בארטר — החלפות",
+  "/articles": "המגזין",
+  "/favorites": "המועדפים שלי",
+  "/profile": "האזור האישי שלי",
+  "/my-center": "המרכז שלי",
+  "/my-orders": "ההזמנות שלי",
+  "/my-sales": "המכירות שלי",
+  "/contact": "צור קשר",
+  "/about": "אודות bidli",
+  "/valuation": "הערכת שווי",
+  "/experts": "המומחים שלנו",
+  "/upload-product": "פרסום מכרז",
+  "/search": "חיפוש",
+  "/stocks": "סטוקים",
+  "/compare": "השוואת פריטים",
+  "/auctions-map": "מפת מכרזים",
+  "/terms": "תקנון ופרטיות",
+  "/seller-questions": "שאלות למוכר",
+  "/shop-support": "תמיכה",
+};
+
+const secondaryTitle = (path) => {
+  const detail = path.match(/^\/(auction|barter|articles)\/[^/]+$/);
+  if (detail) return detail[1] === "auction" ? "פרטי המכרז" : detail[1] === "barter" ? "פרטי ההחלפה" : "מאמר";
+  if (path.startsWith("/category/")) return "קטגוריה";
+  if (path.startsWith("/seller/")) return "פרופיל מוכר";
+  if (path.startsWith("/admin")) return "ניהול";
+  if (path.startsWith("/landing/")) return "מבצע";
+  return SECONDARY_TITLES[path] || "bidli";
+};
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -19,18 +53,12 @@ export default function Header() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  // מסלול פרטים מקונן — במובייל מוצגת כותרת מפושטת עם חזרה, בלי חיפוש ובלי פס קטגוריות
-  const detailMatch = location.pathname.match(/^\/(auction|barter|articles)\/([^/]+)$/);
-  const detailInfo = detailMatch
-    ? {
-        root: `/${detailMatch[1]}`,
-        label: detailMatch[1] === "auction" ? "פרטי המכרז" : detailMatch[1] === "barter" ? "פרטי ההחלפה" : "מאמר",
-      }
-    : null;
+  // כל מסך שאינו דף הבית — במובייל מוצגת כותרת מפושטת עם חזרה, בלי חיפוש ובלי פס קטגוריות
+  const isSecondary = location.pathname !== "/";
 
   const goBack = () => {
     if (window.history.length > 1) navigate(-1);
-    else navigate(detailInfo?.root || "/");
+    else navigate("/");
   };
 
   const doSearch = () => {
@@ -52,19 +80,19 @@ export default function Header() {
 
   return (
     <header className="bg-background" dir="rtl">
-      {/* מובייל · עמוד פרטים: כותרת מפושטת עם כפתור חזרה */}
-      {detailInfo && (
-        <div className="sm:hidden sticky top-0 z-50 flex items-center gap-1 h-14 px-2 border-b border-border bg-background safe-top">
+      {/* מובייל · מסך משני: כותרת דביקה עם כפתור חזרה — מרופדת תמיד לפי שולי המגרעת/פס הסטטוס */}
+      {isSecondary && (
+        <div className="sm:hidden sticky top-0 z-50 flex items-center gap-1 h-14 px-2 border-b border-border bg-background pt-[env(safe-area-inset-top)]">
           <button type="button" onClick={goBack} aria-label="חזרה לעמוד הקודם"
             className="w-10 h-10 rounded-xl flex items-center justify-center text-foreground hover:bg-muted transition-colors">
             <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h1 className="text-sm font-black text-foreground truncate">{detailInfo.label}</h1>
+          <h1 className="text-sm font-black text-foreground truncate">{secondaryTitle(location.pathname)}</h1>
         </div>
       )}
 
       {/* Top micro-bar */}
-      <div className={`border-b border-border bg-muted relative z-[60] safe-top ${detailInfo ? "hidden sm:block" : ""}`}>
+      <div className={`border-b border-border bg-muted relative z-[60] safe-top ${isSecondary ? "hidden sm:block" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-muted-foreground">
           <div className="hidden sm:flex items-center gap-4 min-w-0 flex-1">
             <SalesTicker />
@@ -78,7 +106,7 @@ export default function Header() {
       </div>
 
       {/* Main bar — sticky; נשאר דבוק בראש בזמן גלילה */}
-      <div className={`sticky top-0 z-50 border-b border-border bg-background transition-all duration-300 ${detailInfo ? "hidden sm:block " : ""}${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
+      <div className={`sticky top-0 z-50 border-b border-border bg-background transition-all duration-300 ${isSecondary ? "hidden sm:block " : ""}${scrolled ? "pt-[env(safe-area-inset-top)] shadow-lg shadow-black/5" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between min-h-16 py-3 gap-2 sm:gap-4">
             {/* Logo */}
@@ -181,7 +209,7 @@ export default function Header() {
       </div>
 
       {/* Category strip — חלק מהעמוד, גולל כלפי מעלה יחד עם האתר */}
-      <div className={`border-b border-border bg-background ${detailInfo ? "hidden sm:block" : ""}`}>
+      <div className={`border-b border-border bg-background ${isSecondary ? "hidden sm:block" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}

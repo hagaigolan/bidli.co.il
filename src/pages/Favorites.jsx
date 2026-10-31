@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Heart, Trash2 } from "lucide-react";
+import { Heart, Trash2 } from "lucide-react";
 import { getOwnerKey } from "@/lib/favorites";
 
 function useCountdown(endsAt) {
@@ -60,7 +60,6 @@ function FavCard({ fav, onRemove }) {
 }
 
 export default function Favorites() {
-  const navigate = useNavigate();
   const [favs, setFavs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -86,9 +85,6 @@ export default function Favorites() {
       {/* Header */}
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-6xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4">
-            <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
-          </button>
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
               style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>

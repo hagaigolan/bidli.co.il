@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Upload, ArrowRight, Image, DollarSign, CheckCircle, Plus, X, Zap, Sparkles } from "lucide-react";
+import { Upload, Image, DollarSign, CheckCircle, Plus, X, Zap, Sparkles } from "lucide-react";
 import { improveDescription } from "@/functions/improveDescription";
 import { SellerFomoBanner, SellerFomoBlock } from "@/components/SellerFomo";
 import GuidedPublishChat from "@/components/GuidedPublishChat";
@@ -349,9 +349,6 @@ export default function UploadProduct() {
       {/* Header */}
       <div className="border-b border-gray-100 px-4 py-5">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <button onClick={() => navigate(-1)} aria-label="חזרה לעמוד הקודם" className="text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowRight className="h-5 w-5 rotate-180" />
-          </button>
           <div>
             <h1 className="text-xl font-black text-gray-900">פרסמו את המוצר שלכם למכרז אונליין</h1>
             <p className="text-xs text-gray-400 mt-0.5">המכרז נפתח מיד ונסגר תוך 24 שעות — פרסום חינם לחלוטין, בלי עמלות ובלי התחייבות.</p>

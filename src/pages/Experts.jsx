@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/lib/AuthContext";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
-import { ArrowRight, GraduationCap, MapPin, Phone, Mail, CheckCircle } from "lucide-react";
+import MobileSelect from "@/components/MobileSelect";
+import { GraduationCap, MapPin, Phone, Mail, CheckCircle } from "lucide-react";
 
 const PROFESSIONS = ["שמאי", "משקם עתיקות", "מומחה תכשיטים", "מומחה אמנות", "מומחה יודאיקה", "מומחה נומיסמטיקה", "מומחה שעונים", "אחר"];
 
@@ -68,10 +68,6 @@ export default function Experts() {
       {/* Header */}
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #3e6b8a08, #6aa3cd05)" }}>
         <div className="max-w-5xl mx-auto">
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
-            <ArrowRight className="h-4 w-4 rotate-180" />
-            חזרה לדף הבית
-          </Link>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #3e6b8a18, #6aa3cd11)", border: "1px solid #3e6b8a44" }}>
@@ -181,11 +177,9 @@ export default function Experts() {
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1">תחום התמחות *</label>
-                <select value={form.profession} onChange={e => setForm(f => ({ ...f, profession: e.target.value }))}
-                  className="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] text-right">
-                  <option value="">בחר תחום</option>
-                  {PROFESSIONS.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
+                <MobileSelect value={form.profession} onChange={v => setForm(f => ({ ...f, profession: v }))}
+                  options={PROFESSIONS} placeholder="בחר תחום" title="תחום התמחות"
+                  className="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] text-right" />
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1">אימייל *</label>

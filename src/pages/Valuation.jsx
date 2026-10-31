@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { estimateItemValue } from "@/functions/estimateItemValue";
 import { setPageMeta } from "@/lib/seo";
 import { CATEGORIES } from "@/lib/productMeta";
-import { Calculator, ArrowRight, Sparkles, CheckCircle, GraduationCap, Upload } from "lucide-react";
+import { Calculator, Sparkles, CheckCircle, GraduationCap, Upload } from "lucide-react";
 
 const CONFIDENCE_LABELS = {
   high: { label: "ביטחון גבוה", color: "#00a35c" },
@@ -55,10 +55,6 @@ export default function Valuation() {
       {/* Header */}
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
         <div className="max-w-3xl mx-auto">
-          <Link to="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
-            <ArrowRight className="h-4 w-4 rotate-180" />
-            חזרה לדף הבית
-          </Link>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #e5893d18, #3e6b8a11)", border: "1px solid #e5893d44" }}>

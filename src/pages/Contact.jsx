@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { setPageMeta } from "@/lib/seo";
 import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
+import { Mail, Send, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
 import HoneypotField, { useAntiBot } from "@/components/HoneypotField";
 import { containsProfanity } from "@/lib/profanity";
 
@@ -71,9 +71,6 @@ export default function Contact() {
       {/* Header */}
       <div className="border-b border-gray-100 px-4 py-5" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
         <div className="max-w-2xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-4 transition-colors">
-            <ArrowRight className="h-4 w-4 rotate-180" /> חזרה
-          </button>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #e5893d22, #3e6b8a11)", border: "1px solid #e5893d33" }}>

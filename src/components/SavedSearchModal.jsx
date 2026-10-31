@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { Bell, X, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
+import MobileSelect from "@/components/MobileSelect";
 
 const FREQ_OPTIONS = [
   { value: "instant", label: "מיידי — בדיקה כל שעה" },
@@ -84,10 +85,9 @@ export default function SavedSearchModal({ category, maxPrice, defaultLabel, onC
               className="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl mb-3 focus:outline-none focus:border-[#e5893d88] text-right" />
 
             <label className="block text-xs text-gray-500 mb-1">תדירות ההתראות</label>
-            <select value={frequency} onChange={e => setFrequency(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl mb-3 focus:outline-none focus:border-[#e5893d88] text-right">
-              {FREQ_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
+            <MobileSelect value={frequency} onChange={setFrequency} options={FREQ_OPTIONS}
+              title="תדירות ההתראות"
+              className="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-xl mb-3 focus:outline-none focus:border-[#e5893d88] text-right" />
 
             <label className="block text-xs text-gray-500 mb-1">טלפון להתראות (אופציונלי)</label>
             <input type="tel" value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)}

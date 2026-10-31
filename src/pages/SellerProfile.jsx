@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { SellerTrustBadge } from "@/components/SellerBadge";
+import SellerTrustProfile from "@/components/SellerTrustProfile";
 import ReviewsBio from "@/components/ReviewsBio";
 import { MapPin, Clock, Flame, Package, Store, Tag, TrendingUp, Bell, BellOff } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
@@ -160,6 +161,9 @@ export default function SellerProfile() {
               </button>
             )}
           </div>
+
+          {/* פרופיל אמון — תאריך הצטרפות, מספר מכרזים ודירוג אמיתי */}
+          <SellerTrustProfile sellerEmail={email} sellerUserId={sellerId} className="mt-4" />
 
           {/* נתוני פעילות המוכר */}
           <div className="grid grid-cols-3 gap-3 mt-5">

@@ -10,6 +10,7 @@ import { getFeeConfig } from "@/functions/getFeeConfig";
 import ClosedSalesSection from "@/components/admin/ClosedSalesSection";
 import MonthlySalesChart from "@/components/admin/MonthlySalesChart";
 import PromotionsSection from "@/components/admin/PromotionsSection";
+import AuctionPromotionsSection from "@/components/admin/AuctionPromotionsSection";
 
 const NEON_COLORS = ["#e5893d", "#3e6b8a", "#6aa3cd", "#2d4f68", "#00c853", "#ff6600"];
 
@@ -272,6 +273,9 @@ export default function AdminDashboard() {
           <StatCard icon={XCircle} label="בוטלו / ללא זוכה" value={stats.cancelled + stats.endedNoWinner} color="#e5893d" />
           <StatCard icon={ShieldAlert} label="סכסוכים פתוחים" value={stats.disputed} color="#ff6600" />
         </div>
+
+        {/* בקשות קידום מכרזים — אישור בעל האתר */}
+        <AuctionPromotionsSection />
 
         {/* בקשות קידום מכרזים */}
         <PromotionsSection />

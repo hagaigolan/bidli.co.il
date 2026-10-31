@@ -40,6 +40,9 @@ import { setPageMeta } from "@/lib/seo";
 import { getProductFaqs } from "@/lib/productFaq";
 import { recordRecentlyViewed } from "@/lib/recentlyViewed";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import PromoteRequestButton from "@/components/PromoteRequestButton";
+import SellerTrustProfile from "@/components/SellerTrustProfile";
+import { isPromoted } from "@/lib/promotion";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -856,6 +859,12 @@ export default function AuctionDetail() {
                 <span className="text-xs px-2.5 py-1 rounded-full font-semibold mb-2 inline-block"
                   style={{ background: "#e5893d15", color: "#e5893d" }}>{product.category}</span>
               )}
+              {isPromoted(product) && (
+                <span className="text-xs px-2.5 py-1 rounded-full font-black text-white mb-2 mr-1.5 inline-block"
+                  style={{ background: "linear-gradient(135deg, #6aa3cd, #3e6b8a)", boxShadow: "0 2px 8px #3e6b8a55" }}>
+                  ★ מקודם
+                </span>
+              )}
               <h1 className="text-2xl font-black text-gray-900 mt-1">{product.title}</h1>
               {product.condition && <p className="text-sm text-gray-400 mt-1">מצב: {product.condition}</p>}
 
@@ -865,6 +874,14 @@ export default function AuctionDetail() {
                   style={{ borderColor: "#3e6b8a44", color: "#3e6b8a", background: "#3e6b8a08" }}>
                   <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> עריכת פרטי המכרז
                 </button>
+              )}
+
+              {/* ── בקשת קידום מכרז — למוכר שבעל המכרז בלבד, ללא תשלום ── */}
+              {isSellerViewing && !ended && !cancelled && (
+                <PromoteRequestButton
+                  product={product}
+                  onUpdated={(status) => setProduct(p => (p ? { ...p, promotionStatus: status } : p))}
+                />
               )}
 
               {/* ── ביטול מכרז עצמי — מוצג למוכר בלבד ── */}
@@ -1103,6 +1120,13 @@ export default function AuctionDetail() {
                     <span>מוכר: {product.seller_name}</span>
                   )}
                 </div>
+              )}
+              {(product.seller_email || product.seller_user_id) && (
+                <SellerTrustProfile
+                  sellerEmail={product.seller_email}
+                  sellerUserId={product.seller_user_id}
+                  className="pt-1"
+                />
               )}
             </div>
 

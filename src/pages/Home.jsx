@@ -26,6 +26,7 @@ import TelegramBanner from "@/components/TelegramBanner";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
+import { isPromoted, promotedFirst } from "@/lib/promotion";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -309,7 +310,7 @@ function UpcomingAuctionsSection({ products }) {
   // חריגת פריטי "מציאות שנגמרות עוד מעט" כדי שלא יוצגו פעמיים
   const dealIds = new Set(getEndingSoonDeals(products).map(d => d.id));
   const upcoming = products.filter(p => p.ends_at && new Date(p.ends_at) > now && p.status !== "cancelled" && !dealIds.has(p.id));
-  const sorted = sortProducts(upcoming, sort);
+  const sorted = promotedFirst(sortProducts(upcoming, sort));
   if (upcoming.length === 0) return null;
 
   return (
@@ -330,6 +331,10 @@ function UpcomingAuctionsSection({ products }) {
                       style={{ background: "linear-gradient(135deg, #ef4444, #e5893d)" }}>🔥 מדובר</span>
                   )}
                   <PriceDropBadge product={product} className="absolute top-2 left-2" />
+                  {isPromoted(product) && (
+                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full text-[11px] font-black text-white"
+                      style={{ background: "linear-gradient(135deg, #6aa3cd, #3e6b8a)" }}>★ מקודם</span>
+                  )}
                 </div>
                 <div className="p-3" dir="rtl">
                   <h3 className="font-bold text-gray-900 text-xs leading-snug mb-1.5 line-clamp-1">{product.title}</h3>

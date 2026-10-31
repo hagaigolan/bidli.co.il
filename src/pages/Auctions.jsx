@@ -11,6 +11,7 @@ import CompareButton from "@/components/CompareButton";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
 import AddToCalendarButton from "@/components/AddToCalendarButton";
+import { isPromoted, promotedFirst } from "@/lib/promotion";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -52,7 +53,7 @@ function AuctionCard({ product }) {
         {product.image_url
           ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-50 to-gray-100">🏺</div>}
-        {product.featured && (!product.featured_until || new Date(product.featured_until) > new Date()) && (
+        {isPromoted(product) && (
           <span className="absolute top-2 left-2 px-2 py-1 rounded-full text-[11px] font-black text-white"
             style={{ background: "linear-gradient(135deg, #6aa3cd, #3e6b8a)", boxShadow: "0 2px 8px #3e6b8a55" }}>
             ★ מקודם
@@ -182,9 +183,8 @@ export default function Auctions() {
   const activeTotal = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date()).length;
   const hasFilters = filterCategory || filterKeyword || filterMin || filterMax || filterCondition || filterCity || storeOnly || endingSoon;
   const cities = [...new Set(products.map(p => p.location).filter(Boolean))];
-  // מכרזים מקודמים מוצגים ראשונים ברשימה
-  const isFeatured = (p) => !!(p.featured && (!p.featured_until || new Date(p.featured_until) > new Date()));
-  const activeList = [...active].sort((a, b) => (isFeatured(b) ? 1 : 0) - (isFeatured(a) ? 1 : 0));
+  // מכרזים מקודמים מוצגים ראשונים — המקודם שמסתיים ראשון קודם, אחר כך שאר המכרזים
+  const activeList = promotedFirst(active);
   const resetFilters = () => {
     setFilterCategory(""); setFilterKeyword(""); setFilterMin(0); setFilterMax(0);
     setFilterCondition(""); setFilterCity(""); setStoreOnly(false); setEndingSoon(false);

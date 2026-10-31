@@ -24,6 +24,7 @@ import HowItWorksStrip from "@/components/HowItWorksStrip";
 import CollectorQuiz from "@/components/CollectorQuiz";
 import TelegramBanner from "@/components/TelegramBanner";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -167,6 +168,8 @@ function SectionHeader({ title, color = "#e5893d", icon: Icon }) {
 }
 
 function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accentColor = "#e5893d" }) {
+  const ctaClass = "block w-full text-center text-white text-xs py-2 rounded-xl font-semibold transition-all duration-200 hover:opacity-90 hover:-translate-y-px";
+  const ctaStyle = { background: `linear-gradient(135deg, ${accentColor}, ${accentColor === "#e5893d" ? "#3e6b8a" : "#2d4f68"})` };
   return (
     <AnimatedElement delay={index * 50}>
       <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon"
@@ -201,11 +204,15 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
               <span className="truncate">{auction.location}</span>
             </div>
           )}
-          <a href={auction.id ? `/auction/${auction.id}` : (auction.view_url || "#")}
-            className="block w-full text-center text-white text-xs py-2 rounded-xl font-semibold transition-all duration-200 hover:opacity-90 hover:-translate-y-px"
-            style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor === "#e5893d" ? "#3e6b8a" : "#2d4f68"})` }}>
-            {buttonLabel}
-          </a>
+          {auction.id ? (
+            <Link to={`/auction/${auction.id}`} className={ctaClass} style={ctaStyle}>
+              {buttonLabel}
+            </Link>
+          ) : (
+            <a href={auction.view_url || "#"} className={ctaClass} style={ctaStyle}>
+              {buttonLabel}
+            </a>
+          )}
         </div>
       </div>
     </AnimatedElement>
@@ -312,7 +319,7 @@ function UpcomingAuctionsSection({ products }) {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
           {sorted.map((product, index) => (
             <AnimatedElement key={product.id} delay={index * 50}>
-              <a href={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+              <Link to={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
                 <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
                   {product.image_url
                     ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -336,7 +343,7 @@ function UpcomingAuctionsSection({ products }) {
                   </div>
                   <LiveCardStats product={product} />
                 </div>
-              </a>
+              </Link>
             </AnimatedElement>
           ))}
         </div>
@@ -406,19 +413,22 @@ export default function Home() {
     });
   }, []);
 
+  const loadData = () => Promise.all([
+    base44.entities.Product.list("-created_date", 50).then(setProducts).catch(() => {}),
+    ShopEntity.list("-created_date", 10).then(setShops).catch(() => {}),
+    // מונה חי — כמה מכרזים פורסמו היום
+    base44.entities.Product.list("-created_date", 200).then(ps => {
+      const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+      setTodayCount(ps.filter(p => new Date(p.created_date) >= dayStart).length);
+    }).catch(() => {}),
+  ]);
+
   useEffect(() => {
-    Promise.all([
-      base44.entities.Product.list("-created_date", 50).then(setProducts).catch(() => {}),
-      ShopEntity.list("-created_date", 10).then(setShops).catch(() => {}),
-      // מונה חי — כמה מכרזים פורסמו היום
-      base44.entities.Product.list("-created_date", 200).then(ps => {
-        const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
-        setTodayCount(ps.filter(p => new Date(p.created_date) >= dayStart).length);
-      }).catch(() => {}),
-    ]).finally(() => setLoading(false));
+    loadData().finally(() => setLoading(false));
   }, []);
 
   return (
+    <PullToRefresh onRefresh={loadData}>
     <div className="bg-white">
       <TelegramBanner />
       <HeroSection todayCount={todayCount} />
@@ -445,5 +455,6 @@ export default function Home() {
       <ProtectedDealSection />
       <TrustSection />
       </div>
+    </PullToRefresh>
   );
 }

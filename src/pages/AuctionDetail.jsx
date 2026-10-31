@@ -354,12 +354,15 @@ export default function AuctionDetail() {
   const toggleFavorite = async () => {
     if (!product) return;
     setFavError("");
+    const nextSaved = !favSaved;
+    const prevCount = favCount;
+    // עדכון אופטימי — הלב והמונה מתחלפים מיד, עוד לפני שהשרת ענה
+    setFavSaved(nextSaved);
+    setFavCount(c => Math.max(0, c + (nextSaved ? 1 : -1)));
     try {
       const existing = await base44.entities.Favorite.filter({ product_id: product.id, owner_key: getOwnerKey() });
-      if (existing.length) {
-        await base44.entities.Favorite.delete(existing[0].id);
-        setFavSaved(false);
-      } else {
+      if (existing.length) await base44.entities.Favorite.delete(existing[0].id);
+      if (nextSaved && existing.length === 0) {
         await base44.entities.Favorite.create({
           product_id: product.id,
           product_title: product.title,
@@ -369,12 +372,16 @@ export default function AuctionDetail() {
           notify_email: localStorage.getItem("notif_email") || localStorage.getItem("bidder_email") || "",
           notify_phone: localStorage.getItem("notif_phone") || "",
         });
-        setFavSaved(true);
         // התראה במייל למוכר שהפריט שלו נשמר במועדפים
         base44.functions.invoke("notifySellerFavorite", { product_id: product.id }).catch(() => {});
       }
       refreshFavCount(product.id);
-    } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
+    } catch {
+      // שחזור למצב הקודם אם השמירה נכשלה
+      setFavSaved(!nextSaved);
+      setFavCount(prevCount);
+      setFavError("שגיאה בעדכון המועדפים, נסה שנית");
+    }
   };
 
   // ── שיתוף גלריית המכרז לחשבון האינסטגרם העסקי ──
@@ -582,6 +589,10 @@ export default function AuctionDetail() {
       return;
     }
     setBidding(true); setBidError("");
+    // תמונת מצב לשחזור במקרה שהשרת לא ישמור את ההצעה
+    const prevProduct = product;
+    const prevBids = bids;
+    const prevMyLastBid = myLastBid;
     try {
       const newPrice = parseFloat(bidAmount);
       const name = bidderName || "אנונימי";
@@ -608,6 +619,9 @@ export default function AuctionDetail() {
         updateData.second_bidder_email = product.highest_bidder_email || "";
         updateData.second_bid_amount = product.current_price || 0;
       }
+      // עדכון אופטימי — המחיר, המוביל ומונה ההצעות מתעדכנים מיד
+      setProduct(p => ({ ...p, ...updateData }));
+      setBids(prev => [{ bidder_name: name, bidder_email: myEmail || "", amount: newPrice, id: `tmp-${Date.now()}` }, ...prev]);
       await base44.entities.Product.update(product.id, updateData);
       await base44.entities.Bid.create({
         product_id: product.id, product_title: product.title,
@@ -615,8 +629,6 @@ export default function AuctionDetail() {
         product_ends_at: product.ends_at,
         bidder_name: name, bidder_email: myEmail || "", amount: newPrice, status: "active",
       });
-      setProduct(p => ({ ...p, ...updateData }));
-      setBids(prev => [{ bidder_name: name, amount: newPrice, id: Date.now() }, ...prev]);
       if (extendAuction) {
         setAntiSnipeExtended(true);
         setTimeout(() => setAntiSnipeExtended(false), 5000);
@@ -651,7 +663,13 @@ export default function AuctionDetail() {
       setBidAmount(""); setBidSuccess(true);
       startBidConfetti();
       setTimeout(() => setBidSuccess(false), 3000);
-    } catch { setBidError("שגיאה, נסה שנית"); }
+    } catch {
+      // ההצעה לא נשמרה בשרת — מחזירים את המחיר, המוביל והמונה למצב הקודם
+      setProduct(prevProduct);
+      setBids(prevBids);
+      setMyLastBid(prevMyLastBid);
+      setBidError("שגיאה, נסה שנית");
+    }
     finally { setBidding(false); }
   };
 

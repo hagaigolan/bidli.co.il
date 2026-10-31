@@ -8,6 +8,7 @@ import SavedSearchModal from "@/components/SavedSearchModal";
 import AuctionsFilterPanel from "@/components/AuctionsFilterPanel";
 import LiveCardStats from "@/components/LiveCardStats";
 import CompareButton from "@/components/CompareButton";
+import PullToRefresh from "@/components/PullToRefresh";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -104,11 +105,12 @@ export default function Auctions() {
   const [filterCity, setFilterCity] = useState(PARAM_CITY);
   const [endingSoon, setEndingSoon] = useState(false);
 
+  const loadProducts = () => base44.entities.Product.list("-created_date", 50)
+    .then(setProducts)
+    .catch(() => {});
+
   useEffect(() => {
-    base44.entities.Product.list("-created_date", 50)
-      .then(setProducts)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    loadProducts().finally(() => setLoading(false));
   }, []);
 
   // SEO: כותרת ותיאור לעמוד המכרזים
@@ -162,6 +164,7 @@ export default function Auctions() {
   };
 
   return (
+    <PullToRefresh onRefresh={loadProducts}>
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
       <div className="border-b border-gray-100 py-8 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #ffffff)" }}>
@@ -284,5 +287,6 @@ export default function Auctions() {
         />
       )}
     </div>
+    </PullToRefresh>
   );
 }

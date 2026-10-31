@@ -41,10 +41,10 @@ export default function Articles() {
       {/* Hero */}
       <div className="border-b border-gray-100 py-10 px-4" style={{ background: "linear-gradient(135deg, #e5893d08, #3e6b8a05)" }}>
         <div className="max-w-5xl mx-auto">
-          <a href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
             <ArrowRight className="h-4 w-4 rotate-180" />
             חזרה לדף הבית
-          </a>
+          </Link>
           <h1 className="text-3xl font-black text-gray-900 mb-2">מאמרים</h1>
           <p className="text-gray-500 text-sm">מדריכים, מחירונים, טיפים ותובנות לעולם האספנות והמכרזים</p>
         </div>

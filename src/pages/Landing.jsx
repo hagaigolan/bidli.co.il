@@ -112,7 +112,7 @@ export default function Landing() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {products.map(p => (
-                <a key={p.id} href={`/auction/${p.id}`}
+                <Link key={p.id} to={`/auction/${p.id}`}
                   className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon"
                   style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
                   <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
@@ -134,7 +134,7 @@ export default function Landing() {
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           )}

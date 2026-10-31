@@ -2,6 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2, X, Save } from "lucide-react";
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
+import MobileSelect from "@/components/MobileSelect";
 
 // עריכת פרטי מכרז — המחיר ניתן לעריכה רק אם לא הוגשו הצעות
 export default function ProductEditModal({ product, onClose, onSaved }) {
@@ -77,16 +78,13 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="edit-category" className="block text-xs text-gray-500 mb-1">קטגוריה</label>
-              <select id="edit-category" value={form.category} onChange={e => set("category", e.target.value)} className={inputCls}>
-                <option value="">בחר קטגוריה</option>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect id="edit-category" value={form.category} onChange={v => set("category", v)}
+                options={CATEGORIES} placeholder="בחר קטגוריה" title="בחירת קטגוריה" className={inputCls} />
             </div>
             <div>
               <label htmlFor="edit-condition" className="block text-xs text-gray-500 mb-1">מצב המוצר</label>
-              <select id="edit-condition" value={form.condition} onChange={e => set("condition", e.target.value)} className={inputCls}>
-                {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect id="edit-condition" value={form.condition} onChange={v => set("condition", v)}
+                options={CONDITIONS} title="מצב המוצר" className={inputCls} />
             </div>
           </div>
 

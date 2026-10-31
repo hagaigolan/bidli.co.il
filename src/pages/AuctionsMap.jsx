@@ -137,9 +137,9 @@ export default function AuctionsMap() {
                           ₪{(p.current_price || p.starting_price || 0).toLocaleString()}
                         </span>
                         {p.location && <span style={{ display: "block", fontSize: 11, color: "#71717a" }}>{p.location}</span>}
-                        <a href={`/auction/${p.id}`} style={{ display: "block", marginTop: 6, color: "#3e6b8a", fontWeight: 700, fontSize: 12 }}>
+                        <Link to={`/auction/${p.id}`} style={{ display: "block", marginTop: 6, color: "#3e6b8a", fontWeight: 700, fontSize: 12 }}>
                           למכרז ←
-                        </a>
+                        </Link>
                       </div>
                     </Popup>
                   </Marker>

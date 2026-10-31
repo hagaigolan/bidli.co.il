@@ -14,6 +14,7 @@ import { isAnyEmailBanned } from "@/lib/banCheck";
 import { setPageMeta } from "@/lib/seo";
 import UploadTrustStrip from "@/components/UploadTrustStrip";
 import UploadProgress from "@/components/UploadProgress";
+import MobileSelect from "@/components/MobileSelect";
 const PAYMENT_METHOD_LABELS = { kashcash: "קש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
@@ -483,18 +484,15 @@ export default function UploadProduct() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">קטגוריה</label>
-              <select value={form.category} onChange={e => { set("category", e.target.value); set("subcategory", ""); }}
-                className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right">
-                <option value="">בחר קטגוריה</option>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect value={form.category} onChange={v => { set("category", v); set("subcategory", ""); }}
+                options={CATEGORIES} placeholder="בחר קטגוריה" title="בחירת קטגוריה"
+                className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">מצב המוצר</label>
-              <select value={form.condition} onChange={e => set("condition", e.target.value)}
-                className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right">
-                {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect value={form.condition} onChange={v => set("condition", v)}
+                options={CONDITIONS} title="מצב המוצר"
+                className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
             </div>
           </div>
 
@@ -502,11 +500,11 @@ export default function UploadProduct() {
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">תת קטגוריה
               <span className="text-xs text-gray-400 font-normal"> — מיקוד המכרז לקונים הרלוונטיים</span>
             </label>
-            <select value={form.subcategory} onChange={e => set("subcategory", e.target.value)} disabled={!form.category}
-              className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right disabled:bg-gray-50 disabled:text-gray-400">
-              <option value="">{form.category ? "בחר תת קטגוריה (אופציונלי)" : "בחר קטגוריה תחילה"}</option>
-              {(SUBCATEGORIES[form.category] || []).map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <MobileSelect value={form.subcategory} onChange={v => set("subcategory", v)} disabled={!form.category}
+              options={SUBCATEGORIES[form.category] || []}
+              placeholder={form.category ? "בחר תת קטגוריה (אופציונלי)" : "בחר קטגוריה תחילה"}
+              title="תת קטגוריה"
+              className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right disabled:bg-gray-50 disabled:text-gray-400" />
           </div>
 
           {/* סימון כסטוק */}

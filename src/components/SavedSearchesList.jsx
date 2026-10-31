@@ -21,9 +21,15 @@ export default function SavedSearchesList() {
 
   if (!user || !searches || searches.length === 0) return null;
 
+  // עדכון אופטימי — הכפתור מתחלף מיד, ובכישלון חוזר למצב הקודם
   const toggleActive = async (s) => {
-    await base44.entities.SavedSearch.update(s.id, { active: !s.active }).catch(() => {});
-    load();
+    const next = !s.active;
+    setSearches(list => (list || []).map(x => (x.id === s.id ? { ...x, active: next } : x)));
+    try {
+      await base44.entities.SavedSearch.update(s.id, { active: next });
+    } catch {
+      setSearches(list => (list || []).map(x => (x.id === s.id ? { ...x, active: s.active } : x)));
+    }
   };
   const remove = async (s) => {
     await base44.entities.SavedSearch.delete(s.id).catch(() => {});

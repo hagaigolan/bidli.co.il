@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { sendCancelEmail } from "@/lib/adminEmails";
@@ -150,9 +151,9 @@ export default function AdminAuctionsSection({ onSendEmail }) {
                 ? <img src={p.image_url} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
                 : <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-xl">🏺</div>}
               <div className="flex-1 min-w-0">
-                <a href={`/auction/${p.id}`} className="block font-bold text-sm text-gray-800 hover:text-[#e5893d] transition-colors line-clamp-2">
+                <Link to={`/auction/${p.id}`} className="block font-bold text-sm text-gray-800 hover:text-[#e5893d] transition-colors line-clamp-2">
                   {p.title || "—"}
-                </a>
+                </Link>
                 <p className="text-xs text-gray-400 truncate mt-0.5">{p.seller_name || "—"}{p.seller_email ? ` · ${p.seller_email}` : ""}</p>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded-full font-bold flex-shrink-0 mt-0.5"
@@ -209,9 +210,9 @@ export default function AdminAuctionsSection({ onSendEmail }) {
               {filtered.slice(0, 100).map(p => (
                 <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50/50">
                   <td className="px-4 py-3">
-                    <a href={`/auction/${p.id}`} className="font-semibold text-gray-800 hover:text-[#e5893d] transition-colors">
+                    <Link to={`/auction/${p.id}`} className="font-semibold text-gray-800 hover:text-[#e5893d] transition-colors">
                       {p.title || "—"}
-                    </a>
+                    </Link>
                   </td>
                   <td className="px-4 py-3">
                     <p className="text-gray-700 text-xs font-semibold">{p.seller_name || "—"}</p>

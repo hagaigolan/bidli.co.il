@@ -106,7 +106,7 @@ export default function Category() {
         <div className="text-center">
           <p className="text-5xl mb-4">😕</p>
           <h2 className="text-xl font-bold text-gray-800 mb-2">קטגוריה לא נמצאה</h2>
-          <a href="/" className="text-sm" style={{ color: "#e5893d" }}>חזרה לדף הבית</a>
+          <Link to="/" className="text-sm" style={{ color: "#e5893d" }}>חזרה לדף הבית</Link>
         </div>
       </div>
     );

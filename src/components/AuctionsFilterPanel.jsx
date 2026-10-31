@@ -1,6 +1,7 @@
 import { SlidersHorizontal, X, Timer, Store } from "lucide-react";
 import { CATEGORIES, CONDITIONS } from "@/lib/productMeta";
 import MobileSelect from "@/components/MobileSelect";
+import DistanceFilter from "@/components/DistanceFilter";
 
 // לוח סינון לעמוד כל המכרזים — קטגוריה, טווח מחירים, מצב פריט, עיר ומסתיים בקרוב
 export default function AuctionsFilterPanel({
@@ -8,8 +9,10 @@ export default function AuctionsFilterPanel({
   condition, setCondition, city, setCity, endingSoon, setEndingSoon,
   keyword, setKeyword, storeOnly, setStoreOnly,
   cities, count, totalCount, onReset,
+  distanceActive, distanceCity, setDistanceCity, radius, setRadius,
+  onNearMe, locating, geoError, usingGeo, onClearDistance,
 }) {
-  const hasActive = category || minPrice || maxPrice || condition || city || endingSoon || keyword || storeOnly;
+  const hasActive = category || minPrice || maxPrice || condition || city || endingSoon || keyword || storeOnly || distanceActive;
   const chipCls = (on) =>
     `text-xs font-bold px-3 py-1.5 rounded-full border transition-all whitespace-nowrap ${
       on ? "text-white" : "bg-background text-muted-foreground hover:text-[#e5893d] hover:border-[#e5893d66]"
@@ -98,6 +101,21 @@ export default function AuctionsFilterPanel({
           חדש מהחנות
         </button>
       </div>
+
+      {/* סינון לפי מרחק — עיר מרכזית + רדיוס, או איתור המיקום הנוכחי בלחיצה */}
+      <DistanceFilter
+        cities={cities}
+        city={distanceCity}
+        setCity={setDistanceCity}
+        radius={radius}
+        setRadius={setRadius}
+        onNearMe={onNearMe}
+        locating={locating}
+        geoError={geoError}
+        usingGeo={usingGeo}
+        isActive={distanceActive}
+        onClear={onClearDistance}
+      />
     </div>
   );
 }

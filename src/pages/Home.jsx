@@ -29,6 +29,8 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
 import { isPromoted, promotedFirst } from "@/lib/promotion";
+import SortBar from "@/components/SortBar";
+import { sortProducts } from "@/lib/auctionSort";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -260,49 +262,6 @@ function AuctionCountdown({ endsAt }) {
     >
       {critical ? <Flame className="h-3 w-3 flex-shrink-0" /> : <Clock className="h-3 w-3 flex-shrink-0" />}
       {time}
-    </div>
-  );
-}
-
-const SORT_OPTIONS = [
-  { id: "newest", label: "מכרז חדש יותר" },
-  { id: "oldest", label: "מכרז ישן יותר" },
-  { id: "ending_soon", label: "מסתיים בזמן הקרוב" },
-  { id: "price_low", label: "מחיר: מהנמוך לגבוה" },
-  { id: "price_high", label: "מחיר: מהגבוה לנמוך" },
-  { id: "bids", label: "הכי הרבה הצעות" },
-];
-
-function sortProducts(items, sort) {
-  const price = p => Number(p.current_price || p.starting_price) || 0;
-  switch (sort) {
-    case "newest": return [...items].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-    case "oldest": return [...items].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
-    case "ending_soon": return [...items].sort((a, b) => new Date(a.ends_at) - new Date(b.ends_at));
-    case "price_low": return [...items].sort((a, b) => price(a) - price(b));
-    case "price_high": return [...items].sort((a, b) => price(b) - price(a));
-    case "bids": return [...items].sort((a, b) => (b.bid_count || 0) - (a.bid_count || 0));
-    default: return items;
-  }
-}
-
-function SortBar({ sort, onChange }) {
-  return (
-    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1 mb-5" dir="rtl">
-      {SORT_OPTIONS.map(opt => (
-        <button
-          key={opt.id}
-          onClick={() => onChange(opt.id)}
-          className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-            sort === opt.id
-              ? "text-white"
-              : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-orange-50 hover:text-[#e5893d]"
-          }`}
-          style={sort === opt.id ? { background: "linear-gradient(135deg, #e5893d, #3e6b8a)" } : undefined}
-        >
-          {opt.label}
-        </button>
-      ))}
     </div>
   );
 }

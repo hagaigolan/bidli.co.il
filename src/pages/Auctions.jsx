@@ -12,6 +12,9 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
 import AddToCalendarButton from "@/components/AddToCalendarButton";
 import { isPromoted, promotedFirst } from "@/lib/promotion";
+import SortBar from "@/components/SortBar";
+import { AUCTIONS_SORT_OPTIONS, sortProducts } from "@/lib/auctionSort";
+import { resolveCenter, withinRadius } from "@/lib/distance";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -123,6 +126,13 @@ export default function Auctions() {
   const [filterCity, setFilterCity] = useState(PARAM_CITY);
   const [storeOnly, setStoreOnly] = useState(PARAM_STORE);
   const [endingSoon, setEndingSoon] = useState(false);
+  const [sort, setSort] = useState("relevance");
+  // סינון לפי מרחק — עיר מרכזית + רדיוס, או המיקום מהדפדפן (רק לאחר לחיצה על "קרוב אליי")
+  const [distanceCity, setDistanceCity] = useState("");
+  const [radius, setRadius] = useState(0);
+  const [geoPoint, setGeoPoint] = useState(null);
+  const [locating, setLocating] = useState(false);
+  const [geoError, setGeoError] = useState("");
 
   const loadProducts = () => base44.entities.Product.list("-created_date", 50)
     .then(setProducts)
@@ -161,6 +171,8 @@ export default function Auctions() {
   }, [products]);
 
   const priceOf = p => (p.current_price || p.starting_price || 0);
+  const distanceCenter = radius > 0 ? resolveCenter({ geoPoint, city: distanceCity }) : null;
+  const distanceActive = !!distanceCenter;
   const active = products.filter(p => {
     if (p.status === "cancelled" || new Date(p.ends_at) <= new Date()) return false;
     // סינון לפי המחיר בפועל כרגע (המחיר הנוכחי, או ההתחלתי כשאין הצעות)
@@ -175,20 +187,54 @@ export default function Auctions() {
     if (filterMax && priceOf(p) > filterMax) return false;
     if (filterCondition && p.condition !== filterCondition) return false;
     if (filterCity && !(p.location || "").includes(filterCity)) return false;
+    // סינון לפי מרחק מנקודת המוצא — עד הרדיוס שנבחר
+    if (distanceActive && !withinRadius(p, distanceCenter, radius)) return false;
     // מסתיים בקרוב — תוך 24 שעות
     if (endingSoon && new Date(p.ends_at) - Date.now() > 24 * 3600000) return false;
     return true;
   });
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());
   const activeTotal = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date()).length;
-  const hasFilters = filterCategory || filterKeyword || filterMin || filterMax || filterCondition || filterCity || storeOnly || endingSoon;
+  const hasFilters = filterCategory || filterKeyword || filterMin || filterMax || filterCondition || filterCity || storeOnly || endingSoon || distanceActive;
   const cities = [...new Set(products.map(p => p.location).filter(Boolean))];
-  // מכרזים מקודמים מוצגים ראשונים — המקודם שמסתיים ראשון קודם, אחר כך שאר המכרזים
-  const activeList = promotedFirst(active);
+  // מכרזים מקודמים מוצגים ראשונים — המיון פועל יחד עם כל המסננים
+  const activeList = promotedFirst(sortProducts(active, sort));
   const resetFilters = () => {
     setFilterCategory(""); setFilterKeyword(""); setFilterMin(0); setFilterMax(0);
     setFilterCondition(""); setFilterCity(""); setStoreOnly(false); setEndingSoon(false);
+    setRadius(0); setDistanceCity(""); setGeoPoint(null); setGeoError("");
   };
+
+  // "קרוב אליי" — בקשת הרשאת המיקום מופיעה רק לאחר לחיצה על הכפתור
+  const handleNearMe = () => {
+    setGeoError("");
+    if (!navigator.geolocation) {
+      setGeoError("הדפדפן הזה לא תומך באיתור מיקום — אפשר לבחור עיר מרכזית ולסנן לפי רדיוס");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setGeoPoint({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setDistanceCity("");
+        setRadius(r => (r > 0 ? r : 25));
+        setLocating(false);
+      },
+      (err) => {
+        setLocating(false);
+        setGeoError(err && err.code === 1
+          ? "לא אישרתם גישה למיקום — אפשר לבחור עיר מרכזית ולסנן לפי רדיוס"
+          : "לא הצלחנו לאתר את המיקום — נסו שוב או בחרו עיר מרכזית");
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+  const chooseDistanceCity = (city) => {
+    setGeoPoint(null);
+    setDistanceCity(city);
+    if (city && !radius) setRadius(25);
+  };
+  const clearDistance = () => { setRadius(0); setDistanceCity(""); setGeoPoint(null); setGeoError(""); };
 
   return (
     <PullToRefresh onRefresh={loadProducts}>
@@ -226,6 +272,11 @@ export default function Auctions() {
               storeOnly={storeOnly} setStoreOnly={setStoreOnly}
               cities={cities} count={active.length} totalCount={activeTotal}
               onReset={resetFilters}
+              distanceActive={distanceActive}
+              distanceCity={distanceCity} setDistanceCity={chooseDistanceCity}
+              radius={radius} setRadius={setRadius}
+              onNearMe={handleNearMe} locating={locating} geoError={geoError}
+              usingGeo={!!geoPoint} onClearDistance={clearDistance}
             />
             <div className="flex items-center justify-end gap-3 mb-5" dir="rtl">
               <Link to="/auction-calendar"
@@ -280,6 +331,8 @@ export default function Auctions() {
               )
             ) : (
               <>
+                <SortBar sort={sort} onChange={setSort} options={AUCTIONS_SORT_OPTIONS} />
+
                 {active.length > 0 && (
                   <div className="mb-10">
                     <h2 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">

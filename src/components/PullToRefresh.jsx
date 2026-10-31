@@ -22,8 +22,18 @@ export default function PullToRefresh({ onRefresh, children }) {
   };
 
   useEffect(() => {
+    const scrollTop = () => document.scrollingElement?.scrollTop || window.scrollY || 0;
+
     const onStart = (e) => {
-      if (busyRef.current || window.scrollY > 0) { startY.current = null; return; }
+      startY.current = null;
+      if (busyRef.current || scrollTop() > 0) return;
+      // אלמנט גלילה פנימי (קרוסלה, רשימה) — לא מפעילים משיכה לרענון
+      let el = e.target;
+      while (el && el !== document.body) {
+        const style = window.getComputedStyle(el);
+        if (/(auto|scroll)/.test(style.overflowY) && el.scrollHeight > el.clientHeight) return;
+        el = el.parentElement;
+      }
       startY.current = e.touches[0].clientY;
       setDragging(true);
     };
@@ -31,11 +41,11 @@ export default function PullToRefresh({ onRefresh, children }) {
     const onMove = (e) => {
       if (startY.current === null) return;
       const dy = e.touches[0].clientY - startY.current;
-      if (dy <= 0 || window.scrollY > 0) {
+      // ללא preventDefault — הגלילה הטבעית של המכשיר נשארת פעילה תמיד
+      if (dy <= 0 || scrollTop() > 0) {
         if (pullRef.current) setDist(0);
         return;
       }
-      if (e.cancelable) e.preventDefault();
       setDist(Math.min(MAX_PULL, dy * 0.55));
     };
 
@@ -56,7 +66,7 @@ export default function PullToRefresh({ onRefresh, children }) {
     };
 
     window.addEventListener("touchstart", onStart, { passive: true });
-    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchmove", onMove, { passive: true });
     window.addEventListener("touchend", onEnd);
     window.addEventListener("touchcancel", onEnd);
     return () => {

@@ -43,7 +43,10 @@ export default function AccessibilityWidget() {
   const activeCount = OPTIONS.filter(o => settings[o.id]).length;
 
   return (
-    <div className="fixed bottom-4 left-4 z-[90]" dir="rtl">
+    <div
+      className="fixed left-4 z-[90] bottom-[calc(var(--tabbar-h)+var(--safe-bottom)+1.5rem)] md:bottom-4"
+      dir="rtl"
+    >
       {open && (
         <div
           role="dialog"

@@ -4,7 +4,7 @@ import { Zap, CheckCircle, Coins, Gavel } from "lucide-react";
 import { getCumulativeSales, SOLD_AUCTIONS_QUERY } from "@/lib/cumulativeSales";
 
 // בסיס היסטורי למספר המכרזים שהושלמו בלבד — סך המכירות המצטבר מחושב
-// אך ורק בפונקציה המשותפת getCumulativeSales (מקור אמת אחד לשני העמודים)
+// בפונקציה המשותפת getCumulativeSales (בסיס site-stats + מכירות אמיתיות)
 const BASE_COMPLETED = 29;
 // מועד קביעת הבסיס — רק מכרזים שנמכרו מאז נספרים ומתווספים אליו
 const BASE_SALES_AT = "2026-10-30T22:00:00.000Z";

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, ArrowLeftRight, Coins, Flame } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { CATEGORIES } from "@/lib/productMeta";
+import MobileSelect from "@/components/MobileSelect";
 
 const CONDITIONS = ["חדש", "משומש", "תקין", "מקולקל"];
 
@@ -113,18 +114,15 @@ export default function BarterUploadModal({ me, onClose, onSaved }) {
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">קטגוריה</label>
-              <select value={form.category} onChange={e => set("category", e.target.value)}
-                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right">
-                <option value="">בחר קטגוריה</option>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect value={form.category} onChange={v => set("category", v)} options={CATEGORIES}
+                placeholder="בחר קטגוריה" title="קטגוריה"
+                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right" />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">מצב הפריט *</label>
-              <select value={form.condition} onChange={e => set("condition", e.target.value)}
-                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right">
-                {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <MobileSelect value={form.condition} onChange={v => set("condition", v)} options={CONDITIONS}
+                title="מצב הפריט"
+                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right" />
             </div>
           </div>
 
@@ -140,11 +138,10 @@ export default function BarterUploadModal({ me, onClose, onSaved }) {
               <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
                 <Flame className="h-3 w-3" aria-hidden="true" /> דחיפות
               </label>
-              <select value={form.urgency} onChange={e => set("urgency", e.target.value)}
-                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right">
-                <option value="רגיל">רגיל</option>
-                <option value="דחוף">דחוף 🔥</option>
-              </select>
+              <MobileSelect value={form.urgency} onChange={v => set("urgency", v)}
+                options={[{ value: "רגיל", label: "רגיל" }, { value: "דחוף", label: "דחוף 🔥" }]}
+                title="דחיפות"
+                className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right" />
             </div>
           </div>
 

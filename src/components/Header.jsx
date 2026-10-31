@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Search } from "lucide-react";
+import { Menu, ChevronDown, Search, ArrowRight } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
@@ -18,6 +18,20 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
+  // מסלול פרטים מקונן — במובייל מוצגת כותרת מפושטת עם חזרה, בלי חיפוש ובלי פס קטגוריות
+  const detailMatch = location.pathname.match(/^\/(auction|barter|articles)\/([^/]+)$/);
+  const detailInfo = detailMatch
+    ? {
+        root: `/${detailMatch[1]}`,
+        label: detailMatch[1] === "auction" ? "פרטי המכרז" : detailMatch[1] === "barter" ? "פרטי ההחלפה" : "מאמר",
+      }
+    : null;
+
+  const goBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate(detailInfo?.root || "/");
+  };
 
   const doSearch = () => {
     const term = searchTerm.trim();
@@ -38,8 +52,19 @@ export default function Header() {
 
   return (
     <header className="bg-background" dir="rtl">
+      {/* מובייל · עמוד פרטים: כותרת מפושטת עם כפתור חזרה */}
+      {detailInfo && (
+        <div className="sm:hidden sticky top-0 z-50 flex items-center gap-1 h-14 px-2 border-b border-border bg-background safe-top">
+          <button type="button" onClick={goBack} aria-label="חזרה לעמוד הקודם"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-foreground hover:bg-muted transition-colors">
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <h1 className="text-sm font-black text-foreground truncate">{detailInfo.label}</h1>
+        </div>
+      )}
+
       {/* Top micro-bar */}
-      <div className="border-b border-border bg-muted relative z-[60] safe-top">
+      <div className={`border-b border-border bg-muted relative z-[60] safe-top ${detailInfo ? "hidden sm:block" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-muted-foreground">
           <div className="hidden sm:flex items-center gap-4 min-w-0 flex-1">
             <SalesTicker />
@@ -53,7 +78,7 @@ export default function Header() {
       </div>
 
       {/* Main bar — sticky; נשאר דבוק בראש בזמן גלילה */}
-      <div className={`sticky top-0 z-50 border-b border-border bg-background transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
+      <div className={`sticky top-0 z-50 border-b border-border bg-background transition-all duration-300 ${detailInfo ? "hidden sm:block " : ""}${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between min-h-16 py-3 gap-2 sm:gap-4">
             {/* Logo */}
@@ -156,7 +181,7 @@ export default function Header() {
       </div>
 
       {/* Category strip — חלק מהעמוד, גולל כלפי מעלה יחד עם האתר */}
-      <div className="border-b border-border bg-background">
+      <div className={`border-b border-border bg-background ${detailInfo ? "hidden sm:block" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}

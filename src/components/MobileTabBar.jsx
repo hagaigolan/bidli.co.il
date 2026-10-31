@@ -1,4 +1,5 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { Home, Gavel, Repeat, Heart, User } from "lucide-react";
 
 // סרגל ניווט תחתון — מוצג במסכים ניידים בלבד (עד md), נעלם בדסקטופ
@@ -11,19 +12,48 @@ const TABS = [
   { label: "פרופיל", path: "/profile", icon: User, match: ["/profile", "/my-center", "/my-orders", "/my-sales"] },
 ];
 
+// זיכרון הסשן: המסלול הפנימי האחרון שנצפה בכל טאב — נמחק בסגירת האפליקציה/הטאב
+const storageKey = (path) => `tab_last:${path}`;
+
+const readLast = (path) => {
+  try {
+    const saved = sessionStorage.getItem(storageKey(path));
+    return saved && saved !== path ? saved : null;
+  } catch {
+    return null;
+  }
+};
+
 export default function MobileTabBar() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const [lastRoutes, setLastRoutes] = useState(() =>
+    TABS.reduce((acc, tab) => {
+      const saved = readLast(tab.path);
+      if (saved) acc[tab.path] = saved;
+      return acc;
+    }, {})
+  );
 
-  const isTabActive = (tab) => tab.match.some(p =>
+  const isTabActive = (tab) => tab.match.some((p) =>
     p === "/" ? location.pathname === "/" : location.pathname === p || location.pathname.startsWith(p + "/")
   );
 
-  // לחיצה על טאב שכבר פעיל — מחזירה לתצוגת השורש שלו ומגלילה לראש העמוד
-  const handleClick = (e, tab) => {
-    if (!isTabActive(tab)) return;
+  // כל מסלול פנימי שנצפה נשמר תחת הטאב שלו, כדי לחזור אליו בלחיצה על הטאב
+  useEffect(() => {
+    const tab = TABS.find((t) => isTabActive(t));
+    if (!tab || location.pathname === tab.path) return;
+    try {
+      sessionStorage.setItem(storageKey(tab.path), location.pathname);
+    } catch {
+      /* מצב פרטי — ממשיכים בלי זיכרון */
+    }
+    setLastRoutes((prev) => (prev[tab.path] === location.pathname ? prev : { ...prev, [tab.path]: location.pathname }));
+  }, [location.pathname]);
+
+  // לחיצה כשכבר נמצאים ביעד — גלילה לראש העמוד
+  const handleClick = (e, target) => {
+    if (location.pathname !== target) return;
     e.preventDefault();
-    if (location.pathname !== tab.path) navigate(tab.path);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -37,12 +67,13 @@ export default function MobileTabBar() {
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const active = isTabActive(tab);
+          const target = lastRoutes[tab.path] || tab.path;
           return (
             <NavLink
               key={tab.path}
-              to={tab.path}
+              to={target}
               aria-current={active ? "page" : undefined}
-              onClick={(e) => handleClick(e, tab)}
+              onClick={(e) => handleClick(e, target)}
               className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[11px] font-semibold transition-colors ${
                 active ? "text-[#e5893d]" : "text-muted-foreground"
               }`}

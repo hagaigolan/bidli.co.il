@@ -6,6 +6,7 @@ import LoginRequiredModal from "@/components/LoginRequiredModal";
 import BarterCard from "@/components/barter/BarterCard";
 import BarterUploadModal from "@/components/barter/BarterUploadModal";
 import { CATEGORIES } from "@/lib/productMeta";
+import MobileSelect from "@/components/MobileSelect";
 
 const CONDITIONS = ["חדש", "משומש", "תקין", "מקולקל"];
 const EMPTY_STYLE = {};
@@ -111,11 +112,9 @@ export default function Barter() {
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="חפש פריט או החלפה רצויה..."
                 className="w-full pr-9 pl-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right focus:outline-none focus:border-[#e5893d88]" />
             </div>
-            <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}
-              className="px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right" aria-label="סינון לפי קטגוריה">
-              <option value="">כל הקטגוריות</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <MobileSelect value={categoryFilter} onChange={setCategoryFilter} options={CATEGORIES}
+              placeholder="כל הקטגוריות" title="סינון לפי קטגוריה"
+              className="px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl text-right" />
             <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button type="button" onClick={() => setTab("all")}
                 className={`px-4 py-2.5 text-sm font-bold transition-colors ${tab === "all" ? "text-white" : "text-gray-600 hover:bg-gray-50"}`}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Search, ArrowRight } from "lucide-react";
+import { Menu, ChevronDown, ArrowRight } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
@@ -9,6 +9,7 @@ import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { categoryImageUrl } from "@/lib/categoryImages";
 import { addRecentSearch } from "@/lib/searchHistory";
+import SmartSearchBox from "@/components/SmartSearchBox";
 import SalesTicker from "@/components/SalesTicker";
 
 // כותרות המסכים המשניים — מוצגות בכותרת המובייל לצד כפתור החזרה
@@ -61,8 +62,8 @@ export default function Header() {
     else navigate("/");
   };
 
-  const doSearch = () => {
-    const term = searchTerm.trim();
+  const doSearch = (override) => {
+    const term = String(override ?? searchTerm).trim();
     if (term) addRecentSearch(term);
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   };
@@ -122,18 +123,14 @@ export default function Header() {
 
             {/* Search bar */}
             <div className="hidden sm:flex flex-1 max-w-lg mx-6">
-              <div className="relative w-full">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="search"
-                  aria-label="חיפוש באתר"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
-                  placeholder="חפש מכרזים, פריטים, בתי מכרזים..."
-                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
-                />
-              </div>
+              <SmartSearchBox
+                value={searchTerm}
+                onChange={setSearchTerm}
+                onSubmit={doSearch}
+                placeholder="למשל: גיטרה אקוסטית עד 3000 במרכז"
+                containerClassName="w-full"
+                inputClassName="w-full pr-10 pl-11 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
+              />
             </div>
 
             {/* Actions */}
@@ -159,16 +156,13 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 bg-background safe-bottom">
                   <div className="mt-6 flex flex-col gap-1" dir="rtl">
-                    <div className="relative mb-3 px-3">
-                      <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <input
-                        type="search"
-                        aria-label="חיפוש באתר"
+                    <div className="mb-3 px-3">
+                      <SmartSearchBox
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); setOpen(false); } }}
-                        placeholder="חפש מכרזים, פריטים..."
-                        className="w-full pr-10 pl-4 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
+                        onChange={setSearchTerm}
+                        onSubmit={(term) => { doSearch(term); setOpen(false); }}
+                        placeholder="למשל: גיטרה אקוסטית עד 3000"
+                        inputClassName="w-full pr-10 pl-11 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
                       />
                     </div>
                     {!isAuthenticated && (

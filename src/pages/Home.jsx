@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
-import { MapPin, Clock, Store, Search, Zap, Flame } from "lucide-react";
+import { MapPin, Clock, Store, Zap, Flame } from "lucide-react";
 import DealsEndingSoon, { getEndingSoonDeals } from "@/components/DealsEndingSoon";
 import TrustSection from "@/components/TrustSection";
 import ProtectedDealSection from "@/components/ProtectedDealSection";
@@ -11,6 +11,7 @@ import RecentlySold from "@/components/RecentlySold";
 import HomeSkeleton from "@/components/HomeSkeleton";
 import PopularSearches from "@/components/PopularSearches";
 import { addRecentSearch } from "@/lib/searchHistory";
+import SmartSearchBox from "@/components/SmartSearchBox";
 import TrendingSection from "@/components/TrendingSection";
 import ServicesStrip from "@/components/ServicesStrip";
 import CategoryGrid from "@/components/CategoryGrid";
@@ -69,14 +70,14 @@ function HeroSection({ todayCount = 0 }) {
     return () => clearInterval(t);
   }, []);
 
-  const doSearch = () => {
-    const term = searchTerm.trim();
+  const doSearch = (override) => {
+    const term = String(override ?? searchTerm).trim();
     if (term) addRecentSearch(term);
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   };
 
   return (
-    <section className="relative overflow-hidden bg-white" style={{ minHeight: 240 }} dir="rtl">
+    <section className="relative bg-white" style={{ minHeight: 240 }} dir="rtl">
       {carouselImages.map((img, i) => (
         <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ${i === currentSlide ? "opacity-100" : "opacity-0"}`}>
           <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
@@ -112,17 +113,17 @@ function HeroSection({ todayCount = 0 }) {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mb-5">
-            <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
+            <div className="flex-1">
+              <SmartSearchBox
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
-                placeholder="חפש פריטים, קטלוגים, בתי מכרזים..."
-                className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right shadow-sm"
+                onChange={setSearchTerm}
+                onSubmit={doSearch}
+                placeholder="למשל: גיטרה אקוסטית עד 3000 במרכז"
+                containerClassName="w-full"
+                inputClassName="w-full pr-10 pl-11 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right shadow-sm"
               />
             </div>
-            <button type="button" onClick={doSearch} className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
+            <button type="button" onClick={() => doSearch()} className="btn-neon rounded-xl px-6 py-3 text-sm font-bold flex-shrink-0">
               חיפוש
             </button>
           </div>

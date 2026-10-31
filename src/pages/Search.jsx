@@ -5,6 +5,7 @@ import { Search as SearchIcon, ArrowRight, MapPin, Tag, Clock, Camera, X } from 
 import LiveCardStats from "@/components/LiveCardStats";
 import { visualSearch } from "@/functions/visualSearch";
 import { addRecentSearch, getRecentSearches } from "@/lib/searchHistory";
+import { searchProducts } from "@/lib/smartSearch";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -137,15 +138,11 @@ export default function Search() {
     return allProducts.filter((p) => (p.title || "").toLowerCase().includes(term)).slice(0, 3);
   })();
 
-  // Live filtering — starts from the 2nd character
+  // סינון חי לפי מילות מפתח — מתחיל מהתו השני, עם דירוג רלוונטיות
   const results = (() => {
-    const term = q.trim().toLowerCase();
+    const term = q.trim();
     if (!term || term.length < 2) return allProducts;
-    return allProducts.filter((p) =>
-      [p.title, p.description, p.category, p.location, p.seller_name, p.condition]
-        .filter(Boolean)
-        .some((field) => field.toLowerCase().includes(term))
-    );
+    return searchProducts(allProducts, term);
   })();
 
   const submit = (e) => {
@@ -202,7 +199,7 @@ export default function Search() {
               onChange={(e) => { setQ(e.target.value); setShowSuggest(true); }}
               onFocus={() => setShowSuggest(true)}
               onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
-              placeholder="חפש פריטים, קטגוריות, מיקומים..."
+              placeholder="למשל: גיטרה אקוסטית עד 3000 במרכז"
               className="w-full pr-10 pl-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] focus:ring-2 focus:ring-[#e5893d22] transition-all text-right"
             />
             {showSuggest && (suggestions.length > 0 || productMatches.length > 0 || (q.trim().length < 2 && recentSearches.length > 0)) && (

@@ -84,7 +84,7 @@ export default function Header() {
 
             {/* Nav links */}
             <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
-              {MAIN_NAV.map(item => (
+              {MAIN_NAV.filter(item => item.path !== "/auctions").map(item => (
                 <Link key={item.path} to={item.path}
                   className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === item.path ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>
                   {item.label}

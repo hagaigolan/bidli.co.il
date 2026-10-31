@@ -8,6 +8,7 @@ import UserMenu from "@/components/UserMenu";
 import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { categoryImageUrl } from "@/lib/categoryImages";
+import { addRecentSearch } from "@/lib/searchHistory";
 import SalesTicker from "@/components/SalesTicker";
 
 // כותרות המסכים המשניים — מוצגות בכותרת המובייל לצד כפתור החזרה
@@ -62,6 +63,7 @@ export default function Header() {
 
   const doSearch = () => {
     const term = searchTerm.trim();
+    if (term) addRecentSearch(term);
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   };
 

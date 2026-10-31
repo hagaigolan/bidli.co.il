@@ -42,6 +42,7 @@ import { recordRecentlyViewed } from "@/lib/recentlyViewed";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import PromoteRequestButton from "@/components/PromoteRequestButton";
 import SellerTrustProfile from "@/components/SellerTrustProfile";
+import ReportAuctionButton from "@/components/ReportAuctionButton";
 import { isPromoted } from "@/lib/promotion";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
@@ -923,6 +924,7 @@ export default function AuctionDetail() {
               <div className="mt-3 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
                 <ShareButton product={product} />
                 <CompareButton productId={product.id} variant="inline" />
+                <ReportAuctionButton product={product} user={authUser} />
               </div>
               {canEdit && !product.seller_user_id?.startsWith("bidli-agent") && (
                 <button type="button" onClick={handleInstagramShare} disabled={igSharing}

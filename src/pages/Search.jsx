@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Search as SearchIcon, ArrowRight, MapPin, Tag, Clock, Camera, X } from "lucide-react";
 import LiveCardStats from "@/components/LiveCardStats";
 import { visualSearch } from "@/functions/visualSearch";
+import { addRecentSearch, getRecentSearches } from "@/lib/searchHistory";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -86,15 +87,17 @@ export default function Search() {
   const [visualLoading, setVisualLoading] = useState(false);
   const [visualError, setVisualError] = useState("");
   const visualInputRef = useRef(null);
-  const [recentSearches, setRecentSearches] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("recent_searches") || "[]"); } catch { return []; }
-  });
+  const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
 
   const saveRecent = (term) => {
-    const next = [term, ...recentSearches.filter((t) => t !== term)].slice(0, 6);
-    setRecentSearches(next);
-    localStorage.setItem("recent_searches", JSON.stringify(next));
+    setRecentSearches(addRecentSearch(term));
   };
+
+  // כל חיפוש שהתבצע בפועל (מכותרת האתר, מדף הבית או מדף זה) נרשם להיסטוריה האישית
+  const qParam = searchParams.get("q") || "";
+  useEffect(() => {
+    if (qParam) setRecentSearches(addRecentSearch(qParam));
+  }, [qParam]);
 
   // Fetch all products once
   useEffect(() => {

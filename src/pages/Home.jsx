@@ -10,6 +10,7 @@ import ProtectedDealSection from "@/components/ProtectedDealSection";
 import RecentlySold from "@/components/RecentlySold";
 import HomeSkeleton from "@/components/HomeSkeleton";
 import PopularSearches from "@/components/PopularSearches";
+import { addRecentSearch } from "@/lib/searchHistory";
 import TrendingSection from "@/components/TrendingSection";
 import ServicesStrip from "@/components/ServicesStrip";
 import CategoryGrid from "@/components/CategoryGrid";
@@ -70,6 +71,7 @@ function HeroSection({ todayCount = 0 }) {
 
   const doSearch = () => {
     const term = searchTerm.trim();
+    if (term) addRecentSearch(term);
     navigate(term ? `/search?q=${encodeURIComponent(term)}` : "/search");
   };
 

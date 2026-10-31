@@ -8,6 +8,8 @@ import ProfileStatsCard from "@/components/ProfileStatsCard";
 import AchievementsCard from "@/components/AchievementsCard";
 import ProfileInterests from "@/components/ProfileInterests";
 import SavedSearchesList from "@/components/SavedSearchesList";
+import RecentSearchesSection from "@/components/profile/RecentSearchesSection";
+import RecentlyViewedSection from "@/components/profile/RecentlyViewedSection";
 import { useAuth } from "@/lib/AuthContext";
 import AccountDeleteModal from "@/components/AccountDeleteModal";
 import {
@@ -225,6 +227,10 @@ export default function Profile() {
         <ProfileInterests />
 
         <SavedSearchesList />
+
+        <RecentSearchesSection />
+
+        <RecentlyViewedSection />
 
         {!hasProfile && !editingProfile && (
           <div className="text-center py-12">

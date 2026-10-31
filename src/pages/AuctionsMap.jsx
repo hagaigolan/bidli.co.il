@@ -11,12 +11,40 @@ import "leaflet/dist/leaflet.css";
 // מפת המכרזים הפעילים — פינים לפי מיקום האיסוף/המוכר
 const CENTER = [31.9, 34.9];
 
-const pinIcon = (label) => L.divIcon({
+// כוכב זהב מוזהב במקום פין — הסימן המרכזי על המפה
+const STAR_SVG = `<svg width="30" height="29" viewBox="0 0 24 23"><path d="M12 1.6l3.1 6.4 7 1-5.1 4.9 1.2 7L12 17.5 5.8 20.9l1.2-7L1.9 9l7-1z" fill="#f7b13f" stroke="#ffffff" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+
+const pinIcon = (priceLabel) => L.divIcon({
   className: "",
-  html: `<div style="background:linear-gradient(135deg,#e5893d,#3e6b8a);color:#fff;font-weight:900;font-size:11px;padding:4px 8px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap;border:2px solid #fff;">${label}</div>`,
-  iconSize: [0, 0],
-  iconAnchor: [30, 14],
+  html: `<div class="bidli-star-pin"><span class="bidli-star">${STAR_SVG}</span><span class="bidli-star-price">${priceLabel}</span></div>`,
+  iconSize: [90, 52],
+  iconAnchor: [45, 16],
+  popupAnchor: [0, -14],
 });
+
+// פיזור עדין בין מכרזים באותה עיר — מונע פינים חופפים לחלוטין על אותה נקודה
+function spreadPins(items) {
+  const groups = {};
+  items.forEach(p => {
+    const k = `${p.coords.lat.toFixed(3)},${p.coords.lng.toFixed(3)}`;
+    (groups[k] = groups[k] || []).push(p);
+  });
+  return Object.values(groups).flatMap(group => {
+    if (group.length === 1) return group;
+    return group.map((p, i) => {
+      const angle = (2 * Math.PI * i) / group.length;
+      const r = 0.004 + 0.0015 * Math.floor(i / 8);
+      return {
+        ...p,
+        coords: {
+          ...p.coords,
+          lat: p.coords.lat + Math.sin(angle) * r,
+          lng: p.coords.lng + Math.cos(angle) * r,
+        },
+      };
+    });
+  });
+}
 
 // מיקוד המפה אוטומטית על המכרזים הפעילים — כך מפת ישראל נראית מלאה וכל הפינים במסגרת
 function MapAdjuster({ pins }) {
@@ -48,7 +76,7 @@ export default function AuctionsMap() {
           .map(p => ({ ...p, coords: lookupCityCoords(p.location) }))
           .filter(p => p.coords)
           .slice(0, 40);
-        setPins(mapped);
+        setPins(spreadPins(mapped));
       })
       .catch(() => setPins([]));
   }, []);

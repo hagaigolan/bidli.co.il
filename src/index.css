@@ -294,9 +294,6 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 .safe-floating-bar {
   bottom: calc(var(--tabbar-h) + var(--safe-bottom));
 }
-@media (min-width: 768px) {
-  .safe-floating-bar { bottom: 0; }
-}
 
 /* ── Accessibility: visible keyboard focus ── */
 :focus-visible {

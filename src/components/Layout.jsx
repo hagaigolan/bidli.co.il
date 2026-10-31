@@ -52,7 +52,7 @@ export default function Layout() {
   }, [isAuthenticated, user?.id]);
 
   return (
-    <div className="bg-background text-foreground min-h-screen flex flex-col pb-[calc(var(--tabbar-h)+var(--safe-bottom))] md:pb-0">
+    <div className="bg-background text-foreground min-h-screen flex flex-col pb-[calc(var(--tabbar-h)+var(--safe-bottom))]">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-[100] focus:bg-gray-900 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl text-sm font-bold"

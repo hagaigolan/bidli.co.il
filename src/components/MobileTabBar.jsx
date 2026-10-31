@@ -61,9 +61,9 @@ export default function MobileTabBar() {
     <nav
       aria-label="ניווט מהיר"
       dir="rtl"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border safe-bottom"
+      className="fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border safe-bottom"
     >
-      <div className="flex items-stretch" style={{ height: "var(--tabbar-h)" }}>
+      <div className="mx-auto flex max-w-lg items-stretch" style={{ height: "var(--tabbar-h)" }}>
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const active = isTabActive(tab);

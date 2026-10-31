@@ -9,7 +9,6 @@ import NotificationBell from "@/components/NotificationBell";
 import logoWordmark from "@/assets/logo-wordmark.png";
 import { categoryImageUrl } from "@/lib/categoryImages";
 import SalesTicker from "@/components/SalesTicker";
-import { MAIN_NAV } from "@/lib/navLinks";
 
 // כותרות המסכים המשניים — מוצגות בכותרת המובייל לצד כפתור החזרה
 const SECONDARY_TITLES = {
@@ -134,16 +133,6 @@ export default function Header() {
                 />
               </div>
             </div>
-
-            {/* Nav links */}
-            <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
-              {MAIN_NAV.filter(item => item.path !== "/auctions").map(item => (
-                <Link key={item.path} to={item.path}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === item.path ? "text-[#e5893d] bg-primary/10" : "text-muted-foreground hover:text-[#e5893d] hover:bg-muted"}`}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
 
             {/* Actions */}
             <div className="flex items-center gap-2 flex-shrink-0">

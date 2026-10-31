@@ -44,7 +44,7 @@ export default function AccessibilityWidget() {
 
   return (
     <div
-      className="fixed left-4 z-[90] bottom-[calc(var(--tabbar-h)+var(--safe-bottom)+1.5rem)] md:bottom-4"
+      className="fixed left-4 z-[90] bottom-[calc(var(--tabbar-h)+var(--safe-bottom)+1.5rem)]"
       dir="rtl"
     >
       {open && (

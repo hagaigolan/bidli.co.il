@@ -57,16 +57,16 @@ export default function MobileSelect({
         aria-expanded={open}
         className={`${className} flex items-center justify-between gap-2 disabled:opacity-60`}
       >
-        <span className={`truncate ${current ? "" : "text-gray-400"}`}>
+        <span className={`truncate ${current ? "" : "text-muted-foreground"}`}>
           {current ? current.label : placeholder}
         </span>
         <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" aria-hidden="true" />
       </button>
 
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent dir="rtl" className="z-[70] max-h-[80vh]">
+        <DrawerContent dir="rtl" className="z-[70] max-h-[80vh] bg-background">
           <DrawerHeader className="pb-1">
-            <DrawerTitle className="text-base font-black text-gray-900 text-right">
+            <DrawerTitle className="text-base font-black text-foreground text-right">
               {title || placeholder || "בחירה"}
             </DrawerTitle>
           </DrawerHeader>
@@ -85,7 +85,7 @@ export default function MobileSelect({
                   aria-selected={active}
                   onClick={() => { onChange(o.value); setOpen(false); }}
                   className={`w-full flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl text-sm text-right transition-colors ${
-                    active ? "font-bold" : "font-medium text-gray-700 hover:bg-gray-50"
+                    active ? "font-bold" : "font-medium text-foreground hover:bg-muted"
                   }`}
                   style={active ? { background: "#e5893d12", color: "#e5893d" } : undefined}
                 >

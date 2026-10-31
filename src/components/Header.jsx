@@ -37,10 +37,10 @@ export default function Header() {
   ].map((label) => ({ label, img: categoryImageUrl(label) }));
 
   return (
-    <header className="bg-white" dir="rtl">
+    <header className="bg-background" dir="rtl">
       {/* Top micro-bar */}
-      <div className="border-b border-gray-100 bg-gray-50 relative z-[60] safe-top">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
+      <div className="border-b border-border bg-muted relative z-[60] safe-top">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-muted-foreground">
           <div className="hidden sm:flex items-center gap-4 min-w-0 flex-1">
             <SalesTicker />
           </div>
@@ -53,7 +53,7 @@ export default function Header() {
       </div>
 
       {/* Main bar — sticky; נשאר דבוק בראש בזמן גלילה */}
-      <div className={`sticky top-0 z-50 border-b border-gray-100 bg-white transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
+      <div className={`sticky top-0 z-50 border-b border-border bg-background transition-all duration-300 ${scrolled ? "shadow-lg shadow-black/5" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between min-h-16 py-3 gap-2 sm:gap-4">
             {/* Logo */}
@@ -63,7 +63,7 @@ export default function Header() {
                 alt="bidli.co.il"
                 className="h-10 sm:h-14 lg:h-[96px] w-auto object-contain"
               />
-              <span className="hidden lg:block text-sm font-bold text-gray-500 whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
+              <span className="hidden lg:block text-sm font-bold text-muted-foreground whitespace-nowrap">האתר למכרזים המהירים והמנוהלים ביותר בישראל</span>
             </Link>
 
             {/* Search bar */}
@@ -77,7 +77,7 @@ export default function Header() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } }}
                   placeholder="חפש מכרזים, פריטים, בתי מכרזים..."
-                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
+                  className="w-full pr-10 pl-4 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
                 />
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function Header() {
             <nav aria-label="ניווט ראשי" className="hidden lg:flex items-center gap-1">
               {MAIN_NAV.filter(item => item.path !== "/auctions").map(item => (
                 <Link key={item.path} to={item.path}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === item.path ? "text-[#e5893d] bg-orange-50" : "text-gray-600 hover:text-[#e5893d] hover:bg-orange-50"}`}>
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${location.pathname === item.path ? "text-[#e5893d] bg-primary/10" : "text-muted-foreground hover:text-[#e5893d] hover:bg-muted"}`}>
                   {item.label}
                 </Link>
               ))}
@@ -113,7 +113,7 @@ export default function Header() {
                     <Menu className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72 bg-white safe-bottom">
+                <SheetContent side="right" className="w-72 bg-background safe-bottom">
                   <div className="mt-6 flex flex-col gap-1" dir="rtl">
                     <div className="relative mb-3 px-3">
                       <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -124,7 +124,7 @@ export default function Header() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); setOpen(false); } }}
                         placeholder="חפש מכרזים, פריטים..."
-                        className="w-full pr-10 pl-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
+                        className="w-full pr-10 pl-4 py-2.5 text-sm bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5893d44] focus:border-[#e5893d88] transition-all text-right"
                       />
                     </div>
                     {!isAuthenticated && (
@@ -137,15 +137,15 @@ export default function Header() {
                           style={{ borderColor: "#e5893d", color: "#e5893d" }}>חשבון חדש</Link>
                       </div>
                     )}
-                    <Link to="/upload-product" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-[#e5893d] hover:bg-orange-50 rounded-xl">+ פרסם מכרז</Link>
-                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">דף הבית</Link>
-                    <Link to="/auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">מכרזים פעילים</Link>
-                    <Link to="/barter" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">בארטר — החלפות</Link>
-                    <Link to="/valuation" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">הערכת שווי חינם</Link>
-                    <Link to="/experts" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#e5893d] hover:bg-orange-50 rounded-xl">המומחים שלנו</Link>
-                    <div className="border-t border-gray-100 my-2" />
+                    <Link to="/upload-product" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-[#e5893d] hover:bg-muted rounded-xl">+ פרסם מכרז</Link>
+                    <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">דף הבית</Link>
+                    <Link to="/auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">מכרזים פעילים</Link>
+                    <Link to="/barter" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">בארטר — החלפות</Link>
+                    <Link to="/valuation" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">הערכת שווי חינם</Link>
+                    <Link to="/experts" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">המומחים שלנו</Link>
+                    <div className="border-t border-border my-2" />
                     {categoryLinks.map(l => (
-                      <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-[#3e6b8a] hover:bg-blue-50 rounded-xl">{l.label}</Link>
+                      <Link key={l.label} to={`/category/${encodeURIComponent(l.label)}`} onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-muted-foreground hover:text-[#3e6b8a] hover:bg-muted rounded-xl">{l.label}</Link>
                     ))}
                   </div>
                 </SheetContent>
@@ -156,16 +156,16 @@ export default function Header() {
       </div>
 
       {/* Category strip — חלק מהעמוד, גולל כלפי מעלה יחד עם האתר */}
-      <div className="border-b border-gray-100 bg-white">
+      <div className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center overflow-x-auto scrollbar-hide py-12 gap-4">
           {categoryLinks.map((link) => (
             <Link key={link.label} to={`/category/${encodeURIComponent(link.label)}`}
               className="flex-shrink-0 flex flex-col items-center gap-1 group">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-blue-50 border-2 border-transparent group-hover:border-[#e5893d66] lg:group-hover:scale-[3] lg:group-hover:z-20 transition-all duration-300"
+              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-muted border-2 border-transparent group-hover:border-[#e5893d66] lg:group-hover:scale-[3] lg:group-hover:z-20 transition-all duration-300"
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}>
                 <img src={link.img} alt="" className="w-full h-full object-cover" />
               </div>
-              <span className="text-xs text-gray-600 group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
+              <span className="text-xs text-muted-foreground group-hover:text-[#e5893d] transition-colors whitespace-nowrap font-medium">{link.label}</span>
             </Link>
           ))}
         </div>

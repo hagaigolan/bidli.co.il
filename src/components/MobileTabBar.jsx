@@ -31,7 +31,7 @@ export default function MobileTabBar() {
     <nav
       aria-label="ניווט מהיר"
       dir="rtl"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-gray-200 safe-bottom"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border safe-bottom"
     >
       <div className="flex items-stretch" style={{ height: "var(--tabbar-h)" }}>
         {TABS.map((tab) => {
@@ -44,7 +44,7 @@ export default function MobileTabBar() {
               aria-current={active ? "page" : undefined}
               onClick={(e) => handleClick(e, tab)}
               className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[11px] font-semibold transition-colors ${
-                active ? "text-[#e5893d]" : "text-gray-500"
+                active ? "text-[#e5893d]" : "text-muted-foreground"
               }`}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />

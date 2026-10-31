@@ -132,6 +132,11 @@
     max-width: 100%;
   }
 
+  /* מניעת התנגשות מחוות גלילה של הדפדפן (pull-to-refresh / rubber-band) */
+  html, body {
+    overscroll-behavior-y: none;
+  }
+
   /* WebView: אין סימון טקסט בלחיצה על כפתורים וקישורים (ביטול בחירה מקרית) */
   button, a, [role="button"] {
     -webkit-user-select: none;

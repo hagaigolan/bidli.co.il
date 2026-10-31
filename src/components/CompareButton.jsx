@@ -33,7 +33,7 @@ export default function CompareButton({ productId, variant = "card" }) {
         type="button"
         onClick={handle}
         aria-pressed={active}
-        className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"
+        className="inline-flex flex-shrink-0 items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all hover:scale-[1.02]"
         style={active
           ? { background: "#2d4f6815", borderColor: "#2d4f68", color: "#2d4f68" }
           : { background: "white", borderColor: "#e5e7eb", color: "#6b7280" }}

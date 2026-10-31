@@ -16,13 +16,13 @@ export default function ShareButton({ product }) {
   };
 
   return (
-    <div className="mt-3 flex gap-2" dir="rtl">
+    <div className="flex flex-1 min-w-0 gap-2" dir="rtl">
       <a href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noreferrer"
-        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-green-700 border-2 border-green-200 bg-green-50 hover:bg-green-100 transition-all">
+        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap text-green-700 border-2 border-green-200 bg-green-50 hover:bg-green-100 transition-all">
         <MessageCircle className="h-4 w-4" /> שתף בוואטסאפ
       </a>
       <button type="button" onClick={copyLink}
-        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
+        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border border-gray-200 text-gray-500 hover:border-[#e5893d66] hover:text-[#e5893d] transition-all">
         {copied ? <><Check className="h-4 w-4" /> הוקדם</> : <><Link2 className="h-4 w-4" /> העתק קישור</>}
       </button>
     </div>

@@ -863,8 +863,11 @@ export default function AuctionDetail() {
                 </span>
               )}
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
-              <ShareButton product={product} />
-              <CompareButton productId={product.id} variant="inline" />
+              {/* ── שיתוף בוואטסאפ, העתקת קישור והוספה להשוואה — שורה אחת ── */}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <ShareButton product={product} />
+                <CompareButton productId={product.id} variant="inline" />
+              </div>
               {canEdit && !product.seller_user_id?.startsWith("bidli-agent") && (
                 <button type="button" onClick={handleInstagramShare} disabled={igSharing}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-[1.02]"

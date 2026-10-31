@@ -11,7 +11,7 @@ import ImageSlider from "@/components/ImageSlider";
 import RelatedProducts from "@/components/RelatedProducts";
 import RelatedArticle from "@/components/RelatedArticle";
 import SoldSimilar from "@/components/SoldSimilar";
-import { BuyerFomoBanner, BuyerLiveBlock } from "@/components/BuyerFomo";
+import { BuyerLiveBlock } from "@/components/BuyerFomo";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewModal from "@/components/ReviewModal";
 import ProductChat from "@/components/ProductChat";
@@ -876,8 +876,6 @@ export default function AuctionDetail() {
               {igMsg && <p className="text-xs text-gray-500 mt-1.5">{igMsg}</p>}
             </div>
 
-            {/* ── FOMO BANNER ── */}
-            <BuyerFomoBanner />
             {/* ── LIVE BIDDING PRESSURE ── */}
             <BuyerLiveBlock bidCount={product.bid_count} lastBidTime={lastBidTime} />
 

@@ -262,6 +262,7 @@ export default function AuctionDetail() {
   const [reviewDirection, setReviewDirection] = useState("buyer");
   const [favSaved, setFavSaved] = useState(false);
   const [favError, setFavError] = useState("");
+  const [favCount, setFavCount] = useState(0);
   const [igSharing, setIgSharing] = useState(false);
   const [igMsg, setIgMsg] = useState("");
   // ── 7. notifications opt-in ──
@@ -333,12 +334,21 @@ export default function AuctionDetail() {
     });
   }, [product?.id, product?.current_price, product?.status]);
 
+  // כמה פעמים המוצר נשמר למועדפים (ספירה כללית מכל המשתמשים)
+  const refreshFavCount = (productId) => {
+    if (!productId) return;
+    base44.functions.invoke("getFavoriteCount", { product_id: productId })
+      .then(res => setFavCount(res.data?.count || 0))
+      .catch(() => {});
+  };
+
   // Check if already saved to favorites
   useEffect(() => {
     if (!id) return;
     base44.entities.Favorite.filter({ product_id: id, owner_key: getOwnerKey() })
       .then(items => setFavSaved(items.length > 0))
       .catch(() => {});
+    refreshFavCount(id);
   }, [id]);
 
   const toggleFavorite = async () => {
@@ -363,6 +373,7 @@ export default function AuctionDetail() {
         // התראה במייל למוכר שהפריט שלו נשמר במועדפים
         base44.functions.invoke("notifySellerFavorite", { product_id: product.id }).catch(() => {});
       }
+      refreshFavCount(product.id);
     } catch { setFavError("שגיאה בעדכון המועדפים, נסה שנית"); }
   };
 
@@ -841,6 +852,16 @@ export default function AuctionDetail() {
                 <Heart className={`h-4 w-4 ${favSaved ? "fill-current" : ""}`} />
                 {favSaved ? "נשמר למועדפים ♥" : "שמור למועדפים"}
               </button>
+              {/* ── COUNTER: כמה פעמים הפריט נשמר למועדפים ── */}
+              {favCount > 0 && (
+                <span
+                  className="mt-3 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-600"
+                  aria-label={`${favCount} סימוני מועדפים לפריט`}
+                >
+                  <Heart className="h-3.5 w-3.5" style={{ color: "#e5893d", fill: "#e5893d" }} aria-hidden="true" />
+                  {favCount.toLocaleString()} {favCount === 1 ? "סימון מועדפים" : "סימוני מועדפים"}
+                </span>
+              )}
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
               <ShareButton product={product} />
               <CompareButton productId={product.id} variant="inline" />

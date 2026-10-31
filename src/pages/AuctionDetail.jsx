@@ -44,6 +44,7 @@ import PromoteRequestButton from "@/components/PromoteRequestButton";
 import SellerTrustProfile from "@/components/SellerTrustProfile";
 import ReportAuctionButton from "@/components/ReportAuctionButton";
 import { isPromoted } from "@/lib/promotion";
+import ExtraDetailsTable from "@/components/ExtraDetailsTable";
 
 // ── 1. LIVE URGENCY TIMER with color stages + anti-snipe ──────────────────────
 function useCountdown(endsAt) {
@@ -762,6 +763,7 @@ export default function AuctionDetail() {
       buy_now_price: product.buy_now_price,
       image_url: product.image_url || "",
       image_urls: product.image_urls || [],
+      attributes: product.attributes || {},
     };
     if (isMyAuction) {
       draft.seller_name = product.seller_name || "";
@@ -1138,6 +1140,9 @@ export default function AuctionDetail() {
                 <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
               </div>
             )}
+
+            {/* ── פרטים נוספים — מאפיינים מובנים לפי הקטגוריה ── */}
+            <ExtraDetailsTable product={product} />
 
             <AuthenticityBlock product={product} />
 

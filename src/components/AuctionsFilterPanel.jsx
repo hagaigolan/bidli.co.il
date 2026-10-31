@@ -11,8 +11,9 @@ export default function AuctionsFilterPanel({
   cities, count, totalCount, onReset,
   distanceActive, distanceCity, setDistanceCity, radius, setRadius,
   onNearMe, locating, geoError, usingGeo, onClearDistance,
+  makers = [], models = [], maker, setMaker, model, setModel,
 }) {
-  const hasActive = category || minPrice || maxPrice || condition || city || endingSoon || keyword || storeOnly || distanceActive;
+  const hasActive = category || minPrice || maxPrice || condition || city || endingSoon || keyword || storeOnly || distanceActive || maker || model;
   const chipCls = (on) =>
     `text-xs font-bold px-3 py-1.5 rounded-full border transition-all whitespace-nowrap ${
       on ? "text-white" : "bg-background text-muted-foreground hover:text-[#e5893d] hover:border-[#e5893d66]"
@@ -101,6 +102,22 @@ export default function AuctionsFilterPanel({
           חדש מהחנות
         </button>
       </div>
+
+      {/* סינון לפי מאפייני הפריט — יצרן ודגם מתוך המכרזים הפעילים */}
+      {(makers.length > 0 || models.length > 0) && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end mt-3">
+          <div>
+            <label className="block text-[11px] text-muted-foreground mb-1">יצרן / מותג</label>
+            <MobileSelect value={maker || ""} onChange={setMaker} options={makers}
+              placeholder="כל היצרנים" title="יצרן" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-[11px] text-muted-foreground mb-1">דגם</label>
+            <MobileSelect value={model || ""} onChange={setModel} options={models}
+              placeholder="כל הדגמים" title="דגם" className={inputCls} />
+          </div>
+        </div>
+      )}
 
       {/* סינון לפי מרחק — עיר מרכזית + רדיוס, או איתור המיקום הנוכחי בלחיצה */}
       <DistanceFilter

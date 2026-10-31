@@ -15,6 +15,7 @@ import { isPromoted, promotedFirst } from "@/lib/promotion";
 import SortBar from "@/components/SortBar";
 import { AUCTIONS_SORT_OPTIONS, sortProducts } from "@/lib/auctionSort";
 import { resolveCenter, withinRadius } from "@/lib/distance";
+import { MAKER_KEYS, MODEL_KEYS } from "@/lib/categoryAttributes";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -133,6 +134,9 @@ export default function Auctions() {
   const [geoPoint, setGeoPoint] = useState(null);
   const [locating, setLocating] = useState(false);
   const [geoError, setGeoError] = useState("");
+  // סינון לפי מאפייני הפריט — יצרן ודגם מתוך המאפיינים האמיתיים של המכרזים הפעילים
+  const [maker, setMaker] = useState("");
+  const [model, setModel] = useState("");
 
   const loadProducts = () => base44.entities.Product.list("-created_date", 50)
     .then(setProducts)
@@ -170,6 +174,19 @@ export default function Auctions() {
     });
   }, [products]);
 
+  // יצרן/דגם — מתוך המאפיינים האמיתיים של המכרזים הפעילים בלבד
+  const attrValue = (p, keys) => {
+    const a = p.attributes || {};
+    for (const k of keys) {
+      const v = a[k];
+      if (v && String(v).trim()) return String(v).trim();
+    }
+    return "";
+  };
+  const liveForAttributes = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date());
+  const makerOptions = [...new Set(liveForAttributes.map(p => attrValue(p, MAKER_KEYS)).filter(Boolean))].sort((a, b) => a.localeCompare(b, "he"));
+  const modelOptions = [...new Set(liveForAttributes.map(p => attrValue(p, MODEL_KEYS)).filter(Boolean))].sort((a, b) => a.localeCompare(b, "he"));
+
   const priceOf = p => (p.current_price || p.starting_price || 0);
   const distanceCenter = radius > 0 ? resolveCenter({ geoPoint, city: distanceCity }) : null;
   const distanceActive = !!distanceCenter;
@@ -187,6 +204,8 @@ export default function Auctions() {
     if (filterMax && priceOf(p) > filterMax) return false;
     if (filterCondition && p.condition !== filterCondition) return false;
     if (filterCity && !(p.location || "").includes(filterCity)) return false;
+    if (maker && attrValue(p, MAKER_KEYS) !== maker) return false;
+    if (model && attrValue(p, MODEL_KEYS) !== model) return false;
     // סינון לפי מרחק מנקודת המוצא — עד הרדיוס שנבחר
     if (distanceActive && !withinRadius(p, distanceCenter, radius)) return false;
     // מסתיים בקרוב — תוך 24 שעות
@@ -203,6 +222,7 @@ export default function Auctions() {
     setFilterCategory(""); setFilterKeyword(""); setFilterMin(0); setFilterMax(0);
     setFilterCondition(""); setFilterCity(""); setStoreOnly(false); setEndingSoon(false);
     setRadius(0); setDistanceCity(""); setGeoPoint(null); setGeoError("");
+    setMaker(""); setModel("");
   };
 
   // "קרוב אליי" — בקשת הרשאת המיקום מופיעה רק לאחר לחיצה על הכפתור
@@ -277,6 +297,8 @@ export default function Auctions() {
               radius={radius} setRadius={setRadius}
               onNearMe={handleNearMe} locating={locating} geoError={geoError}
               usingGeo={!!geoPoint} onClearDistance={clearDistance}
+              makers={makerOptions} models={modelOptions}
+              maker={maker} setMaker={setMaker} model={model} setModel={setModel}
             />
             <div className="flex items-center justify-end gap-3 mb-5" dir="rtl">
               <Link to="/auction-calendar"

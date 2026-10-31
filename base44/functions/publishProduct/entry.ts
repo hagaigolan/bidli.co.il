@@ -70,6 +70,19 @@ export default async function (req: Request): Promise<Response> {
     const description = str(body.description);
     const location = str(body.location, 120);
 
+    // ── מאפיינים מובנים לפי קטגוריה — שדות אופציונליים, מפתחות באנגלית וערכים מנוקים ──
+    const rawAttributes = body.attributes && typeof body.attributes === 'object' ? body.attributes : {};
+    const attributes: Record<string, string> = {};
+    let attrCount = 0;
+    for (const [key, val] of Object.entries(rawAttributes)) {
+      if (attrCount >= 12) break;
+      if (!/^[a-z_]{2,30}$/.test(key)) continue;
+      const clean = str(val, 120);
+      if (!clean) continue;
+      attributes[key] = clean;
+      attrCount++;
+    }
+
     // סינון מילים פוגעניות — חסימת פרסום תוכן לא הולם
     if (containsProfanity(`${title} ${description} ${location}`)) {
       return Response.json({ error: 'profanity' }, { status: 400 });
@@ -80,6 +93,7 @@ export default async function (req: Request): Promise<Response> {
       description,
       category: str(body.category, 100),
       subcategory,
+      attributes,
       condition: condition || undefined,
       is_stock: !!body.is_stock,
       starting_price: startingPrice,

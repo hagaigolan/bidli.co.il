@@ -15,6 +15,7 @@ import { setPageMeta } from "@/lib/seo";
 import UploadTrustStrip from "@/components/UploadTrustStrip";
 import UploadProgress from "@/components/UploadProgress";
 import MobileSelect from "@/components/MobileSelect";
+import CategoryAttributesFields from "@/components/CategoryAttributesFields";
 const PAYMENT_METHOD_LABELS = { kashcash: "קש", bit: "ביט", bank: "העברה בנקאית" };
 
 export default function UploadProduct() {
@@ -23,7 +24,7 @@ export default function UploadProduct() {
     title: "", description: "", category: "", subcategory: "", condition: "מצב מעולה",
     starting_price: "", buy_now_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
     seller_payment_methods: [], seller_payme_phone: "", seller_bank_details: "",
-    is_stock: false,
+    is_stock: false, attributes: {},
   });
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -100,6 +101,7 @@ export default function UploadProduct() {
         location: d.location || "",
         starting_price: d.starting_price != null ? String(d.starting_price) : "",
         buy_now_price: d.buy_now_price != null ? String(d.buy_now_price) : "",
+        attributes: d.attributes && typeof d.attributes === "object" ? d.attributes : {},
         ...(d.seller_name ? { seller_name: d.seller_name, seller_email: d.seller_email, seller_phone: d.seller_phone } : {}),
       }));
       const urls = (Array.isArray(d.image_urls) && d.image_urls.length ? d.image_urls : (d.image_url ? [d.image_url] : [])).filter(Boolean);
@@ -133,6 +135,7 @@ export default function UploadProduct() {
           : (p.seller_payment_method ? [p.seller_payment_method] : []),
         seller_payme_phone: p.seller_payme_phone || "",
         seller_bank_details: p.seller_bank_details || "",
+        attributes: p.attributes && typeof p.attributes === "object" ? p.attributes : {},
       }));
       const urls = (Array.isArray(p.image_urls) && p.image_urls.length ? p.image_urls : (p.image_url ? [p.image_url] : [])).filter(Boolean);
       setExistingImages(urls);
@@ -271,6 +274,7 @@ export default function UploadProduct() {
         seller_payment_methods: form.seller_payment_methods,
         seller_payme_phone: form.seller_payme_phone,
         seller_bank_details: form.seller_bank_details,
+        attributes: form.attributes,
         image_urls,
       });
       if (res?.seller_email) localStorage.setItem("seller_email", res.seller_email);
@@ -331,7 +335,7 @@ export default function UploadProduct() {
               style={{ background: "linear-gradient(135deg, #e5893d, #3e6b8a)" }}>
               לכל המכרזים
             </button>
-            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",subcategory:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_methods:[],seller_payme_phone:"",seller_bank_details:"",is_stock:false }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
+            <button onClick={() => { setDone(false); setForm({ title:"",description:"",category:"",subcategory:"",condition:"מצב מעולה",starting_price:"",buy_now_price:"",location:"",seller_name:"",seller_email:"",seller_phone:"",seller_payment_methods:[],seller_payme_phone:"",seller_bank_details:"",is_stock:false,attributes:{} }); setImageFiles([]); setImagePreviews([]); setExistingImages([]); setIsRepublish(false); }}
               className="text-gray-600 text-sm px-6 py-2.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50">
               העלה מוצר נוסף
             </button>
@@ -481,7 +485,7 @@ export default function UploadProduct() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">קטגוריה</label>
-              <MobileSelect value={form.category} onChange={v => { set("category", v); set("subcategory", ""); }}
+              <MobileSelect value={form.category} onChange={v => { set("category", v); set("subcategory", ""); set("attributes", {}); }}
                 options={CATEGORIES} placeholder="בחר קטגוריה" title="בחירת קטגוריה"
                 className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
             </div>
@@ -503,6 +507,13 @@ export default function UploadProduct() {
               title="תת קטגוריה"
               className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right disabled:bg-gray-50 disabled:text-gray-400" />
           </div>
+
+          {/* מאפיינים ייעודיים לפי הקטגוריה — אופציונליים */}
+          <CategoryAttributesFields
+            category={form.category}
+            value={form.attributes || {}}
+            onChange={v => set("attributes", v)}
+          />
 
           {/* סימון כסטוק */}
           <button type="button" onClick={() => set("is_stock", !form.is_stock)} aria-pressed={form.is_stock}

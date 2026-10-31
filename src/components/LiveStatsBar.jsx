@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Zap, CheckCircle, Coins, Users, Gavel } from "lucide-react";
+import { Zap, CheckCircle, Coins, Gavel } from "lucide-react";
 
 // בסיס היסטורי — המכירות והמכרזים שהושלמו מצטברים מעליו מהמכרזים שנמכרים בפועל
 const BASE_COMPLETED = 29;
@@ -31,15 +31,13 @@ export default function LiveStatsBar() {
         },
         sum: "current_price",
       }),
-      base44.entities.Product.filter({ status: "active" }, { distinct: "seller_email" }),
       base44.entities.Bid.count({ created_date: { $gte: weekAgo } }),
-    ]).then(([active, soldAgg, sellerDistinct, bidsWeek]) => {
+    ]).then(([active, soldAgg, bidsWeek]) => {
       const row = soldAgg?.rows?.[0] || {};
       setStats({
         active: active || 0,
         completed: BASE_COMPLETED + (row.count || 0),
         totalSales: BASE_TOTAL_SALES + (row.sum_current_price || 0),
-        sellers: (sellerDistinct?.items || []).filter(Boolean).length,
         bidsWeek: bidsWeek || 0,
       });
     }).catch(() => {});
@@ -50,7 +48,6 @@ export default function LiveStatsBar() {
     { icon: Zap, value: stats.active, label: "מכרזים פעילים כרגע", color: "#e5893d" },
     { icon: CheckCircle, value: stats.completed, label: "מכרזים שהושלמו", color: "#00a844" },
     { icon: Coins, text: `₪${(stats.totalSales || 0).toLocaleString("he-IL")}`, label: "סך מכירות מצטבר", color: "#3e6b8a" },
-    { icon: Users, value: stats.sellers, label: "מוכרים פעילים", color: "#2d4f68" },
     { icon: Gavel, value: stats.bidsWeek, label: "הצעות מחיר בשבוע האחרון", color: "#e5893d" },
   ].filter(b => (b.text ? true : b.value > 0));
 

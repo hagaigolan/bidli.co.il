@@ -121,14 +121,15 @@
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }
   /* מובייל: אין גלילה אופקית ואין שטח ריק בצד — העמוד נצמד לרוחב המסך */
-  html, body {
+  html {
     overflow-x: hidden;
     max-width: 100%;
   }
 
-  /* WebView: ביטול אפקט הקפיצה (rubber-band) בגלילה אנכית */
-  html, body {
-    overscroll-behavior-y: none;
+  /* ה-body לא הופך לאזור גלילה נפרד (clip ולא hidden) — הגלילה נשארת על העמוד עצמו */
+  body {
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   /* WebView: אין סימון טקסט בלחיצה על כפתורים וקישורים (ביטול בחירה מקרית) */

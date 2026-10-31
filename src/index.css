@@ -45,6 +45,78 @@
   }
 }
 
+/* ── ערכת נושא כהה — אותם משתני HSL, ערכים כהים (dark mode) ── */
+.dark {
+  color-scheme: dark;
+  --background: 220 15% 8%;
+  --foreground: 220 14% 96%;
+
+  --card: 220 15% 11%;
+  --card-foreground: 220 14% 96%;
+
+  --popover: 220 15% 11%;
+  --popover-foreground: 220 14% 96%;
+
+  --primary: 27 76% 57%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 205 42% 45%;
+  --secondary-foreground: 0 0% 100%;
+
+  --accent: 205 38% 48%;
+  --accent-foreground: 0 0% 100%;
+
+  --muted: 220 12% 18%;
+  --muted-foreground: 220 9% 68%;
+
+  --destructive: 0 62% 52%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 220 10% 24%;
+  --input: 220 10% 24%;
+  --ring: 27 76% 57%;
+}
+
+/* ── WebView: יישום ערכת הנושא הכהה לפי העדפת המערכת ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --background: 220 15% 8%;
+    --foreground: 220 14% 96%;
+    --card: 220 15% 11%;
+    --card-foreground: 220 14% 96%;
+    --popover: 220 15% 11%;
+    --popover-foreground: 220 14% 96%;
+    --secondary: 205 42% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 205 38% 48%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 220 12% 18%;
+    --muted-foreground: 220 9% 68%;
+    --border: 220 10% 24%;
+    --input: 220 10% 24%;
+  }
+}
+
+/* ── ערכת נושא בהירה בכפייה (light) — עוקפת את העדפת המערכת ── */
+.light {
+  color-scheme: light;
+  --background: 0 0% 100%;
+  --foreground: 220 15% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 15% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 15% 12%;
+  --secondary: 205 50% 61%;
+  --secondary-foreground: 220 15% 12%;
+  --accent: 205 38% 39%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 10% 50%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+}
+
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }
@@ -52,6 +124,24 @@
   html, body {
     overflow-x: hidden;
     max-width: 100%;
+  }
+
+  /* WebView: ביטול אפקט הקפיצה (rubber-band) בגלילה אנכית */
+  html, body {
+    overscroll-behavior-y: none;
+  }
+
+  /* WebView: אין סימון טקסט בלחיצה על כפתורים וקישורים (ביטול בחירה מקרית) */
+  button, a, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* שדות קלט נשארים ניתנים לבחירה ולעריכה */
+  input, textarea, select, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
   }
 }
 
@@ -184,6 +274,22 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading) !important; }
 .leaflet-container .leaflet-pane img {
   max-width: none !important;
   max-height: none !important;
+}
+
+/* ── Safe areas: מגרעת (notch) ופס הבית במכשירים ניידים ── */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --tabbar-h: 3.5rem;
+}
+.safe-top { padding-top: var(--safe-top); }
+.safe-bottom { padding-bottom: var(--safe-bottom); }
+/* סרגל צף בתחתית — מונח מעל סרגל הטאבים במובייל ומכבד את פס הבית */
+.safe-floating-bar {
+  bottom: calc(var(--tabbar-h) + var(--safe-bottom));
+}
+@media (min-width: 768px) {
+  .safe-floating-bar { bottom: 0; }
 }
 
 /* ── Accessibility: visible keyboard focus ── */

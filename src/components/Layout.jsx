@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import Header from "./Header";
 import Footer from "./Footer";
+import MobileTabBar from "./MobileTabBar";
+import RouteLoader from "./RouteLoader";
 import CookieConsent from "./CookieConsent";
 import AdSenseLoader from "./AdSenseLoader";
 import WelcomeOfferModal from "./WelcomeOfferModal";
@@ -49,7 +52,7 @@ export default function Layout() {
   }, [isAuthenticated, user?.id]);
 
   return (
-    <div className="bg-background text-foreground min-h-screen flex flex-col">
+    <div className="bg-background text-foreground min-h-screen flex flex-col pb-[calc(var(--tabbar-h)+var(--safe-bottom))] md:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-[100] focus:bg-gray-900 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl text-sm font-bold"
@@ -59,9 +62,23 @@ export default function Layout() {
       <ReferralCapture />
       <Header />
       <main id="main-content" className="flex-1">
-        <Outlet />
+        <Suspense fallback={<RouteLoader />}>
+          {/* מעבר החלקה בין מסכים — מונפש רק התוכן, הכותרת והפוטר נשארים יציבים */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+        </Suspense>
       </main>
       <Footer />
+      <MobileTabBar />
       <CompareBar />
       <CookieConsent />
       <AdSenseLoader />

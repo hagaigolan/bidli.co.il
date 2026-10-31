@@ -28,7 +28,7 @@ export default function CompareBar() {
   if (!ids.length || hiddenPages.includes(location.pathname)) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur px-3 py-2" dir="rtl">
+    <div className="fixed inset-x-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur px-3 py-2 safe-floating-bar" dir="rtl">
       <div className="max-w-4xl mx-auto flex items-center gap-2 sm:gap-3">
         <ArrowLeftRight className="h-5 w-5 flex-shrink-0 hidden sm:block" style={{ color: "#2d4f68" }} aria-hidden="true" />
         <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto scrollbar-hide">

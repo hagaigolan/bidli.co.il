@@ -39,7 +39,7 @@ export default function Header() {
   return (
     <header className="bg-white" dir="rtl">
       {/* Top micro-bar */}
-      <div className="border-b border-gray-100 bg-gray-50 relative z-[60]">
+      <div className="border-b border-gray-100 bg-gray-50 relative z-[60] safe-top">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-8 text-xs text-gray-500">
           <div className="hidden sm:flex items-center gap-4 min-w-0 flex-1">
             <SalesTicker />
@@ -113,7 +113,7 @@ export default function Header() {
                     <Menu className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72 bg-white">
+                <SheetContent side="right" className="w-72 bg-white safe-bottom">
                   <div className="mt-6 flex flex-col gap-1" dir="rtl">
                     <div className="relative mb-3 px-3">
                       <Search className="absolute right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />

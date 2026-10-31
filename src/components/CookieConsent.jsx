@@ -59,7 +59,7 @@ export default function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-[9999] p-3 sm:p-4" dir="rtl">
+    <div className="fixed bottom-0 inset-x-0 z-[9999] px-3 pt-3 pb-[calc(0.75rem+var(--safe-bottom))] sm:p-4 sm:pb-[calc(1rem+var(--safe-bottom))]" dir="rtl">
       <div className="max-w-5xl mx-auto rounded-2xl border shadow-2xl bg-white flex flex-col sm:flex-row items-center gap-3 p-4"
         style={{ borderColor: "#e5893d44", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
         role="dialog" aria-modal="false" aria-label="הסכמה לשימוש בעוגיות">

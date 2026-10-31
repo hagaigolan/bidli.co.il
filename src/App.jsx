@@ -5,43 +5,47 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
+import { lazy, Suspense } from 'react';
 import Layout from './components/Layout';
-import Category from './pages/Category';
-import UploadProduct from './pages/UploadProduct';
-import Auctions from './pages/Auctions';
-import AuctionDetail from './pages/AuctionDetail';
-import Profile from './pages/Profile';
-import AdminDispute from './pages/AdminDispute';
-import AdminDashboard from './pages/AdminDashboard';
-import TermsAndPrivacy from './pages/TermsAndPrivacy';
-import Stocks from './pages/Stocks';
-import Articles from './pages/Articles';
-import ArticleDetail from './pages/ArticleDetail';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Search from './pages/Search';
-import MyOrders from './pages/MyOrders';
-import MySales from './pages/MySales';
-import Favorites from './pages/Favorites';
-import Contact from './pages/Contact';
-import About from './pages/About';
-import SellerProfile from './pages/SellerProfile';
-import SellerQuestions from './pages/SellerQuestions';
-import ShopSupport from './pages/ShopSupport';
-import AdminManagement from './pages/AdminManagement';
 import ScrollToTop from './components/ScrollToTop';
-import SeoAgent from './pages/SeoAgent';
-import Experts from './pages/Experts';
-import Valuation from './pages/Valuation';
-import AuctionsMap from './pages/AuctionsMap';
-import Barter from './pages/Barter';
-import BarterDetail from './pages/BarterDetail';
-import Landing from './pages/Landing';
-import MyCenter from './pages/MyCenter';
-import Compare from './pages/Compare';
+import RouteLoader from './components/RouteLoader';
+
+// ── טעינה עצלה של העמודים (React.lazy) — מקצרת את זמן הטעינה הראשוני, חשוב במיוחד ב-WebView ──
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Home = lazy(() => import('./pages/Home'));
+const Category = lazy(() => import('./pages/Category'));
+const UploadProduct = lazy(() => import('./pages/UploadProduct'));
+const Auctions = lazy(() => import('./pages/Auctions'));
+const AuctionDetail = lazy(() => import('./pages/AuctionDetail'));
+const Profile = lazy(() => import('./pages/Profile'));
+const AdminDispute = lazy(() => import('./pages/AdminDispute'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const TermsAndPrivacy = lazy(() => import('./pages/TermsAndPrivacy'));
+const Stocks = lazy(() => import('./pages/Stocks'));
+const Articles = lazy(() => import('./pages/Articles'));
+const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Search = lazy(() => import('./pages/Search'));
+const MyOrders = lazy(() => import('./pages/MyOrders'));
+const MySales = lazy(() => import('./pages/MySales'));
+const Favorites = lazy(() => import('./pages/Favorites'));
+const Contact = lazy(() => import('./pages/Contact'));
+const About = lazy(() => import('./pages/About'));
+const SellerProfile = lazy(() => import('./pages/SellerProfile'));
+const SellerQuestions = lazy(() => import('./pages/SellerQuestions'));
+const ShopSupport = lazy(() => import('./pages/ShopSupport'));
+const AdminManagement = lazy(() => import('./pages/AdminManagement'));
+const SeoAgent = lazy(() => import('./pages/SeoAgent'));
+const Experts = lazy(() => import('./pages/Experts'));
+const Valuation = lazy(() => import('./pages/Valuation'));
+const AuctionsMap = lazy(() => import('./pages/AuctionsMap'));
+const Barter = lazy(() => import('./pages/Barter'));
+const BarterDetail = lazy(() => import('./pages/BarterDetail'));
+const Landing = lazy(() => import('./pages/Landing'));
+const MyCenter = lazy(() => import('./pages/MyCenter'));
+const Compare = lazy(() => import('./pages/Compare'));
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -52,13 +56,15 @@ const AuthenticatedApp = () => {
 
   if (isAuthPage) {
     return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+      <Suspense fallback={<RouteLoader />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Suspense>
     );
   }
 
@@ -75,49 +81,51 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/category/:name" element={<Category />} />
-        <Route path="/upload-product" element={<UploadProduct />} />
-        <Route path="/auctions" element={<Auctions />} />
-        <Route path="/auction/:id" element={<AuctionDetail />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/admin/disputes" element={<AdminDispute />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/terms" element={<TermsAndPrivacy />} />
-        <Route path="/stocks" element={<Stocks />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/articles/:id" element={<ArticleDetail />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/my-center" element={<MyCenter />} />
-        <Route path="/compare" element={<Compare />} />
-        <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
-        <Route path="/my-sales" element={<MySales />} />
-        <Route path="/favorites" element={<Favorites />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/seller/id/:id" element={<SellerProfile />} />
-        <Route path="/seller/:email" element={<SellerProfile />} />
-        <Route path="/seller-questions" element={<SellerQuestions />} />
-        <Route path="/shop-support" element={<ShopSupport />} />
-        <Route path="/admin/manage" element={<AdminManagement />} />
-        <Route path="/admin/seo-agent" element={<SeoAgent />} />
-        <Route path="/experts" element={<Experts />} />
-        <Route path="/valuation" element={<Valuation />} />
-        <Route path="/auctions-map" element={<AuctionsMap />} />
-        <Route path="/barter" element={<Barter />} />
-        <Route path="/barter/:id" element={<BarterDetail />} />
-        <Route path="/landing/:slug" element={<Landing />} />
-        {/* Add your page Route elements here */}
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <Suspense fallback={<RouteLoader />}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/category/:name" element={<Category />} />
+          <Route path="/upload-product" element={<UploadProduct />} />
+          <Route path="/auctions" element={<Auctions />} />
+          <Route path="/auction/:id" element={<AuctionDetail />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/admin/disputes" element={<AdminDispute />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/terms" element={<TermsAndPrivacy />} />
+          <Route path="/stocks" element={<Stocks />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/articles/:id" element={<ArticleDetail />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/my-center" element={<MyCenter />} />
+          <Route path="/compare" element={<Compare />} />
+          <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
+          <Route path="/my-sales" element={<MySales />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/seller/id/:id" element={<SellerProfile />} />
+          <Route path="/seller/:email" element={<SellerProfile />} />
+          <Route path="/seller-questions" element={<SellerQuestions />} />
+          <Route path="/shop-support" element={<ShopSupport />} />
+          <Route path="/admin/manage" element={<AdminManagement />} />
+          <Route path="/admin/seo-agent" element={<SeoAgent />} />
+          <Route path="/experts" element={<Experts />} />
+          <Route path="/valuation" element={<Valuation />} />
+          <Route path="/auctions-map" element={<AuctionsMap />} />
+          <Route path="/barter" element={<Barter />} />
+          <Route path="/barter/:id" element={<BarterDetail />} />
+          <Route path="/landing/:slug" element={<Landing />} />
+          {/* Add your page Route elements here */}
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 

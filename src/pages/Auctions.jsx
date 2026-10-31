@@ -10,6 +10,7 @@ import LiveCardStats from "@/components/LiveCardStats";
 import CompareButton from "@/components/CompareButton";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
+import AddToCalendarButton from "@/components/AddToCalendarButton";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -83,7 +84,10 @@ function AuctionCard({ product }) {
           </div>
           <span className="text-xs text-gray-400">{product.bid_count || 0} הצעות</span>
         </div>
-        <LiveCardStats product={product} />
+        <div className="flex items-center justify-between gap-2">
+          <LiveCardStats product={product} />
+          {!ended && <AddToCalendarButton product={product} className="flex-shrink-0" />}
+        </div>
       </div>
     </Link>
     </div>

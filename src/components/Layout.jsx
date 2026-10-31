@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
+import AdSenseLoader from "./AdSenseLoader";
 import WelcomeOfferModal from "./WelcomeOfferModal";
 import AccessibilityWidget from "./AccessibilityWidget";
 import IdleLogout from "./IdleLogout";
@@ -63,6 +64,7 @@ export default function Layout() {
       <Footer />
       <CompareBar />
       <CookieConsent />
+      <AdSenseLoader />
       <WelcomeOfferModal />
       <AccessibilityWidget />
       <IdleLogout />

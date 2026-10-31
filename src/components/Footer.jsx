@@ -116,6 +116,7 @@ export default function Footer() {
             <Link to="/terms?tab=terms" className="hover:text-gray-500 transition-colors">תנאי שימוש</Link>
             <Link to="/terms?tab=privacy" className="hover:text-gray-500 transition-colors">מדיניות פרטיות</Link>
             <Link to="/terms?tab=cookies" className="hover:text-gray-500 transition-colors">מדיניות עוגיות</Link>
+            <button type="button" onClick={() => window.dispatchEvent(new Event("cookie-settings-open"))} className="hover:text-gray-500 transition-colors">הגדרות עוגיות</button>
             <Link to="/terms?tab=returns" className="hover:text-gray-500 transition-colors">מדיניות החזרים</Link>
             <Link to="/terms?tab=shipping" className="hover:text-gray-500 transition-colors">משלוחים והספקה</Link>
             <Link to="/terms?tab=accessibility" className="hover:text-gray-500 transition-colors">הצהרת נגישות</Link>

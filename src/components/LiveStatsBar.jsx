@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Zap, CheckCircle, Coins, Gavel } from "lucide-react";
+import { getCumulativeSales, SOLD_AUCTIONS_QUERY } from "@/lib/cumulativeSales";
 
-// בסיס היסטורי — המכירות והמכרזים שהושלמו מצטברים מעליו מהמכרזים שנמכרים בפועל
+// בסיס היסטורי למספר המכרזים שהושלמו בלבד — סך המכירות המצטבר מחושב
+// אך ורק בפונקציה המשותפת getCumulativeSales (מקור אמת אחד לשני העמודים)
 const BASE_COMPLETED = 29;
-const BASE_TOTAL_SALES = 2589;
 // מועד קביעת הבסיס — רק מכרזים שנמכרו מאז נספרים ומתווספים אליו
 const BASE_SALES_AT = "2026-10-30T22:00:00.000Z";
 
@@ -20,24 +21,20 @@ export default function LiveStatsBar() {
       base44.entities.Product.aggregate({
         query: {
           $and: [
-            {
-              $or: [
-                { status: { $in: ["paid", "escrow", "delivered", "released"] } },
-                { status: "ended", highest_bidder: { $ne: "" } },
-              ],
-            },
+            SOLD_AUCTIONS_QUERY,
             { updated_date: { $gte: BASE_SALES_AT } },
           ],
         },
         sum: "current_price",
       }),
       base44.entities.Bid.count({ created_date: { $gte: weekAgo } }),
-    ]).then(([active, soldAgg, bidsWeek]) => {
+      getCumulativeSales(),
+    ]).then(([active, soldAgg, bidsWeek, sales]) => {
       const row = soldAgg?.rows?.[0] || {};
       setStats({
         active: active || 0,
         completed: BASE_COMPLETED + (row.count || 0),
-        totalSales: BASE_TOTAL_SALES + (row.sum_current_price || 0),
+        totalSales: sales.totalSales,
         bidsWeek: bidsWeek || 0,
       });
     }).catch(() => {});

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { CheckCircle, Coins, Zap } from "lucide-react";
+import { getCumulativeSales } from "@/lib/cumulativeSales";
 
 // רצועת אמון בראש עמוד הפרסום — אותו מקור נתונים כמו בדף הבית (LiveStatsBar):
 // סך מכירות מצטבר, מכרזים פעילים כרגע, ופרסום חינם. ללא מספרים מומצאים —
@@ -12,18 +13,10 @@ export default function UploadTrustStrip() {
   useEffect(() => {
     Promise.all([
       base44.entities.Product.count({ status: "active", ends_at: { $gte: new Date().toISOString() } }),
-      base44.entities.Product.aggregate({
-        query: {
-          $or: [
-            { status: { $in: ["paid", "escrow", "delivered", "released"] } },
-            { status: "ended", highest_bidder: { $ne: "" } },
-          ],
-        },
-        sum: "current_price",
-      }),
-    ]).then(([active, soldAgg]) => {
+      getCumulativeSales(),
+    ]).then(([active, sales]) => {
       setActiveCount(active || 0);
-      setTotalSales(soldAgg?.rows?.[0]?.sum_current_price || 0);
+      setTotalSales(sales.totalSales);
     }).catch(() => {});
   }, []);
 

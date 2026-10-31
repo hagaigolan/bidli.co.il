@@ -46,6 +46,8 @@ const BarterDetail = lazy(() => import('./pages/BarterDetail'));
 const Landing = lazy(() => import('./pages/Landing'));
 const MyCenter = lazy(() => import('./pages/MyCenter'));
 const Compare = lazy(() => import('./pages/Compare'));
+const AuctionCalendar = lazy(() => import('./pages/AuctionCalendar'));
+const Collections = lazy(() => import('./pages/Collections'));
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -104,6 +106,8 @@ const AuthenticatedApp = () => {
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/my-center" element={<MyCenter />} />
           <Route path="/compare" element={<Compare />} />
+          <Route path="/auction-calendar" element={<AuctionCalendar />} />
+          <Route path="/collections" element={<Collections />} />
           <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
           <Route path="/my-sales" element={<MySales />} />
           <Route path="/favorites" element={<Favorites />} />

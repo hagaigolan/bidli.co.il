@@ -6,6 +6,19 @@ import { Bookmark, Trash2 } from "lucide-react";
 
 const FREQ_LABELS = { instant: "מיידי", daily: "יומי", weekly: "שבועי" };
 
+// קישור לחיפוש עם כל המסננים שנשמרו
+const searchLink = (s) => {
+  const params = new URLSearchParams();
+  if (s.category) params.set("category", s.category);
+  if (s.keyword) params.set("q", s.keyword);
+  if (s.min_price) params.set("min", String(s.min_price));
+  if (s.max_price) params.set("max", String(s.max_price));
+  if (s.condition) params.set("condition", s.condition);
+  if (s.city) params.set("city", s.city);
+  const qs = params.toString();
+  return `/auctions${qs ? `?${qs}` : ""}`;
+};
+
 // רשימת החיפושים השמורים של המשתמש — בפרופיל האישי
 export default function SavedSearchesList() {
   const { user } = useAuth();
@@ -50,13 +63,17 @@ export default function SavedSearchesList() {
         {searches.map(s => (
           <div key={s.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100">
             <div className="flex-1 min-w-0">
-              <Link to={`/auctions?${s.category ? `category=${encodeURIComponent(s.category)}&` : ""}${s.max_price ? `max=${s.max_price}` : ""}`}
+              <Link to={searchLink(s)}
                 className="text-sm font-bold text-gray-800 hover:text-[#e5893d] transition-colors truncate block">
                 {s.label}
               </Link>
               <p className="text-xs text-gray-400 mt-0.5">
-                {s.category || "כל הקטגוריות"}
-                {s.max_price ? ` · עד ₪${s.max_price.toLocaleString()}` : ""} · {FREQ_LABELS[s.frequency] || "יומי"}
+                {[s.category || "כל הקטגוריות",
+                  s.keyword ? `«${s.keyword}»` : null,
+                  s.min_price ? `מ-₪${s.min_price.toLocaleString()}` : null,
+                  s.max_price ? `עד ₪${s.max_price.toLocaleString()}` : null,
+                  s.condition || null,
+                  s.city || null].filter(Boolean).join(" · ")} · {FREQ_LABELS[s.frequency] || "יומי"}
               </p>
             </div>
             <button onClick={() => toggleActive(s)}

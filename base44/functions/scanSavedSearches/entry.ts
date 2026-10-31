@@ -28,7 +28,16 @@ export default async function(req: Request): Promise<Response> {
         if (!(created > since)) return false;
         if (p.status !== 'active' || !p.ends_at || new Date(p.ends_at) <= now) return false;
         if (search.category && (p.category || '') !== search.category) return false;
-        if (search.max_price && (p.starting_price || 0) > search.max_price) return false;
+        const price = p.current_price || p.starting_price || 0;
+        if (search.min_price && price < search.min_price) return false;
+        if (search.max_price && price > search.max_price) return false;
+        if (search.keyword) {
+          const term = String(search.keyword).toLowerCase();
+          const hay = `${p.title || ''} ${p.description || ''}`.toLowerCase();
+          if (!hay.includes(term)) return false;
+        }
+        if (search.condition && (p.condition || '') !== search.condition) return false;
+        if (search.city && !(p.location || '').includes(search.city)) return false;
         return true;
       }).slice(0, 5);
 

@@ -11,14 +11,25 @@ const FREQ_OPTIONS = [
   { value: "weekly", label: "שבועי — סיכום פעם בשבוע" },
 ];
 
-// דיאלוג שמירת חיפוש — הקטגוריה והמחיר המקסימלי מגיעים מהמסננים הפעילים ברשימת המכרזים
-export default function SavedSearchModal({ category, maxPrice, defaultLabel, onClose, onSaved }) {
+// דיאלוג שמירת חיפוש — שומר את כל המסננים הפעילים: קטגוריה, מילת מפתח, טווח מחירים, מצב ועיר
+export default function SavedSearchModal({
+  category, minPrice, maxPrice, keyword, condition, city, defaultLabel, onClose, onSaved,
+}) {
   const { user } = useAuth();
   const [label, setLabel] = useState(defaultLabel || "");
   const [frequency, setFrequency] = useState("instant");
   const [notifyPhone, setNotifyPhone] = useState(() => localStorage.getItem("notif_phone") || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const summary = [
+    category || "כל הקטגוריות",
+    keyword ? `«${keyword}»` : null,
+    minPrice ? `מ-₪${Number(minPrice).toLocaleString()}` : null,
+    maxPrice ? `עד ₪${Number(maxPrice).toLocaleString()}` : null,
+    condition || null,
+    city || null,
+  ].filter(Boolean).join(" · ");
 
   const save = async () => {
     if (!user) return;
@@ -31,7 +42,11 @@ export default function SavedSearchModal({ category, maxPrice, defaultLabel, onC
         owner_name: user.full_name || "",
         label: label.trim(),
         category: category || "",
+        keyword: (keyword || "").trim(),
+        min_price: Number(minPrice) || 0,
         max_price: Number(maxPrice) || 0,
+        condition: condition || "",
+        city: city || "",
         frequency,
         notify_email: true,
         notify_phone: notifyPhone || "",
@@ -76,8 +91,7 @@ export default function SavedSearchModal({ category, maxPrice, defaultLabel, onC
             {/* סיכום המסננים */}
             <div className="p-3 rounded-xl text-xs text-gray-600 mb-4"
               style={{ background: "#e5893d0a", border: "1px solid #e5893d22" }}>
-              קטגוריה: <strong>{category || "כל הקטגוריות"}</strong>
-              {maxPrice ? <> · עד <strong>₪{Number(maxPrice).toLocaleString()}</strong></> : null}
+              {summary}
             </div>
 
             <label className="block text-xs text-gray-500 mb-1">שם החיפוש *</label>

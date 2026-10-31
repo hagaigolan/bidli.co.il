@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
-import { Plus, Clock, MapPin, Tag, Bookmark, Map } from "lucide-react";
+import { Plus, Clock, MapPin, Tag, Bookmark, Map, CalendarDays } from "lucide-react";
 import { SellerFomoBlock } from "@/components/SellerFomo";
 import SavedSearchModal from "@/components/SavedSearchModal";
 import AuctionsFilterPanel from "@/components/AuctionsFilterPanel";
 import LiveCardStats from "@/components/LiveCardStats";
 import CompareButton from "@/components/CompareButton";
 import PullToRefresh from "@/components/PullToRefresh";
+import PriceDropBadge from "@/components/PriceDropBadge";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -50,11 +51,18 @@ function AuctionCard({ product }) {
         {product.image_url
           ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-50 to-gray-100">🏺</div>}
+        {product.featured && (!product.featured_until || new Date(product.featured_until) > new Date()) && (
+          <span className="absolute top-2 left-2 px-2 py-1 rounded-full text-[11px] font-black text-white"
+            style={{ background: "linear-gradient(135deg, #6aa3cd, #3e6b8a)", boxShadow: "0 2px 8px #3e6b8a55" }}>
+            ★ מקודם
+          </span>
+        )}
         <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
           style={{ background: ended ? "#f3f4f6" : "linear-gradient(135deg,#e5893d,#3e6b8a)", color: ended ? "#6b7280" : "white" }}>
           <Clock className="h-3 w-3" />
           {ended ? "הסתיים" : <CountdownBadge endsAt={product.ends_at} small />}
         </div>
+        <PriceDropBadge product={product} className="absolute bottom-2 right-2" />
       </div>
       <div className="p-3" dir="rtl">
         <h3 className="font-bold text-gray-900 text-xs mb-1 line-clamp-1">{product.title}</h3>
@@ -95,14 +103,20 @@ export default function Auctions() {
   const ARCHIVE_MODE = urlParams.get("view") === "archive";
   const PARAM_CATEGORY = (urlParams.get("category") || "").trim();
   const PARAM_MAX = Number(urlParams.get("max")) || 0;
+  const PARAM_MIN = Number(urlParams.get("min")) || 0;
   const PARAM_CITY = (urlParams.get("city") || "").trim();
+  const PARAM_KEYWORD = (urlParams.get("q") || "").trim();
+  const PARAM_CONDITION = (urlParams.get("condition") || "").trim();
+  const PARAM_STORE = urlParams.get("store") === "1";
 
   // מסנני העמוד — מאותחלים מפרמטרי ה-URL (קישורים חיצוניים עם סינון נשמרים)
   const [filterCategory, setFilterCategory] = useState(PARAM_CATEGORY);
-  const [filterMin, setFilterMin] = useState(0);
+  const [filterKeyword, setFilterKeyword] = useState(PARAM_KEYWORD);
+  const [filterMin, setFilterMin] = useState(PARAM_MIN);
   const [filterMax, setFilterMax] = useState(PARAM_MAX);
-  const [filterCondition, setFilterCondition] = useState("");
+  const [filterCondition, setFilterCondition] = useState(PARAM_CONDITION);
   const [filterCity, setFilterCity] = useState(PARAM_CITY);
+  const [storeOnly, setStoreOnly] = useState(PARAM_STORE);
   const [endingSoon, setEndingSoon] = useState(false);
 
   const loadProducts = () => base44.entities.Product.list("-created_date", 50)
@@ -146,6 +160,12 @@ export default function Auctions() {
     if (p.status === "cancelled" || new Date(p.ends_at) <= new Date()) return false;
     // סינון לפי המחיר בפועל כרגע (המחיר הנוכחי, או ההתחלתי כשאין הצעות)
     if (filterCategory && p.category !== filterCategory) return false;
+    if (filterKeyword.trim()) {
+      const term = filterKeyword.trim().toLowerCase();
+      const hay = `${p.title || ""} ${p.description || ""}`.toLowerCase();
+      if (!hay.includes(term)) return false;
+    }
+    if (storeOnly && !p.is_stock) return false;
     if (filterMin && priceOf(p) < filterMin) return false;
     if (filterMax && priceOf(p) > filterMax) return false;
     if (filterCondition && p.condition !== filterCondition) return false;
@@ -156,11 +176,14 @@ export default function Auctions() {
   });
   const ended = products.filter(p => new Date(p.ends_at) <= new Date());
   const activeTotal = products.filter(p => p.status !== "cancelled" && new Date(p.ends_at) > new Date()).length;
-  const hasFilters = filterCategory || filterMin || filterMax || filterCondition || filterCity || endingSoon;
+  const hasFilters = filterCategory || filterKeyword || filterMin || filterMax || filterCondition || filterCity || storeOnly || endingSoon;
   const cities = [...new Set(products.map(p => p.location).filter(Boolean))];
+  // מכרזים מקודמים מוצגים ראשונים ברשימה
+  const isFeatured = (p) => !!(p.featured && (!p.featured_until || new Date(p.featured_until) > new Date()));
+  const activeList = [...active].sort((a, b) => (isFeatured(b) ? 1 : 0) - (isFeatured(a) ? 1 : 0));
   const resetFilters = () => {
-    setFilterCategory(""); setFilterMin(0); setFilterMax(0);
-    setFilterCondition(""); setFilterCity(""); setEndingSoon(false);
+    setFilterCategory(""); setFilterKeyword(""); setFilterMin(0); setFilterMax(0);
+    setFilterCondition(""); setFilterCity(""); setStoreOnly(false); setEndingSoon(false);
   };
 
   return (
@@ -190,15 +213,22 @@ export default function Auctions() {
           <>
             <AuctionsFilterPanel
               category={filterCategory} setCategory={setFilterCategory}
+              keyword={filterKeyword} setKeyword={setFilterKeyword}
               minPrice={filterMin} setMinPrice={setFilterMin}
               maxPrice={filterMax} setMaxPrice={setFilterMax}
               condition={filterCondition} setCondition={setFilterCondition}
               city={filterCity} setCity={setFilterCity}
               endingSoon={endingSoon} setEndingSoon={setEndingSoon}
+              storeOnly={storeOnly} setStoreOnly={setStoreOnly}
               cities={cities} count={active.length} totalCount={activeTotal}
               onReset={resetFilters}
             />
             <div className="flex items-center justify-end gap-3 mb-5" dir="rtl">
+              <Link to="/auction-calendar"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 text-gray-600 hover:border-[#3e6b8a66] hover:text-[#3e6b8a] transition-all">
+                <CalendarDays className="h-3.5 w-3.5" />
+                לוח מכרזים
+              </Link>
               <Link to="/auctions-map"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 text-gray-600 hover:border-[#3e6b8a66] hover:text-[#3e6b8a] transition-all">
                 <Map className="h-3.5 w-3.5" />
@@ -253,7 +283,7 @@ export default function Auctions() {
                       מכרזים פעילים ({active.length})
                     </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {active.map(p => <AuctionCard key={p.id} product={p} />)}
+                      {activeList.map(p => <AuctionCard key={p.id} product={p} />)}
                     </div>
                   </div>
                 )}
@@ -278,10 +308,14 @@ export default function Auctions() {
       {showSaveSearch && (
         <SavedSearchModal
           category={filterCategory}
+          keyword={filterKeyword}
+          minPrice={filterMin}
           maxPrice={filterMax}
-          defaultLabel={PARAM_CATEGORY
-            ? `${PARAM_CATEGORY}${PARAM_MAX ? ` עד ₪${PARAM_MAX.toLocaleString()}` : ""}`
-            : PARAM_MAX ? `מכרזים עד ₪${PARAM_MAX.toLocaleString()}` : "כל המכרזים"}
+          condition={filterCondition}
+          city={filterCity}
+          defaultLabel={[filterCategory || "כל המכרזים",
+            filterKeyword ? `«${filterKeyword}»` : null,
+            filterMax ? `עד ₪${filterMax.toLocaleString()}` : null].filter(Boolean).join(" · ")}
           onClose={() => setShowSaveSearch(false)}
           onSaved={() => {}}
         />

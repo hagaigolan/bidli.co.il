@@ -25,6 +25,7 @@ import CollectorQuiz from "@/components/CollectorQuiz";
 import TelegramBanner from "@/components/TelegramBanner";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import PullToRefresh from "@/components/PullToRefresh";
+import PriceDropBadge from "@/components/PriceDropBadge";
 
 const AuctionEntity = base44.entities.Auction;
 const ShopEntity = base44.entities.Shop;
@@ -328,6 +329,7 @@ function UpcomingAuctionsSection({ products }) {
                     <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
                       style={{ background: "linear-gradient(135deg, #ef4444, #e5893d)" }}>🔥 מדובר</span>
                   )}
+                  <PriceDropBadge product={product} className="absolute top-2 left-2" />
                 </div>
                 <div className="p-3" dir="rtl">
                   <h3 className="font-bold text-gray-900 text-xs leading-snug mb-1.5 line-clamp-1">{product.title}</h3>

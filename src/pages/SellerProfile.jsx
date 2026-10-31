@@ -3,7 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { SellerTrustBadge } from "@/components/SellerBadge";
 import ReviewsBio from "@/components/ReviewsBio";
-import { MapPin, Clock, Flame, Package, Store, Tag, TrendingUp } from "lucide-react";
+import { MapPin, Clock, Flame, Package, Store, Tag, TrendingUp, Bell, BellOff } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 function CardTimer({ endsAt }) {
   const calc = () => {
@@ -73,9 +74,40 @@ export default function SellerProfile() {
   const { email: rawEmail, id: rawId } = useParams();
   const email = decodeURIComponent(rawEmail || "");
   const sellerId = decodeURIComponent(rawId || "");
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active");
+  const [following, setFollowing] = useState(false);
+
+  // מעקב אחרי בית המכירות — התראה כשמכרז חדש שלו עולה
+  useEffect(() => {
+    if (!user?.email || !email) return;
+    base44.entities.CollectorFollow.filter({ follower_key: user.email, followed_key: email })
+      .then(items => setFollowing(items.length > 0))
+      .catch(() => {});
+  }, [user?.email, email]);
+
+  const toggleFollow = async () => {
+    if (!user?.email) return;
+    const next = !following;
+    setFollowing(next);
+    try {
+      if (next) {
+        await base44.entities.CollectorFollow.create({
+          follower_key: user.email,
+          follower_name: user.full_name || "",
+          followed_key: email,
+          followed_name: products[0]?.seller_name || email,
+        });
+      } else {
+        const existing = await base44.entities.CollectorFollow.filter({ follower_key: user.email, followed_key: email });
+        if (existing.length) await base44.entities.CollectorFollow.delete(existing[0].id);
+      }
+    } catch {
+      setFollowing(!next);
+    }
+  };
 
   useEffect(() => {
     // פרופיל לפי מזהה מוכר (למשל מכרזים שפורסמו ללא אימייל) או לפי אימייל
@@ -115,8 +147,18 @@ export default function SellerProfile() {
                 <Store className="h-4 w-4" style={{ color: "#e5893d" }} />
                 {sellerName || email}
               </h1>
-              <p className="text-sm text-gray-400">כל המכירות של המוכר ב-bidli</p>
+              <p className="text-sm text-gray-400">בית המכירות — כל המכרזים הפעילים והקרובים</p>
             </div>
+            {email && user?.email && user.email.toLowerCase() !== email.toLowerCase() && (
+              <button type="button" onClick={toggleFollow} aria-pressed={following}
+                className="mr-auto flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl border transition-all hover:scale-[1.02]"
+                style={following
+                  ? { borderColor: "#3e6b8a", color: "#3e6b8a", background: "#3e6b8a12" }
+                  : { borderColor: "#e5e7eb", color: "#6b7280", background: "white" }}>
+                {following ? <Bell className="h-3.5 w-3.5" aria-hidden="true" /> : <BellOff className="h-3.5 w-3.5" aria-hidden="true" />}
+                {following ? "עוקב אחרי בית המכירות ✓" : "עקוב אחרי בית המכירות"}
+              </button>
+            )}
           </div>
 
           {/* נתוני פעילות המוכר */}

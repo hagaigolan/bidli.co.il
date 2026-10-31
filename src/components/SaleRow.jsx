@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, Pencil, RotateCcw, Truck } from "lucide-react";
+import { CheckCircle, Pencil, RotateCcw, Truck, Megaphone } from "lucide-react";
 import ProductEditModal from "@/components/ProductEditModal";
+import PromoteAuctionModal from "@/components/PromoteAuctionModal";
 import { parseDbDate } from "@/lib/time";
 
 const SOLD_STATES = ["paid", "delivered", "released"];
@@ -24,6 +25,7 @@ export default function SaleRow({ product, onReload }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [showEdit, setShowEdit] = useState(false);
+  const [showPromote, setShowPromote] = useState(false);
 
   const endsAt = parseDbDate(product.ends_at);
   const ended = endsAt ? endsAt.getTime() <= Date.now() : true;
@@ -134,6 +136,13 @@ export default function SaleRow({ product, onReload }) {
               <Pencil className="h-3.5 w-3.5" /> עריכת המכרז
             </button>
           )}
+          {!ended && !product.featured && (
+            <button type="button" onClick={() => setShowPromote(true)}
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all"
+              style={{ borderColor: "#e5893d66", color: "#e5893d", background: "#e5893d08" }}>
+              <Megaphone className="h-3.5 w-3.5" /> קדם את המכרז
+            </button>
+          )}
           {err && <span className="text-xs text-red-500">{err}</span>}
         </div>
       )}
@@ -143,6 +152,16 @@ export default function SaleRow({ product, onReload }) {
           product={product}
           onClose={() => setShowEdit(false)}
           onSaved={() => { setShowEdit(false); onReload(); }}
+        />
+      )}
+
+      {showPromote && (
+        <PromoteAuctionModal
+          product={product}
+          sellerEmail={product.seller_email}
+          sellerName={product.seller_name}
+          onClose={() => setShowPromote(false)}
+          onSaved={() => {}}
         />
       )}
     </div>

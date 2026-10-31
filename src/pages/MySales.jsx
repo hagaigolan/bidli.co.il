@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import SaleRow from "@/components/SaleRow";
 import SellerChecklist from "@/components/SellerChecklist";
+import SellerInsights from "@/components/SellerInsights";
 import { parseDbDate } from "@/lib/time";
 
 // "המכירות שלי" — all auctions the current user published,
@@ -112,6 +113,8 @@ export default function MySales() {
                 </div>
               ))}
             </div>
+
+            <SellerInsights products={sales} />
 
             <SellerChecklist products={sales} />
 

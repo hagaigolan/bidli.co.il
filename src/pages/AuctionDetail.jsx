@@ -32,6 +32,10 @@ import SoundToggle from "@/components/SoundToggle";
 import { playBidPing, playTickTock, playHammer, playFireworks } from "@/lib/auctionSounds";
 import confetti from "canvas-confetti";
 import { syncProductGalleryInstagram } from "@/functions/syncProductGalleryInstagram";
+import { incrementProductView } from "@/functions/incrementProductView";
+import PriceDropBadge from "@/components/PriceDropBadge";
+import AuthenticityBlock from "@/components/AuthenticityBlock";
+import ItemAlertButton from "@/components/ItemAlertButton";
 import { setPageMeta } from "@/lib/seo";
 import { getProductFaqs } from "@/lib/productFaq";
 import { recordRecentlyViewed } from "@/lib/recentlyViewed";
@@ -274,6 +278,17 @@ export default function AuctionDetail() {
     base44.entities.Product.filter({ id }).then(items => {
       if (items.length) setProduct(items[0]);
     }).catch(() => {}).finally(() => setLoading(false));
+  }, [id]);
+
+  // מדידת צפיות — פעם אחת לכל מוצר בכל סשן, לצורך מדדי הביצוע של המוכר
+  useEffect(() => {
+    if (!id) return;
+    const key = `view_counted:${id}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch { /* מצב פרטי — ממשיכים בלי זיכרון */ }
+    incrementProductView({ product_id: id }).catch(() => {});
   }, [id]);
 
   // שמירת הפריט בהיסטוריית הצפייה — עבור רצועת "נצפו לאחרונה"
@@ -880,6 +895,12 @@ export default function AuctionDetail() {
                   {favCount.toLocaleString()} {favCount === 1 ? "סימון מועדפים" : "סימוני מועדפים"}
                 </span>
               )}
+              <ItemAlertButton
+                product={product}
+                userEmail={authUser?.email}
+                onRequireLogin={() => setShowLoginModal(true)}
+                onError={setFavError}
+              />
               {favError && <p className="text-xs text-red-500 mt-1.5">{favError}</p>}
               {/* ── שיתוף בוואטסאפ, העתקת קישור והוספה להשוואה — שורה אחת ── */}
               <div className="mt-3 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
@@ -922,7 +943,10 @@ export default function AuctionDetail() {
                   )}
                 </div>
               </div>
-              <p className="text-xs text-gray-400">מחיר התחלתי: ₪{(product.starting_price || 0).toLocaleString()}</p>
+              <div className="flex items-center gap-2 flex-wrap mt-1">
+                <p className="text-xs text-gray-400">מחיר התחלתי: ₪{(product.starting_price || 0).toLocaleString()}</p>
+                <PriceDropBadge product={product} />
+              </div>
               {product.buy_now_price && (
                 <p className="text-xs font-semibold mt-1" style={{ color: "#00a35c" }}>
                   ⚡ קנה עכשיו ללא מכרז ב-₪{product.buy_now_price.toLocaleString()}
@@ -1088,6 +1112,8 @@ export default function AuctionDetail() {
                 <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
               </div>
             )}
+
+            <AuthenticityBlock product={product} />
 
             {/* ── SELLER TRUST BADGE ── */}
             {product.seller_email && (

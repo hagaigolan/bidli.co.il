@@ -16,6 +16,11 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
     starting_price: String(product.starting_price ?? ""),
     buy_now_price: product.buy_now_price != null ? String(product.buy_now_price) : "",
     is_stock: !!product.is_stock,
+    has_certificate: !!product.has_certificate,
+    certificate_issuer: product.certificate_issuer || "",
+    provenance: product.provenance || "",
+    period: product.period || "",
+    expert_appraisal: product.expert_appraisal || "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -38,11 +43,25 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
         condition: form.condition,
         location: form.location,
         is_stock: form.is_stock,
+        has_certificate: form.has_certificate,
+        certificate_issuer: form.has_certificate ? form.certificate_issuer.trim() : "",
+        provenance: form.provenance.trim(),
+        period: form.period.trim(),
+        expert_appraisal: form.expert_appraisal.trim(),
       };
       if (noBids) {
         const price = parseFloat(form.starting_price);
+        const prev = Number(product.starting_price) || 0;
         data.starting_price = price;
         data.current_price = price;
+        // מעקב ירידת מחיר — מציג תווית "ירד ב-₪X" לרוכשים
+        if (prev && price < prev) {
+          data.previous_price = prev;
+          data.price_dropped_at = new Date().toISOString();
+        } else if (prev && price > prev) {
+          data.previous_price = null;
+          data.price_dropped_at = null;
+        }
       }
       data.buy_now_price = form.buy_now_price ? parseFloat(form.buy_now_price) : null;
       await base44.entities.Product.update(product.id, data);
@@ -126,9 +145,52 @@ export default function ProductEditModal({ product, onClose, onSaved }) {
               className={inputCls + (noBids ? "" : " bg-gray-50 text-gray-400 cursor-not-allowed")} dir="ltr" />
             <p className="text-xs text-gray-400 mt-1">
               {noBids
-                ? "אין הצעות עדיין — המחיר ניתן לעריכה"
+                ? "אין הצעות עדיין — המחיר ניתן לעריכה. הורדת מחיר תציג תווית \"ירד במחיר\" לרוכשים"
                 : `הוגשו ${product.bid_count} הצעות — המחיר אינו ניתן לשינוי`}
             </p>
+          </div>
+
+          {/* אותנטיות ומקור הפריט */}
+          <div className="pt-2 border-t border-gray-100 space-y-3">
+            <p className="text-xs font-black text-gray-700">אותנטיות ומקור</p>
+
+            <button type="button" onClick={() => set("has_certificate", !form.has_certificate)} aria-pressed={form.has_certificate}
+              className="w-full flex items-center justify-between gap-3 p-3 rounded-xl border transition-all"
+              style={form.has_certificate
+                ? { borderColor: "#3e6b8a", background: "#3e6b8a0f" }
+                : { borderColor: "#e5e7eb", background: "white" }}>
+              <span className="text-sm font-semibold text-gray-700">קיימת תעודת אותנטיות</span>
+              <span className="w-10 h-6 rounded-full flex items-center flex-shrink-0 transition-all p-0.5"
+                style={{ background: form.has_certificate ? "#3e6b8a" : "#d1d5db", justifyContent: form.has_certificate ? "flex-end" : "flex-start" }}>
+                <span className="w-5 h-5 rounded-full bg-white shadow-sm" />
+              </span>
+            </button>
+
+            {form.has_certificate && (
+              <div>
+                <label htmlFor="edit-cert-issuer" className="block text-xs text-gray-500 mb-1">מי הנפיק את התעודה</label>
+                <input id="edit-cert-issuer" value={form.certificate_issuer} onChange={e => set("certificate_issuer", e.target.value)}
+                  className={inputCls} placeholder="גמולוג, מומחה, בית מכירות" />
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="edit-period" className="block text-xs text-gray-500 mb-1">תקופה / שנת יצור</label>
+              <input id="edit-period" value={form.period} onChange={e => set("period", e.target.value)}
+                className={inputCls} placeholder="לדוגמה: המאה ה-19, 1965" />
+            </div>
+
+            <div>
+              <label htmlFor="edit-provenance" className="block text-xs text-gray-500 mb-1">מקור והיסטוריית בעלות</label>
+              <textarea id="edit-provenance" value={form.provenance} onChange={e => set("provenance", e.target.value)}
+                rows={2} className={inputCls + " resize-none"} placeholder="לדוגמה: אוסף פרטי, נרכש בלונדון ב-1998" />
+            </div>
+
+            <div>
+              <label htmlFor="edit-appraisal" className="block text-xs text-gray-500 mb-1">הערכת מומחה</label>
+              <input id="edit-appraisal" value={form.expert_appraisal} onChange={e => set("expert_appraisal", e.target.value)}
+                className={inputCls} placeholder="לדוגמה: יוסף כהן, הערכה ₪8,000" />
+            </div>
           </div>
 
           {error && <p className="text-xs text-red-500" role="alert">{error}</p>}

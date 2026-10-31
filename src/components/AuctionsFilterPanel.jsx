@@ -104,20 +104,23 @@ export default function AuctionsFilterPanel({
       </div>
 
       {/* סינון לפי מאפייני הפריט — יצרן ודגם מתוך המכרזים הפעילים */}
-      {(makers.length > 0 || models.length > 0) && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end mt-3">
-          <div>
-            <label className="block text-[11px] text-muted-foreground mb-1">יצרן / מותג</label>
-            <MobileSelect value={maker || ""} onChange={setMaker} options={makers}
-              placeholder="כל היצרנים" title="יצרן" className={inputCls} />
-          </div>
-          <div>
-            <label className="block text-[11px] text-muted-foreground mb-1">דגם</label>
-            <MobileSelect value={model || ""} onChange={setModel} options={models}
-              placeholder="כל הדגמים" title="דגם" className={inputCls} />
-          </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end mt-3">
+        <div>
+          <label className="block text-[11px] text-muted-foreground mb-1">יצרן / מותג</label>
+          <MobileSelect value={maker || ""} onChange={setMaker} options={makers}
+            placeholder="כל היצרנים" title="יצרן" className={inputCls} />
         </div>
-      )}
+        <div>
+          <label className="block text-[11px] text-muted-foreground mb-1">דגם</label>
+          <MobileSelect value={model || ""} onChange={setModel} options={models}
+            placeholder="כל הדגמים" title="דגם" className={inputCls} />
+        </div>
+        {makers.length === 0 && models.length === 0 && (
+          <p className="col-span-2 text-[11px] text-muted-foreground">
+            הסינון לפי יצרן ודגם יתמלא אוטומטית ברגע שיפורסמו מכרזים עם פרטי יצרן ודגם.
+          </p>
+        )}
+      </div>
 
       {/* סינון לפי מרחק — עיר מרכזית + רדיוס, או איתור המיקום הנוכחי בלחיצה */}
       <DistanceFilter

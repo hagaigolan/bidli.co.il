@@ -4,6 +4,12 @@ import { base44 } from "@/api/base44Client";
 import { buildSuggestions } from "@/lib/smartSearch";
 import VoiceSearchButton from "@/components/VoiceSearchButton";
 
+const GROUPS = [
+  { key: "categories", label: "קטגוריות", icon: Tag },
+  { key: "cities", label: "ערים", icon: MapPin },
+  { key: "terms", label: "מונחים ומותגים פופולריים", icon: TrendingUp },
+];
+
 // תיבת החיפוש הראשית: חיפוש מילות מפתח חכם, השלמה אוטומטית מתוך המכרזים וחיפוש קולי
 export default function SmartSearchBox({
   value,
@@ -15,30 +21,48 @@ export default function SmartSearchBox({
   autoFocus = false,
 }) {
   const [open, setOpen] = useState(false);
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const boxRef = useRef(null);
   const inputRef = useRef(null);
   const listId = useId();
 
-  // טעינת המכרזים פעם אחת — ההצעות נבנות ממודעות אמיתיות
-  const loadProducts = () => {
-    if (products) return;
-    base44.entities.Product.list("-created_date", 100)
-      .then(setProducts)
+  // טעינת המכרזים פעם אחת עם הרכבת הרכיב — ההצעות מוכנות עוד לפני ההקלדה
+  useEffect(() => {
+    let alive = true;
+    base44.entities.Product.filter({}, "-created_date", 200)
+      .then((res) => {
+        if (!alive) return;
+        const list = Array.isArray(res) ? res : res?.items || [];
+        setProducts(list);
+      })
       .catch(() => setProducts([]));
-  };
+    return () => { alive = false; };
+  }, []);
 
   const groups = useMemo(
-    () => (open ? buildSuggestions(value, products || []) : { categories: [], cities: [], terms: [] }),
-    [open, value, products]
+    () => buildSuggestions(value, products),
+    [value, products]
   );
 
-  const flat = useMemo(() => [
-    ...groups.categories.map((v) => ({ type: "קטגוריה", value: v, icon: Tag })),
-    ...groups.cities.map((v) => ({ type: "עיר", value: v, icon: MapPin })),
-    ...groups.terms.map((v) => ({ type: "מונח", value: v, icon: TrendingUp })),
-  ], [groups]);
+  // כל ההצעות השטוחות — לפי אותו סדר שבו הן מוצגות (לאינדקס החצים)
+  const flat = useMemo(
+    () => GROUPS.flatMap((g) => groups[g.key].map((v) => ({ ...g, value: v }))),
+    [groups]
+  );
+
+  // חיתוך ההצעות לקבוצות עם אינדקס פתיחה לכל קבוצה
+  const sections = useMemo(() => {
+    let start = 0;
+    return GROUPS
+      .map((g) => ({ ...g, values: groups[g.key] }))
+      .filter((g) => g.values.length > 0)
+      .map((g) => {
+        const withIndex = { ...g, start };
+        start += g.values.length;
+        return withIndex;
+      });
+  }, [groups]);
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -66,6 +90,7 @@ export default function SmartSearchBox({
   const handleKeyDown = (e) => {
     if (e.key === "Escape") {
       setOpen(false);
+      setActiveIndex(-1);
       return;
     }
     if (e.key === "ArrowDown" && flat.length) {
@@ -76,6 +101,7 @@ export default function SmartSearchBox({
     }
     if (e.key === "ArrowUp" && flat.length) {
       e.preventDefault();
+      setOpen(true);
       setActiveIndex((i) => (i <= 0 ? flat.length - 1 : i - 1));
       return;
     }
@@ -90,10 +116,10 @@ export default function SmartSearchBox({
 
   return (
     <div ref={boxRef} className={`relative ${containerClassName}`} dir="rtl">
-      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
+      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" aria-hidden="true" />
       <input
         ref={inputRef}
-        type="search"
+        type="text"
         autoFocus={autoFocus}
         role="combobox"
         aria-label="חיפוש באתר"
@@ -105,11 +131,9 @@ export default function SmartSearchBox({
         onChange={(e) => {
           onChange(e.target.value);
           setOpen(true);
-          loadProducts();
         }}
         onFocus={() => {
-          loadProducts();
-          if (value.trim().length >= 2) setOpen(true);
+          if (String(value || "").trim().length >= 2) setOpen(true);
         }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
@@ -127,24 +151,36 @@ export default function SmartSearchBox({
           id={listId}
           role="listbox"
           aria-label="הצעות חיפוש"
-          className="absolute top-full mt-2 right-0 left-0 z-[80] max-h-80 overflow-y-auto rounded-2xl border border-border bg-background shadow-xl p-1.5 text-right"
+          className="absolute top-full mt-2 right-0 left-0 z-[120] max-h-80 overflow-y-auto rounded-2xl border border-border bg-background shadow-xl py-1.5 text-right"
         >
-          {flat.map((item, i) => {
-            const Icon = item.icon;
-            const active = i === activeIndex;
+          {sections.map((section) => {
+            const SectionIcon = section.icon;
             return (
-              <li key={`${item.type}-${item.value}`} role="option" aria-selected={active} id={`${listId}-${i}`}>
-                <button
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => choose(item)}
-                  onMouseEnter={() => setActiveIndex(i)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-right transition-colors ${active ? "bg-muted font-bold" : "font-medium"}`}
-                >
-                  <Icon className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" aria-hidden="true" />
-                  <span className="flex-1 truncate text-foreground">{item.value}</span>
-                  <span className="text-[11px] text-muted-foreground flex-shrink-0">{item.type}</span>
-                </button>
+              <li key={section.key} role="presentation">
+                <p className="flex items-center gap-1.5 px-3 pt-1.5 pb-1 text-[11px] font-bold text-muted-foreground">
+                  <SectionIcon className="h-3 w-3" aria-hidden="true" />
+                  {section.label}
+                </p>
+                <ul role="presentation">
+                  {section.values.map((v, i) => {
+                    const index = section.start + i;
+                    const active = index === activeIndex;
+                    return (
+                      <li key={`${section.key}-${v}`} role="option" aria-selected={active} id={`${listId}-${index}`}>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => choose({ value: v })}
+                          onMouseEnter={() => setActiveIndex(index)}
+                          className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-right transition-colors ${active ? "bg-muted font-bold" : "font-medium"} hover:bg-muted`}
+                        >
+                          <span className="flex-1 truncate text-foreground">{v}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {section.key !== sections[sections.length - 1].key && <div className="mx-3 my-1 border-t border-border" />}
               </li>
             );
           })}

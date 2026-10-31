@@ -2,6 +2,7 @@
 // מפצל ביטוי חופשי לטוקנים, מזהה סינון "עד N" ועיר מתוך רשימת הערים,
 // ומדרג תוצאות: התאמה בכותרת שווה יותר מהתאמה בתיאור, ויותר מילים = דירוג גבוה יותר.
 import { CITY_COORDS } from "./cityCoords";
+import { SUBCATEGORIES } from "./subcategories";
 
 const norm = (v) =>
   String(v || "")
@@ -11,6 +12,8 @@ const norm = (v) =>
     .trim();
 
 export const CITY_NAMES = Object.keys(CITY_COORDS).sort((a, b) => b.length - a.length);
+// כל קטגוריות האתר — בסיס להצעות גם לפני שהמכרזים נטענו
+export const CATEGORY_NAMES = Object.keys(SUBCATEGORIES);
 
 const STOPWORDS = new Set([
   "של", "את", "עם", "על", "או", "גם", "זה", "זו", "כל", "אל", "לא", "כן",
@@ -91,13 +94,15 @@ export function searchProducts(products = [], raw = "") {
 export function buildSuggestions(query, products = []) {
   const term = norm(query);
   const empty = { categories: [], cities: [], terms: [] };
-  if (term.length < 2) return empty;
+  if (term.length < 1) return empty;
 
-  const categories = [...new Set(products.map((p) => p.category).filter(Boolean))]
+  // קטגוריות — מהמכרזים בפועל יחד עם רשימת הקטגוריות הקבועה של האתר
+  const categories = [...new Set([...products.map((p) => p.category), ...CATEGORY_NAMES].filter(Boolean))]
     .filter((c) => norm(c).includes(term))
     .slice(0, 4);
 
   const cityPool = new Set();
+  // ערים מהמכרזים בפועל, וגם ערים מוכרות מהמילון — כדי שההצעה תופיע תמיד
   products.forEach((p) => {
     const loc = norm(p.location);
     if (!loc) return;
@@ -105,8 +110,11 @@ export function buildSuggestions(query, products = []) {
       if (loc.includes(norm(c))) cityPool.add(c);
     });
   });
+  CITY_NAMES.forEach((c) => {
+    if (norm(c).includes(term)) cityPool.add(c);
+  });
   const cities = [...cityPool]
-    .filter((c) => norm(c).includes(term) && norm(c) !== term)
+    .filter((c) => norm(c).includes(term))
     .sort((a, b) => a.localeCompare(b, "he"))
     .slice(0, 4);
 
@@ -122,11 +130,17 @@ export function buildSuggestions(query, products = []) {
         freq.set(clean, (freq.get(clean) || 0) + 1);
       });
   });
+  // מונחים פופולריים — מילים frequנטיות מהמכרזים בפועל, כולל שמות תתי-קטגוריה מלאים
+  const subMatches = [...new Set(products.map((p) => p.subcategory).filter(Boolean))]
+    .filter((s) => norm(s).includes(term));
   const terms = [...freq.entries()]
-    .filter(([w]) => norm(w).includes(term) && norm(w) !== term)
+    .filter(([w]) => norm(w).includes(term))
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "he"))
-    .slice(0, 6)
     .map(([w]) => w);
 
-  return { categories, cities, terms };
+  return {
+    categories,
+    cities,
+    terms: [...new Set([...subMatches, ...terms])].slice(0, 6),
+  };
 }

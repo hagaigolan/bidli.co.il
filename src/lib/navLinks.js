@@ -4,6 +4,4 @@ export const MAIN_NAV = [
   { label: "מכרזים פעילים", path: "/auctions" },
   { label: "בארטר", path: "/barter" },
   { label: "הערכת שווי", path: "/valuation" },
-  { label: "מאמרים", path: "/articles" },
-  { label: "צור קשר", path: "/contact" },
 ];

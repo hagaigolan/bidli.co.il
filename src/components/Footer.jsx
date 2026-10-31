@@ -88,11 +88,7 @@ export default function Footer() {
             <div>
               <h3 className="font-bold text-gray-900 text-xs mb-4 uppercase tracking-widest">חברה</h3>
               <nav className="flex flex-col gap-2 mb-6">
-                <Link to="/articles" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">מאמרים</Link>
-                <Link to="/contact" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">צור קשר</Link>
                 <Link to="/about" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">אודות</Link>
-
-
               </nav>
               <div className="border-t border-gray-100 pt-4">
                 <p className="text-xs text-gray-500 mb-1">מעוניין לפרסם פרסומת באתר?</p>

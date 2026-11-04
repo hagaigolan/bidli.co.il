@@ -41,7 +41,7 @@ export default function UploadProduct() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [agreedCopyright, setAgreedCopyright] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useAuth(); const isOwner = user?.email === "hagaigol1@gmail.com";
   const [improving, setImproving] = useState(false);
   // המרת micro-conversion חד-פעמית: "התחלת פרסום מוצר" — נורה עם הפוקוס הראשון על הטופס
   const startPublishFiredRef = useRef(false);

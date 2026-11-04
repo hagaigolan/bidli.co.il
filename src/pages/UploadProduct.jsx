@@ -581,25 +581,13 @@ export default function UploadProduct() {
               placeholder="050-1234567"
               className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" dir="ltr" />
           </div>
-          {isOwner&&(
+          {isOwner && (
             <div>
-            <label
-            className="block&#32;text-xs&#32;text-gray-500&#32;mb-1"
-            >
-            שם&#32;מוכר&#32;לתצוגה
-            </label>
-            <input
-            value={form.seller_display_name}
-            onChange={(e)=>set("seller_display_name",e.target.value)}
-            placeholder="למשל:&#32;דני&#32;מזרחי"
-            maxLength={80}
-            className="w-full&#32;px-4&#32;py-3.5&#32;text-sm&#32;bg-white&#32;border&#32;border-gray-200&#32;rounded-xl&#32;focus:outline-none&#32;focus:border-[#e5893d]"
-            />
-            <pc
-            lassName="text-xs&#32;text-gray-400&#32;mt-1"
-            >
-            אופציונלי&#32;—&#32;השם&#32;שיוצג&#32;בעמוד&#32;המכרז&#32;במקום&#32;שם&#32;החשבון&#32;(עד&#32;80&#32;תווים)
-            </p>
+              <label className="block text-xs text-gray-500 mb-1">שם מוכר לתצוגה</label>
+              <input value={form.seller_display_name} onChange={e => set("seller_display_name", e.target.value)}
+                placeholder="למשל: דני מזרחי" maxLength={80}
+                className="w-full px-4 py-3.5 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#e5893d88] transition-all text-right" />
+              <p className="text-xs text-gray-400 mt-1">אופציונלי — השם שיוצג בעמוד המכרז במקום שם החשבון (עד 80 תווים)</p>
             </div>
           )}
           {/* אמצעי תשלום לקבלת הכסף */}

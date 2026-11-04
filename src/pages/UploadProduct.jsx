@@ -22,6 +22,7 @@ export default function UploadProduct() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "", description: "", category: "", subcategory: "", condition: "מצב מעולה",
+    seller_display_name:"",
     starting_price: "", buy_now_price: "", location: "", seller_name: "", seller_email: "", seller_phone: "",
     seller_payment_methods: [], seller_payme_phone: "", seller_bank_details: "",
     is_stock: false, attributes: {},

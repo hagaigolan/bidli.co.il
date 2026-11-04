@@ -271,7 +271,7 @@ export default function UploadProduct() {
         starting_price: form.starting_price,
         buy_now_price: form.buy_now_price,
         location: form.location,
-        seller_phone: form.seller_phone,
+        seller_phone: form.seller_phone,            seller_display_name: form.seller_display_name,
         seller_payment_method: form.seller_payment_methods[0] || "",
         seller_payment_methods: form.seller_payment_methods,
         seller_payme_phone: form.seller_payme_phone,

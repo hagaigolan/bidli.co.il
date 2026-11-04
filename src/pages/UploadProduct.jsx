@@ -37,10 +37,11 @@ export default function UploadProduct() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
+  const{}
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [agreedCopyright, setAgreedCopyright] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [improving, setImproving] = useState(false);
   // המרת micro-conversion חד-פעמית: "התחלת פרסום מוצר" — נורה עם הפוקוס הראשון על הטופס
   const startPublishFiredRef = useRef(false);

@@ -1108,20 +1108,20 @@ export default function AuctionDetail() {
               {product.seller_name && (
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   {product.seller_photo_url
-                    ? <img src={product.seller_photo_url} alt={product.seller_name} className="w-6 h-6 rounded-full object-cover flex-shrink-0" style={{ border: "1px solid #e5e7eb" }} />
+                    ? <img src={product.seller_photo_url} alt={product.seller_display_name || product.seller_name} className="w-6 h-6 rounded-full object-cover flex-shrink-0" style={{ border: "1px solid #e5e7eb" }} />
                     : <User className="h-4 w-4" />}
                   {product.seller_email ? (
                     <Link to={`/seller/${encodeURIComponent(product.seller_email)}`}
                       className="font-semibold hover:text-[#e5893d] transition-colors underline decoration-transparent hover:decoration-[#e5893d]">
-                      מוכר: {product.seller_name}
+                      מוכר: {product.seller_display_name || product.seller_name}
                     </Link>
                   ) : product.seller_user_id ? (
                     <Link to={`/seller/id/${encodeURIComponent(product.seller_user_id)}`}
                       className="font-semibold hover:text-[#e5893d] transition-colors underline decoration-transparent hover:decoration-[#e5893d]">
-                      מוכר: {product.seller_name}
+                      מוכר: {product.seller_display_name || product.seller_name}
                     </Link>
                   ) : (
-                    <span>מוכר: {product.seller_name}</span>
+                    <span>מוכר: {product.seller_display_name || product.seller_name}</span>
                   )}
                 </div>
               )}
@@ -1148,7 +1148,7 @@ export default function AuctionDetail() {
 
             {/* ── SELLER TRUST BADGE ── */}
             {product.seller_email && (
-              <SellerTrustBadge sellerEmail={product.seller_email} sellerName={product.seller_name} />
+              <SellerTrustBadge sellerEmail={product.seller_email} sellerName={product.seller_display_name || product.seller_name} />
             )}
 
             {/* ── דירוג הדדי — נפתח לאחר שהמוצר סופק לקונה ── */}

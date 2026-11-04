@@ -106,6 +106,7 @@ export default async function (req: Request): Promise<Response> {
       seller_email: me.email,
       seller_user_id: me.id,
       seller_photo_url: me.photo_url || '',
+        seller_display_name: me.email === "hagaigol1@gmail.com" ? str(body.seller_display_name, 80) : undefined,
       // פרטי קבלת התשלום — קלט לקוחי לגיטימי
       seller_phone: str(body.seller_phone, 40),
       seller_payment_method: paymentMethod,

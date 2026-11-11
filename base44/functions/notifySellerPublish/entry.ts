@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
-import { sendGmail } from '../../shared/gmailSender.ts';
+import { sendGmail, ADMIN_EMAIL } from '../../shared/gmailSender.ts';
 import { sellerPublishEmail } from '../../shared/notifyEmails.ts';
 
 // Sends the seller a designed confirmation email right after they publish a product.
@@ -23,6 +23,15 @@ export default async function (req: Request): Promise<Response> {
     }
     if (!product.seller_email) {
       return Response.json({ ok: true, skipped: 'no seller email' });
+    }
+
+    // ── סינון: לא שולחים מייל אישור על מוצרים של בעל האתר עצמו,
+    //    ולא על מכרזים שנוצרו אוטומטית (מוכרים פיקטיביים) ──
+    if (String(product.seller_email).trim().toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      return Response.json({ ok: true, skipped: 'owner listing' });
+    }
+    if (String(product.seller_user_id || '').startsWith('bidli-agent')) {
+      return Response.json({ ok: true, skipped: 'fictional listing' });
     }
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');

@@ -16,6 +16,7 @@ import SalesTicker from "@/components/SalesTicker";
 const SECONDARY_TITLES = {
   "/auctions": "מכרזים פעילים",
   "/barter": "בארטר — החלפות",
+  "/last-minute": "ברגע האחרון",
   "/articles": "המגזין",
   "/favorites": "המועדפים שלי",
   "/profile": "האזור האישי שלי",
@@ -39,6 +40,7 @@ const SECONDARY_TITLES = {
 const secondaryTitle = (path) => {
   const detail = path.match(/^\/(auction|barter|articles)\/[^/]+$/);
   if (detail) return detail[1] === "auction" ? "פרטי המכרז" : detail[1] === "barter" ? "פרטי ההחלפה" : "מאמר";
+  if (/^\/last-minute\/[^/]+$/.test(path)) return "מכרז הפוך";
   if (path.startsWith("/category/")) return "קטגוריה";
   if (path.startsWith("/seller/")) return "פרופיל מוכר";
   if (path.startsWith("/admin")) return "ניהול";
@@ -178,6 +180,7 @@ export default function Header() {
                     <Link to="/upload-product" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-[#e5893d] hover:bg-muted rounded-xl">+ פרסם מכרז</Link>
                     <Link to="/" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">דף הבית</Link>
                     <Link to="/auctions" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">מכרזים פעילים</Link>
+                    <Link to="/last-minute" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">⚡ ברגע האחרון — מחיר יורד</Link>
                     <Link to="/barter" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-bold text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">בארטר — החלפות</Link>
                     <Link to="/valuation" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">הערכת שווי חינם</Link>
                     <Link to="/experts" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-[#e5893d] hover:bg-muted rounded-xl">המומחים שלנו</Link>

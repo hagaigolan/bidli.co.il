@@ -48,6 +48,8 @@ const MyCenter = lazy(() => import('./pages/MyCenter'));
 const Compare = lazy(() => import('./pages/Compare'));
 const AuctionCalendar = lazy(() => import('./pages/AuctionCalendar'));
 const Collections = lazy(() => import('./pages/Collections'));
+const LastMinute = lazy(() => import('./pages/LastMinute'));
+const LastMinuteDetail = lazy(() => import('./pages/LastMinuteDetail'));
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -108,6 +110,8 @@ const AuthenticatedApp = () => {
           <Route path="/compare" element={<Compare />} />
           <Route path="/auction-calendar" element={<AuctionCalendar />} />
           <Route path="/collections" element={<Collections />} />
+          <Route path="/last-minute" element={<LastMinute />} />
+          <Route path="/last-minute/:id" element={<LastMinuteDetail />} />
           <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
           <Route path="/my-sales" element={<MySales />} />
           <Route path="/favorites" element={<Favorites />} />

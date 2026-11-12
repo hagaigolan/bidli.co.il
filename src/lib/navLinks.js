@@ -5,5 +5,6 @@ export const MAIN_NAV = [
   { label: "לוח המכרזים", path: "/auction-calendar" },
   { label: "אוספים", path: "/collections" },
   { label: "בארטר", path: "/barter" },
+  { label: "ברגע האחרון", path: "/last-minute" },
   { label: "הערכת שווי", path: "/valuation" },
 ];

@@ -27,6 +27,17 @@ const PRIVATE_PREFIXES = [
   "/favorites",
 ];
 
+// מדידת קהל אמיתי מול נתוני המדינות הגולמיים (שכוללים גם סורקים ושרתים מחו"ל):
+// אירוע אחד לכל טעינת עמוד, בלי קוקיז ובלי אחסון — מסמן האם הגולש באזור הזמן של ישראל
+let audienceLocaleSent = false;
+const visitorTimezone = () => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown";
+  } catch {
+    return "unknown";
+  }
+};
+
 export default function Layout() {
   const location = useLocation();
   const { user, isAuthenticated } = useAuth();
@@ -35,6 +46,13 @@ export default function Layout() {
     const isPrivate = PRIVATE_PREFIXES.some(p => location.pathname.startsWith(p));
     setRobotsMeta(isPrivate);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (audienceLocaleSent) return;
+    audienceLocaleSent = true;
+    const tz = visitorTimezone();
+    base44.analytics.track({ eventName: "audience_locale", properties: { israel: tz === "Asia/Jerusalem", tz } });
+  }, []);
 
   // תיעוד מועד ההתחברות האחרון — פעם אחת בכל סשן של משתמש מחובר
   useEffect(() => {

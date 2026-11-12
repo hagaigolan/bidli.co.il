@@ -28,6 +28,9 @@ export default async function (req: Request): Promise<Response> {
       .catch((e: any) => (e?.status === 404 ? null : Promise.reject(e)));
     if (!deal) return Response.json({ error: 'not found' }, { status: 404 });
 
+    // מכרז הדגמה ("פרסומת לדוגמה") אינו שירות אמיתי — לא נמכר לאף אחד
+    if (deal.is_demo) return Response.json({ error: 'demo_deal' }, { status: 403 });
+
     if (deal.status !== 'active') return Response.json({ error: 'deal_closed', status: deal.status }, { status: 409 });
 
     const now = Date.now();

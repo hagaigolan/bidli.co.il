@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { ArrowRight, MapPin, Clock3, TrendingDown, CheckCircle2, AlertCircle, Zap, ShieldCheck, XCircle, Phone } from "lucide-react";
 import DealCountdown from "@/components/lastminute/DealCountdown";
 import DealShare from "@/components/lastminute/DealShare";
+import DemoNotice from "@/components/lastminute/DemoNotice";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import { businessIcon } from "@/components/lastminute/businessIcon";
 import useNow from "@/lib/useNow";
@@ -86,6 +87,7 @@ export default function LastMinuteDetail() {
   const buyerIsMe = !!user?.id && deal.buyer_user_id === user.id;
 
   const buy = async () => {
+    if (deal.is_demo) return;
     if (!isAuthenticated) { setShowLogin(true); return; }
     setBuying(true);
     setError("");
@@ -119,6 +121,8 @@ export default function LastMinuteDetail() {
         <Link to="/last-minute" className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#e5893d] mb-4">
           <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /> חזרה לכל המכרזים
         </Link>
+
+        {deal.is_demo && <DemoNotice className="mb-4" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
           {/* ── תוכן ── */}
@@ -251,7 +255,14 @@ export default function LastMinuteDetail() {
                   </div>
                 </div>
 
-                {status === "active" && (
+                {status === "active" && deal.is_demo && (
+                  <div className="mt-4 rounded-xl px-3 py-3" style={{ background: "rgba(255,255,255,0.1)" }}>
+                    <p className="text-sm font-bold">מכרז הדגמה — לא ניתן לרכוש</p>
+                    <p className="text-[11px] text-white/60 mt-1">המחיר והטיימר אמיתיים, אבל זהו חלון לדוגמה בלבד.</p>
+                  </div>
+                )}
+
+                {status === "active" && !deal.is_demo && (
                   <>
                     {error && (
                       <div className="mt-4 rounded-xl px-3 py-2 text-[11px] font-bold flex items-start gap-1.5"

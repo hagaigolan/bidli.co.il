@@ -42,6 +42,12 @@ export default function LastMinuteCard({ deal }) {
       </div>
 
       <div className="p-4 flex-1 flex flex-col">
+        {deal.is_demo && (
+          <span className="mb-1.5 inline-flex w-fit items-center text-[10px] font-black px-1.5 py-0.5 rounded"
+            style={{ background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa" }}>
+            פרסומת לדוגמה
+          </span>
+        )}
         <h3 className="font-black text-gray-900 text-[15px] leading-snug line-clamp-2">{deal.title}</h3>
         <p className="text-xs text-gray-500 mt-1 truncate">{deal.business_name}</p>
         {deal.city && (
@@ -82,7 +88,7 @@ export default function LastMinuteCard({ deal }) {
             style={sold || expired
               ? { background: "#f3f4f6", color: "#9ca3af" }
               : { background: "#e5893d12", color: "#e5893d" }}>
-            {sold ? "צפה בעסקה שנסגרה" : expired ? "המכרז הסתיים" : "לתפוס את המחיר"}
+            {sold ? "צפה בעסקה שנסגרה" : expired ? "המכרז הסתיים" : deal.is_demo ? "לצפייה בדוגמה" : "לתפוס את המחיר"}
           </span>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Gavel, Repeat, Heart, User } from "lucide-react";
+import { Home, Gavel, Repeat, Heart, User, Zap } from "lucide-react";
 
 // סרגל ניווט תחתון — מוצג במסכים ניידים בלבד (עד md), נעלם בדסקטופ
 // match: קידומות שמסמנות את "האזור" של הטאב (למשל גם עמוד מכרז בודד נחשב לטאב המכרזים)
@@ -8,6 +8,7 @@ const TABS = [
   { label: "בית", path: "/", icon: Home, match: ["/"] },
   { label: "מכרזים", path: "/auctions", icon: Gavel, match: ["/auctions", "/auction"] },
   { label: "בארטר", path: "/barter", icon: Repeat, match: ["/barter"] },
+  { label: "ברגע האחרון", path: "/last-minute", icon: Zap, match: ["/last-minute"] },
   { label: "מועדפים", path: "/favorites", icon: Heart, match: ["/favorites"] },
   { label: "פרופיל", path: "/profile", icon: User, match: ["/profile", "/my-center", "/my-orders", "/my-sales"] },
 ];
@@ -74,7 +75,7 @@ export default function MobileTabBar() {
               to={target}
               aria-current={active ? "page" : undefined}
               onClick={(e) => handleClick(e, target)}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[11px] font-semibold transition-colors ${
+              className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 text-[10px] leading-tight text-center font-semibold whitespace-nowrap transition-colors ${
                 active ? "text-[#e5893d]" : "text-muted-foreground"
               }`}
             >

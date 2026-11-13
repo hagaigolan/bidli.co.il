@@ -401,7 +401,8 @@ export default function Home() {
     <div className="bg-white">
       <TelegramBanner />
       <HeroSection todayCount={todayCount} />
-      <AdBanner />
+      {/* באנר הפרסום מוסתר זמנית — להחזרה: להסיר את ההערה מהשורה הבאה */}
+      {/* <AdBanner /> */}
       <LiveStatsBar />
       <div className="max-w-6xl mx-auto px-4">
         <RecentlyViewed className="mt-6" />

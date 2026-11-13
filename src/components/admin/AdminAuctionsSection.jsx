@@ -70,12 +70,15 @@ export default function AdminAuctionsSection({ onSendEmail }) {
     (p.seller_email && user?.email && p.seller_email.trim().toLowerCase() === user.email.trim().toLowerCase()) ||
     (p.seller_user_id && user?.id && p.seller_user_id === user.id);
   const isFictional = (p) => (p.seller_user_id || "").startsWith("bidli-agent");
+  // "אמיתיים בלבד" = מכרז שפורסם על ידי משתמש אמיתי: יש לו כתובת מייל, היא לא המייל שלי, וזה לא מוכר אוטומטי
+  const isRealSeller = (p) =>
+    !!String(p.seller_email || "").trim() && !isMine(p) && !isFictional(p);
 
   const term = search.trim().toLowerCase();
   const filtered = products
     .filter(p =>
       ownerFilter === "all" ||
-      (ownerFilter === "mine" ? isMine(p) : ownerFilter === "real" ? !isFictional(p) : !isMine(p)))
+      (ownerFilter === "mine" ? isMine(p) : ownerFilter === "real" ? isRealSeller(p) : !isMine(p)))
     .filter(p => statusFilter === "all" || p.status === statusFilter)
     .filter(p => !term ||
       (p.title || "").toLowerCase().includes(term) ||
@@ -257,7 +260,11 @@ export default function AdminAuctionsSection({ onSendEmail }) {
           </table>
         </div>
       </div>
-      {filtered.length === 0 && <p className="text-center text-sm text-gray-400 py-8">לא נמצאו מכרזים</p>}
+      {filtered.length === 0 && (
+        <p className="text-center text-sm text-gray-400 py-8">
+          {ownerFilter === "real" ? "אין מכרזים של משתמשים אמיתיים אחרים" : "לא נמצאו מכרזים"}
+        </p>
+      )}
       {filtered.length > 100 && <p className="text-center text-xs text-gray-400 py-3">מוצגים 100 המכרזים הראשונים מתוך {filtered.length}</p>}
     </div>
   );

@@ -2,8 +2,21 @@
 // ה-token מוטמע בתוך כתובת ה-webhook עצמה — ולכן אינו נשלח ב-body.
 // ה-body מכיל תוכן פרסומי בלבד: אסור לכלול בו שם מוכר, אימייל, טלפון או כל פרט מזהה.
 
+import { ADMIN_EMAIL } from './gmailSender.ts';
+
 const WEBHOOK_URL = 'https://cwebhooks.base44.com/api/hooks/v0kc4vtQ4i0a0Z6FQGGOBS8KUbmbYrlWuqNHle0MaMo';
 const VIEW_URL_BASE = 'https://bidli.co.il/auction/';
+
+// התראה על פרסום נשלחת רק עבור מכרז של מפרסם אמיתי — לא עבור מכרזים
+// אוטומטיים (מוכרי bidli-agent) ולא עבור פרסומים של בעל האתר עצמו.
+// כך לא נוצרות התראות/מיילים על כל מכרז דמו שמתפרסם אוטומטית.
+function isRealPublisherListing(product: any): boolean {
+  const email = String(product?.seller_email || '').trim().toLowerCase();
+  if (!email) return false;
+  if (email === ADMIN_EMAIL.toLowerCase()) return false;
+  if (String(product?.seller_user_id || '').startsWith('bidli-agent')) return false;
+  return true;
+}
 
 // נקרא מיד אחרי יצירה ופרסום מוצלח של מוצר. מנגנון נגד כפילויות: מוצר שכבר
 // סומן ב-fb_posted_at לא נשלח שוב. כל כשל נבלע ונרשם בלוג — פרסום המוצר
@@ -13,6 +26,10 @@ export async function notifyProductPublishedToFacebook(base44: any, product: any
     if (!product || !product.id) return;
     if (product.fb_posted_at) {
       console.log('facebook publish webhook skipped — already sent for product', product.id);
+      return;
+    }
+    if (!isRealPublisherListing(product)) {
+      console.log('facebook publish webhook skipped — not a real publisher listing', product.id);
       return;
     }
 

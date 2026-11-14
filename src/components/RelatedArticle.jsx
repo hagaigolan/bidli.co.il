@@ -22,14 +22,16 @@ const CATEGORY_ARTICLE_MAP = {
   "אלקטרוניקה": "auction-guide",
 };
 
-export default function RelatedArticle({ category }) {
-  if (!category) return null;
-  const articleId = CATEGORY_ARTICLE_MAP[category];
+// מאמר כללי על קנייה/מכירה במכרז — ברירת המחדל כשאין מאמר תואם לקטגוריה
+export const FALLBACK_ARTICLE_ID = "auction-guide";
+
+export default function RelatedArticle({ category, className = "" }) {
+  const articleId = CATEGORY_ARTICLE_MAP[category] || FALLBACK_ARTICLE_ID;
   const article = ARTICLES.find(a => a.id === articleId);
   if (!article) return null;
 
   return (
-    <div className="mt-6" dir="rtl">
+    <div className={`mt-6 ${className}`} dir="rtl">
       <Link to={`/articles/${article.id}`}
         className="block rounded-2xl overflow-hidden border transition-all duration-300 hover:shadow-md group"
         style={{ background: "linear-gradient(135deg, #3e6b8a08, #6aa3cd05)", borderColor: "#3e6b8a33" }}>
@@ -40,7 +42,9 @@ export default function RelatedArticle({ category }) {
           <div className="p-4 flex flex-col justify-center flex-1">
             <div className="flex items-center gap-2 mb-1.5">
               <BookOpen className="h-3.5 w-3.5" style={{ color: "#3e6b8a" }} />
-              <span className="text-xs font-bold" style={{ color: "#3e6b8a" }}>מאמר מומלץ לקטגוריית {category}</span>
+              <span className="text-xs font-bold" style={{ color: "#3e6b8a" }}>
+                {category ? `מאמר מומלץ לקטגוריית ${category}` : "מאמר מומלץ — קנייה ומכירה במכרז"}
+              </span>
             </div>
             <h3 className="font-black text-gray-900 text-sm mb-1 group-hover:text-[#3e6b8a] transition-colors">{article.title}</h3>
             <p className="text-xs text-gray-500 line-clamp-2 mb-2">{article.excerpt}</p>

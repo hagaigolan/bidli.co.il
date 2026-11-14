@@ -28,6 +28,7 @@ import TelegramBanner from "@/components/TelegramBanner";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
+import RelatedArticle from "@/components/RelatedArticle";
 import { isPromoted, promotedFirst } from "@/lib/promotion";
 import SortBar from "@/components/SortBar";
 import { sortProducts } from "@/lib/auctionSort";
@@ -418,6 +419,10 @@ export default function Home() {
       <JustForYou />
       <CommunityStrip />
       <PopularSearches />
+      {/* מאמר קשור — מאמר כללי על קנייה ומכירה במכרז */}
+      <div className="max-w-6xl mx-auto px-4 pb-8">
+        <RelatedArticle />
+      </div>
       <CollectorQuiz />
       <InviteFriendsSection />
       <ShopsSection shops={shops} />

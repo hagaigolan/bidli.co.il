@@ -8,6 +8,7 @@ import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { SUBCATEGORIES } from "@/lib/subcategories";
 import { categoryHeading } from "@/lib/categorySeo";
+import RelatedArticle from "@/components/RelatedArticle";
 
 const CATEGORIES = {
   "אמנות": { icon: "🎨", description: "ציורים, פסלים, הדפסים ועבודות אמנות מקוריות מאמנים ישראליים ובינלאומיים." },
@@ -237,6 +238,11 @@ export default function Category() {
             </div>
           </>
         )}
+      </div>
+
+      {/* מאמר קשור — לפי קטגוריית העמוד (או מאמר כללי כשאין תואם) */}
+      <div className="max-w-5xl mx-auto px-4 pb-10">
+        <RelatedArticle category={decodedName} />
       </div>
     </div>
   );

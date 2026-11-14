@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
 import { ARTICLES } from "./ArticlesData.jsx";
+import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
 
 const staticArticles = ARTICLES.map(a => ({
   id: a.id, title: a.title, excerpt: a.excerpt, tags: a.tags || [],
@@ -48,6 +49,11 @@ export default function Articles() {
           <h1 className="text-3xl font-black text-gray-900 mb-2">מאמרים</h1>
           <p className="text-gray-500 text-sm">מדריכים, מחירונים, טיפים ותובנות לעולם האספנות והמכרזים</p>
         </div>
+      </div>
+
+      {/* קישורים פנימיים — חיזוק ביטויי מכרזים ויד2 */}
+      <div className="max-w-5xl mx-auto px-4 pt-6">
+        <KeywordLinkBlock variant="blog" />
       </div>
 
       {/* Articles Grid */}

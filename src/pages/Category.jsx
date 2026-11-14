@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Search, Filter, X } from "lucide-react";
 import LiveCardStats from "@/components/LiveCardStats";
 import CategoryHero from "@/components/CategoryHero";
+import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
@@ -116,6 +117,11 @@ export default function Category() {
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
       <CategoryHero name={decodedName} cat={{ ...cat, subcategories: SUBCATEGORIES[decodedName] || [] }} />
+
+      {/* קישורים פנימיים — חיזוק ביטויי מכרזים ומכירת מוצרים באינטרנט */}
+      <div className="max-w-5xl mx-auto px-4 pt-5">
+        <KeywordLinkBlock variant="category" />
+      </div>
 
       {/* Search + filter bar */}
       <div className="border-y border-gray-100 bg-gray-50 py-3 px-4">

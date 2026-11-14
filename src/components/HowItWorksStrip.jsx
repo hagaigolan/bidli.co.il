@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Search, Gavel, Trophy, HeartHandshake } from "lucide-react";
+import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
 
 // שלב 1 — מסלול הצטרפות קצר וברור: "איך זה עובד" ב-4 צעדים עם CTA
 const STEPS = [
@@ -31,6 +32,7 @@ export default function HowItWorksStrip() {
             </div>
           ))}
         </div>
+        <KeywordLinkBlock variant="guide" className="mt-7" />
         <div className="text-center mt-6">
           <Link to="/auctions" className="btn-neon inline-flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-bold text-white">
             התחילו לגלות מכרזים עכשיו

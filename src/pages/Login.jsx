@@ -8,6 +8,7 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import RegistrationBenefits from "@/components/RegistrationBenefits";
 import GoogleIcon from "@/components/GoogleIcon";
+import logoWordmark from "@/assets/logo-wordmark.png";
 
 // התחברות — עמוד עברי RTL בסגנון עמוד ההרשמה
 export default function Login() {
@@ -38,6 +39,7 @@ export default function Login() {
     <div dir="rtl">
       <AuthLayout
         icon={LogIn}
+        logo={logoWordmark}
         title="ברוכים השבים"
         subtitle="התחברו לחשבון שלכם"
         footer={

@@ -1,4 +1,9 @@
-export const ARTICLES = [
+import { EXTRA_ARTICLES_1 } from "./articles-extra-1";
+import { EXTRA_ARTICLES_2 } from "./articles-extra-2";
+import { EXTRA_ARTICLES_3 } from "./articles-extra-3";
+import { EXTRA_ARTICLES_4 } from "./articles-extra-4";
+
+const BASE_ARTICLES = [
   {
     id: "auction-guide",
     title: "מדריך מלא למכירה במכרזים - איך להשיג את המחיר הטוב ביותר",
@@ -1292,4 +1297,13 @@ export const ARTICLES = [
     date: "2026-04-20",
     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=400&fit=crop"
   }
+];
+
+// כל המאמרים — הוותיקים (BASE_ARTICLES) והחדשים (EXTRA_ARTICLES_1..4)
+export const ARTICLES = [
+  ...EXTRA_ARTICLES_1,
+  ...EXTRA_ARTICLES_2,
+  ...EXTRA_ARTICLES_3,
+  ...EXTRA_ARTICLES_4,
+  ...BASE_ARTICLES,
 ];

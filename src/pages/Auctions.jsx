@@ -16,6 +16,7 @@ import SortBar from "@/components/SortBar";
 import { AUCTIONS_SORT_OPTIONS, sortProducts } from "@/lib/auctionSort";
 import { resolveCenter, withinRadius } from "@/lib/distance";
 import { MAKER_KEYS, MODEL_KEYS } from "@/lib/categoryAttributes";
+import AuctionsFaq, { AUCTIONS_FAQS } from "@/components/seo/AuctionsFaq";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -155,12 +156,24 @@ export default function Auctions() {
     });
   }, []);
 
-  // SEO: ItemList — נתונים מובנים של המכרזים הפעילים לתוצאות עשירות בגוגל
+  // SEO: ItemList של המכרזים הפעילים + FAQPage של השאלות הנפוצות בעמוד
   useEffect(() => {
     if (ARCHIVE_MODE) return;
+    const faqGraph = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: AUCTIONS_FAQS.map(f => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    };
     const active = products.filter(p => p.status === "active" && new Date(p.ends_at) > new Date());
-    if (!active.length) return;
-    setPageJsonLd({
+    if (!active.length) {
+      setPageJsonLd(faqGraph);
+      return;
+    }
+    setPageJsonLd([{
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: "מכרזים פעילים ב-bidli",
@@ -171,7 +184,7 @@ export default function Auctions() {
         url: `${window.location.origin}/auction/${p.id}`,
         name: p.title,
       })),
-    });
+    }, faqGraph]);
   }, [products]);
 
   // יצרן/דגם — מתוך המאפיינים האמיתיים של המכרזים הפעילים בלבד
@@ -395,6 +408,8 @@ export default function Auctions() {
           רחב של מוצרים שווים, הכל במקום אחד.
         </p>
       </div>
+
+      <AuctionsFaq />
 
       {showSaveSearch && (
         <SavedSearchModal

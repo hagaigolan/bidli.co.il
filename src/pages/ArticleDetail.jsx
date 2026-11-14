@@ -6,6 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
 import { ARTICLES } from "./ArticlesData.jsx";
 import ArticleAuctionCta from "@/components/ArticleAuctionCta";
+import QuickAnswer from "@/components/seo/QuickAnswer";
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export default function ArticleDetail() {
             tags: a.tags || [], image: a.cover_image_url, author: a.author,
             readTime: a.read_time, date: a.published_date || a.created_date,
             is_price_guide: a.is_price_guide, price_updated_at: a.price_updated_at,
+            updated: a.updated_date, sources: a.sources || [],
           });
         }
       })
@@ -61,8 +63,12 @@ export default function ArticleDetail() {
         description: article.excerpt,
         image: article.image ? [article.image] : undefined,
         datePublished: article.date,
+        dateModified: article.updated || article.date,
         inLanguage: "he",
-        author: { "@type": "Organization", name: "bidli" },
+        // ייחוס אמיתי: מאמר שנכתב בידי אדם מיוחס לאדם, תוכן מערכתי/סוכני — לארגון
+        author: article.author && !/AI|סוכן/i.test(article.author)
+          ? { "@type": "Person", name: article.author }
+          : { "@type": "Organization", name: "bidli" },
         publisher: { "@type": "Organization", name: "bidli" },
         mainEntityOfPage: window.location.href,
       },
@@ -140,6 +146,9 @@ export default function ArticleDetail() {
           </div>
         )}
 
+        {/* תשובה קצרה בראש המאמר — מה שמנועי חיפוש וכלי AI מצטטים */}
+        <QuickAnswer text={article.excerpt} />
+
         {/* Content */}
         <div className="prose prose-lg max-w-none">
           <ReactMarkdown
@@ -160,6 +169,39 @@ export default function ArticleDetail() {
           >
             {article.content}
           </ReactMarkdown>
+        </div>
+
+        {/* שקיפות: מי כתב, מתי, ומה הבסיס של המידע */}
+        <div className="rounded-2xl border border-gray-100 bg-gray-50/60 p-5 mt-8" dir="rtl">
+          <p className="text-sm font-bold text-gray-800 mb-1.5">על התוכן הזה</p>
+          <p className="text-xs leading-relaxed text-gray-500">
+            נכתב על ידי {article.author || "מערכת bidli"}
+            {article.date ? ` · פורסם ב-${new Date(article.date).toLocaleDateString("he-IL")}` : ""}
+            {article.updated ? ` · עודכן ב-${new Date(article.updated).toLocaleDateString("he-IL")}` : ""}.
+            {" "}המאמר הוא מידע כללי ואינו תחליף לבדיקה מקצועית של פריט מסוים.
+          </p>
+          {Array.isArray(article.sources) && article.sources.length > 0 && (
+            <div className="mt-3">
+              <p className="text-xs font-bold text-gray-700 mb-1">מקורות</p>
+              <ul className="list-disc list-inside space-y-1">
+                {article.sources.map((s, i) => (
+                  <li key={i} className="text-xs text-gray-500">
+                    {typeof s === "string"
+                      ? s
+                      : s?.url
+                        ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: "#3e6b8a" }}>{s.title || s.url}</a>
+                        : s?.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <p className="text-xs text-gray-500 mt-3">
+            רוצים בדיקה מקצועית של פריט?{" "}
+            <Link to="/experts" className="font-semibold hover:underline" style={{ color: "#e5893d" }}>
+              מומחים ב-bidli
+            </Link>
+          </p>
         </div>
 
         {/* Tags */}

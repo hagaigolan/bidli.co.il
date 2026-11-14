@@ -3,23 +3,24 @@ Allow: /
 Disallow: /functions/
 Disallow: /api/
 
-# ── סורקי AI וסורקי SEO/דאטה — חוסכים תעבורה מזויפת משרתים בארה"ב ──
-User-agent: GPTBot
-Disallow: /
-
+# ── מנועי תשובות ו-AI: מאפשרים גישה לעמודים הציבוריים כדי ש-bidli יוכל להופיע בתשובות (GEO) ──
 User-agent: OAI-SearchBot
-Disallow: /
+Allow: /
 
 User-agent: ChatGPT-User
-Disallow: /
+Allow: /
 
-User-agent: CCBot
-Disallow: /
+User-agent: Claude-SearchBot
+Allow: /
 
-User-agent: ClaudeBot
-Disallow: /
+User-agent: Claude-User
+Allow: /
 
-User-agent: anthropic-ai
+User-agent: PerplexityBot
+Allow: /
+
+# ── סורקי אימון בלבד — אינם משפיעים על הופעה בתשובות AI, ולכן נחסכים ──
+User-agent: GPTBot
 Disallow: /
 
 User-agent: Google-Extended
@@ -28,10 +29,13 @@ Disallow: /
 User-agent: Applebot-Extended
 Disallow: /
 
-User-agent: Bytespider
+User-agent: anthropic-ai
 Disallow: /
 
-User-agent: PerplexityBot
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
 Disallow: /
 
 User-agent: cohere-ai
@@ -43,6 +47,7 @@ Disallow: /
 User-agent: ImagesiftBot
 Disallow: /
 
+# ── סורקי SEO/דאטה — חוסכים תעבורה מזויפת משרתים בארה"ב ──
 User-agent: AhrefsBot
 Disallow: /
 
@@ -63,3 +68,5 @@ Disallow: /
 
 User-agent: Scrapy
 Disallow: /
+
+Sitemap: https://bidli.co.il/sitemap.xml

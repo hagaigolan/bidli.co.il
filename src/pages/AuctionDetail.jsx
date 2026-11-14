@@ -308,6 +308,19 @@ export default function AuctionDetail() {
     const isActive = product.status === "active" && new Date(product.ends_at) > new Date();
     const cleanDesc = String(product.description || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
     const catKw = product.category ? [product.category, `מכרז ${product.category}`, `לקנות ${product.category}`] : [];
+    // מצב הפריט ומאפייניו — נתונים מובנים שמבהירים למנועי חיפוש ולכלי AI בדיוק מה נמכר
+    const conditionMap = {
+      "חדש": "NewCondition",
+      "מצב מעולה": "UsedCondition",
+      "מצב טוב": "UsedCondition",
+      "מצב בינוני": "UsedCondition",
+      "לא תקין": "DamagedCondition",
+    };
+    const conditionSchema = conditionMap[product.condition] ? `https://schema.org/${conditionMap[product.condition]}` : undefined;
+    const additionalProperty = Object.entries(product.attributes || {})
+      .filter(([, v]) => v && String(v).trim())
+      .slice(0, 12)
+      .map(([k, v]) => ({ "@type": "PropertyValue", name: k, value: String(v) }));
     setPageMeta({
       title: `${product.title} — מכרז ${product.category || "אונליין"} חי ב-bidli${product.location ? ` | ${product.location}` : ""}`,
       description: cleanDesc
@@ -323,6 +336,8 @@ export default function AuctionDetail() {
           description: cleanDesc || product.title,
           image: product.image_urls || (product.image_url ? [product.image_url] : undefined),
           category: product.category,
+          itemCondition: conditionSchema,
+          additionalProperty: additionalProperty.length ? additionalProperty : undefined,
           offers: {
             "@type": "Offer",
             priceCurrency: "ILS",

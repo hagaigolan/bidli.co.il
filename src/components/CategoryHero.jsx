@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { categoryImageUrl } from "@/lib/categoryImages";
 
 // כותרת דף קטגוריה עם תמונת רקע מתאימה לקטגוריה ושכבת לבן שמשמרת קריאות הכיתוב
-export default function CategoryHero({ name, cat }) {
+export default function CategoryHero({ name, cat, heading }) {
   const heroImg = categoryImageUrl(name, 1600, 600);
 
   return (
@@ -30,7 +30,7 @@ export default function CategoryHero({ name, cat }) {
             {cat.icon}
           </div>
           <div className="flex-1">
-            <h1 className="text-3xl font-black text-gray-900 mb-1.5">מכרזי {name}</h1>
+            <h1 className="text-3xl font-black text-gray-900 mb-1.5">{heading || `מכרזי ${name}`}</h1>
             <p className="text-gray-600 text-sm leading-relaxed max-w-xl">{cat.description}</p>
           </div>
         </div>

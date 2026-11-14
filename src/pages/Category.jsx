@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { SUBCATEGORIES } from "@/lib/subcategories";
+import { categoryHeading } from "@/lib/categorySeo";
 
 const CATEGORIES = {
   "אמנות": { icon: "🎨", description: "ציורים, פסלים, הדפסים ועבודות אמנות מקוריות מאמנים ישראליים ובינלאומיים." },
@@ -31,6 +32,8 @@ export default function Category() {
   const { name } = useParams();
   const decodedName = decodeURIComponent(name);
   const cat = CATEGORIES[decodedName];
+  // כותרת הקטגוריה עם ביטוי המפתח — משמשת גם ל-title וגם ל-H1
+  const heading = categoryHeading(decodedName);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -68,7 +71,7 @@ export default function Category() {
   useEffect(() => {
     if (!cat) return;
     setPageMeta({
-      title: `מכרזי ${decodedName} אונליין — ${items.length} מכרזים פעילים | bidli`,
+      title: `${heading} אונליין — ${items.length} מכרזים פעילים | bidli`,
       description: `${cat.description} ${items.length} מכרזים חיים של ${decodedName} ב-bidli, פורטל המכרזים בישראל — הצע מחיר בזמן אמת, המכרזים נסגרים תוך 24 שעות.`,
       keywords: [`מכרזי ${decodedName}`, `לקנות ${decodedName}`, `${decodedName} בישראל`, decodedName + " יד שנייה", "מכרז אונליין"],
     });
@@ -116,7 +119,7 @@ export default function Category() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <CategoryHero name={decodedName} cat={{ ...cat, subcategories: SUBCATEGORIES[decodedName] || [] }} />
+      <CategoryHero name={decodedName} heading={heading} cat={{ ...cat, subcategories: SUBCATEGORIES[decodedName] || [] }} />
 
       {/* קישורים פנימיים — חיזוק ביטויי מכרזים ומכירת מוצרים באינטרנט */}
       <div className="max-w-5xl mx-auto px-4 pt-5">

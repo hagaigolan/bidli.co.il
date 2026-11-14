@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import { Search, Send, Plus, Wrench, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { setRobotsMeta } from "@/lib/seo";
 
 const AGENT_NAME = "seo_agent";
 
@@ -76,6 +77,9 @@ export default function SeoAgent() {
     } catch (e) { /* ignore */ }
     setLoading(false);
   };
+
+  // עמוד ניהול פנימי — אסור שיופיע בתוצאות החיפוש
+  useEffect(() => { setRobotsMeta(true); }, []);
 
   useEffect(() => { loadConversations(); }, []);
 

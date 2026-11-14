@@ -15,11 +15,11 @@ const CATEGORY_ARTICLE_MAP = {
   "אספנות": "investment-guide",
   "יודאיקה": "spot-fakes",
   "אופנה": "spot-fakes",
-  "רכבים": "auction-guide",
-  'נדל"ן': "investment-guide",
-  "ספרים": "auction-guide",
-  "כלי נגינה": "auction-guide",
-  "אלקטרוניקה": "auction-guide",
+  "רכבים": "car-auctions-selling",
+  'נדל"ן': "real-estate-auction-guide",
+  "ספרים": "selling-rare-books",
+  "כלי נגינה": "selling-musical-instruments",
+  "אלקטרוניקה": "electronics-auctions",
 };
 
 // מאמר כללי על קנייה/מכירה במכרז — ברירת המחדל כשאין מאמר תואם לקטגוריה

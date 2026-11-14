@@ -2,6 +2,10 @@ import { EXTRA_ARTICLES_1 } from "./articles-extra-1";
 import { EXTRA_ARTICLES_2 } from "./articles-extra-2";
 import { EXTRA_ARTICLES_3 } from "./articles-extra-3";
 import { EXTRA_ARTICLES_4 } from "./articles-extra-4";
+import { EXTRA_ARTICLES_5 } from "./articles-extra-5";
+import { EXTRA_ARTICLES_6 } from "./articles-extra-6";
+import { EXTRA_ARTICLES_7 } from "./articles-extra-7";
+import { EXTRA_ARTICLES_8 } from "./articles-extra-8";
 
 const BASE_ARTICLES = [
   {
@@ -1305,5 +1309,9 @@ export const ARTICLES = [
   ...EXTRA_ARTICLES_2,
   ...EXTRA_ARTICLES_3,
   ...EXTRA_ARTICLES_4,
+  ...EXTRA_ARTICLES_5,
+  ...EXTRA_ARTICLES_6,
+  ...EXTRA_ARTICLES_7,
+  ...EXTRA_ARTICLES_8,
   ...BASE_ARTICLES,
 ];

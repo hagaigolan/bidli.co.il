@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowRight, Clock, Calendar, Tag, Share2 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import ArticleContent from "@/components/article/ArticleContent";
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta } from "@/lib/seo";
@@ -149,27 +149,8 @@ export default function ArticleDetail() {
         {/* תשובה קצרה בראש המאמר — מה שמנועי חיפוש וכלי AI מצטטים */}
         <QuickAnswer text={article.excerpt} />
 
-        {/* Content */}
-        <div className="prose prose-lg max-w-none">
-          <ReactMarkdown
-            components={{
-              h1: ({node, ...props}) => <h1 className="text-3xl font-black text-gray-900 mt-8 mb-4" {...props} />,
-              h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3" {...props} />,
-              h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-gray-700 mt-4 mb-2" {...props} />,
-              p: ({node, ...props}) => <p className="text-gray-600 leading-relaxed mb-4" {...props} />,
-              ul: ({node, ...props}) => <ul className="list-disc list-inside text-gray-600 mb-4 mr-4" {...props} />,
-              ol: ({node, ...props}) => <ol className="list-decimal list-inside text-gray-600 mb-4 mr-4" {...props} />,
-              li: ({node, ...props}) => <li className="mb-1" {...props} />,
-              a: ({node, ...props}) => <a className="text-[#e5893d] hover:underline" {...props} />,
-              strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
-              table: ({node, ...props}) => <div className="overflow-x-auto mb-4"><table className="w-full text-sm border border-gray-200 rounded-xl" {...props} /></div>,
-              th: ({node, ...props}) => <th className="border border-gray-200 bg-gray-50 px-3 py-2 text-right font-bold" {...props} />,
-              td: ({node, ...props}) => <td className="border border-gray-200 px-3 py-2 text-right" {...props} />,
-            }}
-          >
-            {article.content}
-          </ReactMarkdown>
-        </div>
+        {/* Content — מוצג עם היררכיית כותרות, ריווח וטבלאות לקריאה נוחה */}
+        <ArticleContent content={article.content} />
 
         {/* שקיפות: מי כתב, מתי, ומה הבסיס של המידע */}
         <div className="rounded-2xl border border-gray-100 bg-gray-50/60 p-5 mt-8" dir="rtl">

@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, ArrowLeft } from "lucide-react";
 import LiveCardStats from "@/components/LiveCardStats";
 import CategoryHero from "@/components/CategoryHero";
 import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
@@ -243,6 +243,11 @@ export default function Category() {
       {/* מאמר קשור — לפי קטגוריית העמוד (או מאמר כללי כשאין תואם) */}
       <div className="max-w-5xl mx-auto px-4 pb-10">
         <RelatedArticle category={decodedName} />
+        <Link to="/how-much-is-it-worth"
+          className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-gray-100 p-4 transition-all hover:border-[#e5893d55] hover:shadow-sm">
+          <span className="text-sm font-bold text-gray-900">כמה שווה פריט בקטגוריית {decodedName}? מדריך הערכת שווי</span>
+          <ArrowLeft className="h-4 w-4 flex-shrink-0" style={{ color: "#e5893d" }} aria-hidden="true" />
+        </Link>
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import PullToRefresh from "@/components/PullToRefresh";
 import PriceDropBadge from "@/components/PriceDropBadge";
 import RelatedArticle from "@/components/RelatedArticle";
+import MainGuidesSection from "@/components/MainGuidesSection";
 import { isPromoted, promotedFirst } from "@/lib/promotion";
 import SortBar from "@/components/SortBar";
 import { sortProducts } from "@/lib/auctionSort";
@@ -419,6 +420,10 @@ export default function Home() {
       <JustForYou />
       <CommunityStrip />
       <PopularSearches />
+      {/* מדריכים מרכזיים — קישורים פנימיים לעמודי הידע */}
+      <div className="max-w-6xl mx-auto px-4 pb-8">
+        <MainGuidesSection />
+      </div>
       {/* מאמר קשור — מאמר כללי על קנייה ומכירה במכרז */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
         <RelatedArticle />

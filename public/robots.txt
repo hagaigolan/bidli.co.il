@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /functions/sitemapXml
 Disallow: /functions/
 Disallow: /api/
 
@@ -70,3 +71,4 @@ User-agent: Scrapy
 Disallow: /
 
 Sitemap: https://bidli.co.il/sitemap.xml
+Sitemap: https://bidli.co.il/functions/sitemapXml

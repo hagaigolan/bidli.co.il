@@ -21,7 +21,7 @@ Allow: /
 
 # ── סורקי אימון בלבד — אינם משפיעים על הופעה בתשובות AI, ולכן נחסכים ──
 User-agent: GPTBot
-Disallow: /
+Allow: /
 
 User-agent: Google-Extended
 Disallow: /

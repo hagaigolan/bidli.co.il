@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Allow: /functions/sitemapXml
+Allow: /functions/auctionPreview
+Allow: /functions/liveAuctions
 Disallow: /functions/
 Disallow: /api/
 

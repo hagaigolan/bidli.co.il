@@ -38,8 +38,10 @@ export default async function (req: Request): Promise<Response> {
     const image = absolute(
       [...(Array.isArray(product.image_urls) ? product.image_urls : []), product.image_url].find(Boolean)
     ) || DEFAULT_IMAGE;
-    const priceLabel = currentPrice > 0
-      ? `הצעה נוכחית: ₪${currentPrice.toLocaleString("he-IL")}`
+    // "הצעה נוכחית" רק כשיש הצעות בפועל — אחרת מחיר הפתיחה, גם אם current_price כבר מוגדר
+    const hasBids = Number(product.bid_count) > 0;
+    const priceLabel = hasBids
+      ? `הצעה נוכחית: ₪${(currentPrice > 0 ? currentPrice : startingPrice).toLocaleString("he-IL")}`
       : startingPrice > 0
         ? `מחיר פתיחה: ₪${startingPrice.toLocaleString("he-IL")}`
         : "";

@@ -338,9 +338,10 @@ export default function AuctionDetail() {
       .filter(([, v]) => v && String(v).trim())
       .slice(0, 12)
       .map(([k, v]) => ({ "@type": "PropertyValue", name: k, value: String(v) }));
-    // תיאור שיתוף קצר — ההצעה האמיתית אם יש, אחרת מחיר הפתיחה
-    const sharePriceLabel = currentPrice > 0
-      ? `הצעה נוכחית: ₪${currentPrice.toLocaleString("he-IL")}`
+    // תיאור שיתוף קצר — "הצעה נוכחית" רק כשיש הצעות בפועל, אחרת מחיר הפתיחה
+    const hasBids = Number(product.bid_count) > 0;
+    const sharePriceLabel = hasBids
+      ? `הצעה נוכחית: ₪${(currentPrice > 0 ? currentPrice : startingPrice).toLocaleString("he-IL")}`
       : startingPrice > 0
         ? `מחיר פתיחה: ₪${startingPrice.toLocaleString("he-IL")}`
         : "";

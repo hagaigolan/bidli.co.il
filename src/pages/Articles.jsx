@@ -5,6 +5,7 @@ import { setPageMeta } from "@/lib/seo";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
 import { ARTICLES } from "./ArticlesData.jsx";
 import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
+import GeoLinkGrid from "@/components/geo/GeoLinkGrid";
 
 const staticArticles = ARTICLES.map(a => ({
   id: a.id, title: a.title, excerpt: a.excerpt, tags: a.tags || [],
@@ -54,6 +55,18 @@ export default function Articles() {
       {/* קישורים פנימיים — חיזוק ביטויי מכרזים ויד2 */}
       <div className="max-w-5xl mx-auto px-4 pt-6">
         <KeywordLinkBlock variant="blog" />
+      </div>
+
+      {/* עמודי GEO מרכזיים */}
+      <div className="max-w-5xl mx-auto px-4 pt-8">
+        <GeoLinkGrid
+          title="מדריכים מרכזיים"
+          links={[
+            { label: "מה זה בידלי ואיך זה עובד", to: "/what-is-bidli", desc: "מכרז של 24 שעות, תשלום ישיר למוכר ודמי טיפול 3%." },
+            { label: "כמה שווה הפריט שלי", to: "/how-much-is-it-worth", desc: "הערכת שווי לפי קטגוריה, עם מחירי סגירה אמיתיים." },
+            { label: "בידלי מול יד2 מול eBay", to: "/bidli-vs-yad2-ebay", desc: "השוואת מודל, עמלות, תשלום וקהל היעד." },
+          ]}
+        />
       </div>
 
       {/* Articles Grid */}

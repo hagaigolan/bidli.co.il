@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { setPageMeta } from "@/lib/seo";
 import { Gavel, ShieldCheck, Heart, Zap, Users, Eye, ArrowLeft, Image, Sparkles } from "lucide-react";
+import GeoLinkGrid from "@/components/geo/GeoLinkGrid";
 
 const FEATURES = [
   {
@@ -99,6 +100,18 @@ export default function About() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── מדריכים מרכזיים ── */}
+      <div className="max-w-5xl mx-auto px-4 pt-4">
+        <GeoLinkGrid
+          title="רוצים להבין לעומק?"
+          links={[
+            { label: "מה זה בידלי ואיך זה עובד", to: "/what-is-bidli", desc: "המודל המלא: מכרז 24 שעות, תשלום ישיר ודמי טיפול." },
+            { label: "כמה שווה הפריט שלי", to: "/how-much-is-it-worth", desc: "הערכת שווי לפי קטגוריה, עם מחירי סגירה אמיתיים." },
+            { label: "בידלי מול יד2 מול eBay", to: "/bidli-vs-yad2-ebay", desc: "השוואה של מודל, עמלות, תשלום וקהל." },
+          ]}
+        />
       </div>
 
       {/* ── How it works band ── */}

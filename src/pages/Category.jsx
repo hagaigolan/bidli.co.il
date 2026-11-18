@@ -85,7 +85,7 @@ export default function Category() {
       {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        name: `מכרזי ${decodedName} ב-bidli`,
+        name: `מכרזי ${decodedName} בבידלי`,
         numberOfItems: items.length,
         itemListElement: items.slice(0, 25).map((item, i) => ({
           "@type": "ListItem",
@@ -98,7 +98,7 @@ export default function Category() {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "bidli", item: window.location.origin },
+          { "@type": "ListItem", position: 1, name: "בידלי", item: window.location.origin },
           { "@type": "ListItem", position: 2, name: decodedName },
         ],
       },

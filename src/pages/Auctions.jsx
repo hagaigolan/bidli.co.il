@@ -176,7 +176,7 @@ export default function Auctions() {
     setPageJsonLd([{
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "מכרזים פעילים ב-bidli",
+      name: "מכרזים פעילים בבידלי",
       numberOfItems: active.length,
       itemListElement: active.slice(0, 25).map((p, i) => ({
         "@type": "ListItem",

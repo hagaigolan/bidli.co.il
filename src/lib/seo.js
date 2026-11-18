@@ -20,28 +20,44 @@ export function setRobotsMeta(noindex) {
   upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
 }
 
-export function setPageMeta({ title, description, image, noindex, keywords, jsonLd } = {}) {
+function removeMeta(attr, key) {
+  document.head.querySelectorAll(`meta[${attr}="${key}"]`).forEach(el => el.remove());
+}
+
+// ogTitle/ogDescription/ogType/product/url — מאפשרים תגי שיתוף ייעודיים לעמוד (למשל מכרז),
+// ותגי product:* מוסרים אוטומטית כשעוברים לעמוד שאין בו מחיר אמיתי.
+export function setPageMeta({ title, description, image, noindex, keywords, jsonLd, ogTitle, ogDescription, ogType, product, url } = {}) {
   document.title = title || DEFAULT_TITLE;
   upsertMeta("name", "description", description || DEFAULT_DESCRIPTION);
   if (keywords && Array.isArray(keywords)) upsertMeta("name", "keywords", keywords.filter(Boolean).join(", "));
   setRobotsMeta(!!noindex);
 
-  const url = window.location.href;
-  const ogTitle = title || DEFAULT_TITLE;
-  const ogDesc = description || DEFAULT_DESCRIPTION;
+  const pageUrl = url || window.location.href;
+  const shareTitle = ogTitle || title || DEFAULT_TITLE;
+  const shareDesc = ogDescription || description || DEFAULT_DESCRIPTION;
   const ogImage = image || DEFAULT_OG_IMAGE;
 
-  upsertMeta("property", "og:title", ogTitle);
-  upsertMeta("property", "og:description", ogDesc);
+  upsertMeta("property", "og:title", shareTitle);
+  upsertMeta("property", "og:description", shareDesc);
   upsertMeta("property", "og:image", ogImage);
-  upsertMeta("property", "og:url", url);
-  upsertMeta("property", "og:type", "website");
+  upsertMeta("property", "og:url", pageUrl);
+  upsertMeta("property", "og:type", ogType || "website");
   upsertMeta("property", "og:site_name", "bidli");
   upsertMeta("property", "og:locale", "he_IL");
   upsertMeta("name", "twitter:card", "summary_large_image");
-  upsertMeta("name", "twitter:title", ogTitle);
-  upsertMeta("name", "twitter:description", ogDesc);
+  upsertMeta("name", "twitter:title", shareTitle);
+  upsertMeta("name", "twitter:description", shareDesc);
   upsertMeta("name", "twitter:image", ogImage);
+
+  // product:price — מספר בלבד, ורק כשיש מחיר אמיתי על הפריט
+  const priceAmount = Number(product?.price);
+  if (priceAmount > 0) {
+    upsertMeta("property", "product:price:amount", String(priceAmount));
+    upsertMeta("property", "product:price:currency", product?.currency || "ILS");
+  } else {
+    removeMeta("property", "product:price:amount");
+    removeMeta("property", "product:price:currency");
+  }
 
   let canonical = document.head.querySelector('link[rel="canonical"]');
   if (!canonical) {
@@ -49,7 +65,7 @@ export function setPageMeta({ title, description, image, noindex, keywords, json
     canonical.setAttribute("rel", "canonical");
     document.head.appendChild(canonical);
   }
-  canonical.setAttribute("href", url);
+  canonical.setAttribute("href", pageUrl);
 
   setPageJsonLd(jsonLd);
 }

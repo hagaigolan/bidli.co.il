@@ -338,7 +338,18 @@ export default function AuctionDetail() {
       .filter(([, v]) => v && String(v).trim())
       .slice(0, 12)
       .map(([k, v]) => ({ "@type": "PropertyValue", name: k, value: String(v) }));
+    // תיאור שיתוף קצר — ההצעה האמיתית אם יש, אחרת מחיר הפתיחה
+    const sharePriceLabel = currentPrice > 0
+      ? `הצעה נוכחית: ₪${currentPrice.toLocaleString("he-IL")}`
+      : startingPrice > 0
+        ? `מחיר פתיחה: ₪${startingPrice.toLocaleString("he-IL")}`
+        : "";
     setPageMeta({
+      ogTitle: product.title,
+      ogDescription: [sharePriceLabel, "מכרז 24 שעות בבידלי", product.category].filter(Boolean).join(" | "),
+      ogType: "product",
+      product: price > 0 ? { price, currency: "ILS" } : undefined,
+      url: canonicalUrl,
       title: `${product.title} — מכרז ${product.category || "אונליין"} חי ב-bidli${product.location ? ` | ${product.location}` : ""}`,
       description: cleanDesc
         ? `${cleanDesc} מכרז חי ב-bidli — מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? `, ${product.location}` : ""} · ${product.bid_count || 0} הצעות${isActive ? " · הצע מחיר עכשיו לפני סגירת המכרז" : ""}.`

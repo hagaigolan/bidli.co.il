@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Shield, FileText, ChevronDown, ChevronUp, Cookie, RotateCcw, Truck, Accessibility, ExternalLink } from "lucide-react";
 import { COOKIE_POLICY_SECTIONS, PRIVACY_POLICY_SECTIONS, RETURNS_POLICY_SECTIONS, SHIPPING_POLICY_SECTIONS, ACCESSIBILITY_POLICY_SECTIONS, AFFILIATE_DISCLOSURE_SECTIONS } from "@/lib/policyDocs";
+import { setPageMeta } from "@/lib/seo";
 
 const LAST_UPDATED = "17 באוקטובר 2026";
 const PLATFORM_NAME = "bidli";
@@ -254,6 +255,21 @@ export default function TermsAndPrivacy() {
     const tab = new URLSearchParams(window.location.search).get("tab");
     return DOC_SECTIONS[tab] ? tab : "terms";
   });
+
+  // כותרת ותיאור ייחודיים לכל מסמך — כדי שכל עמוד מדיניות יופיע בחיפוש כעמוד נפרד
+  useEffect(() => {
+    const DOC_META = {
+      terms: { title: "תנאי שימוש | bidli", description: "תנאי השימוש של בידלי: מעמד הפלטפורמה, כללי המכרז, התשלום הישיר למוכר, דמי הטיפול והאחריות בין הצדדים." },
+      privacy: { title: "מדיניות פרטיות | bidli", description: "איזה מידע נאסף בבידלי, למה הוא משמש, עם מי הוא משותף וזכויותיך לפי חוק הגנת הפרטיות." },
+      cookies: { title: "מדיניות עוגיות | bidli", description: "אילו עוגיות משמשות באתר בידלי, למה הן נדרשות ואיך אפשר לשנות את הבחירה בהן." },
+      returns: { title: "מדיניות ביטול והחזרות | bidli", description: "מתי ניתן לבטל עסקה, איך מבטלים ומהם לוחות הזמנים לזכות ביטול בעסקת מכרז." },
+      shipping: { title: "מדיניות משלוחים ומסירה | bidli", description: "אופן המסירה בין מוכר לקונה, לוחות זמנים, אחריות למשלוח ומעקב אחר הפריט." },
+      accessibility: { title: "הצהרת נגישות | bidli", description: "רמת הנגישות של אתר בידלי, אמצעי הנגישות המוטמעים ודרכי פנייה לבקשות נגישות." },
+      affiliate: { title: "גילוי נאות | bidli", description: "גילוי נאות בדבר תוכן שיווקי, קישורי שותפים ותגמול בגין הפניות באתר בידלי." },
+    };
+    const meta = DOC_META[activeDoc] || DOC_META.terms;
+    setPageMeta({ title: meta.title, description: meta.description });
+  }, [activeDoc]);
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">

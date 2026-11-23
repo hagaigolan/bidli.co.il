@@ -67,10 +67,22 @@ const carouselImages = [
 
 function HeroSection({ todayCount = 0 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  // טעינה מדורגת של תמונות הקרוסלה — רק התמונה הנוכחית נטענת מיד, הבאות נטענות כשהן מוצגות
+  const [loadedSlides, setLoadedSlides] = useState([0]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const showSlide = (index) => {
+    setLoadedSlides(prev => (prev.includes(index) ? prev : [...prev, index]));
+    setCurrentSlide(index);
+  };
   useEffect(() => {
-    const t = setInterval(() => setCurrentSlide(p => (p + 1) % carouselImages.length), 4500);
+    const t = setInterval(() => {
+      setCurrentSlide(p => {
+        const next = (p + 1) % carouselImages.length;
+        setLoadedSlides(prev => (prev.includes(next) ? prev : [...prev, next]));
+        return next;
+      });
+    }, 4500);
     return () => clearInterval(t);
   }, []);
 
@@ -84,7 +96,11 @@ function HeroSection({ todayCount = 0 }) {
     <section className="relative bg-white" style={{ minHeight: 240 }} dir="rtl">
       {carouselImages.map((img, i) => (
         <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ${i === currentSlide ? "opacity-100" : "opacity-0"}`}>
-          <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+          {loadedSlides.includes(i) && (
+            <img src={img.src} alt={img.alt} className="w-full h-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"} decoding="async"
+              fetchPriority={i === 0 ? "high" : "low"} />
+          )}
         </div>
       ))}
       <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255, 255, 255, 0.6)" }} />
@@ -148,7 +164,7 @@ function HeroSection({ todayCount = 0 }) {
 
       <div className="relative z-10 flex justify-center gap-2 pb-6">
         {carouselImages.map((_, i) => (
-          <button key={i} onClick={() => setCurrentSlide(i)}
+          <button key={i} onClick={() => showSlide(i)}
             aria-label={`עבור לשקף ${i + 1} מתוך ${carouselImages.length}`}
             aria-current={i === currentSlide}
             className="rounded-full transition-all duration-300"
@@ -187,6 +203,8 @@ function AuctionCard({ auction, index, buttonLabel = "צפה במכרז", accent
           <img
             src={auction.image_url}
             alt={auction.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.target.style.display = "none"; }}
           />
@@ -288,7 +306,7 @@ function UpcomingAuctionsSection({ products }) {
               <Link to={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:border-transparent transition-all duration-300 card-neon" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
                 <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
                   {product.image_url
-                    ? <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ? <img src={product.image_url} alt={product.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
                   {(product.bid_count || 0) >= 3 && (
                     <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
@@ -387,11 +405,13 @@ export default function Home() {
   const loadData = () => Promise.all([
     base44.entities.Product.list("-created_date", 50).then(setProducts).catch(() => {}),
     ShopEntity.list("-created_date", 10).then(setShops).catch(() => {}),
-    // מונה חי — כמה מכרזים פורסמו היום
-    base44.entities.Product.list("-created_date", 200).then(ps => {
+    // מונה חי — ספירה בשרת בלבד, בלי להוריד מאות רשומות מלאות לדפדפן
+    (() => {
       const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
-      setTodayCount(ps.filter(p => new Date(p.created_date) >= dayStart).length);
-    }).catch(() => {}),
+      return base44.entities.Product.count({ created_date: { $gte: dayStart.toISOString() } })
+        .then(setTodayCount)
+        .catch(() => {});
+    })(),
   ]);
 
   useEffect(() => {

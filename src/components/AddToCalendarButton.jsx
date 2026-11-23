@@ -1,5 +1,6 @@
 import { CalendarPlus } from "lucide-react";
 import { downloadAuctionIcs } from "@/lib/ics";
+import { base44 } from "@/api/base44Client";
 
 // כפתור "ליומן" — מוריד קובץ ICS עם תזכורת לפני סיום המכרז
 export default function AddToCalendarButton({ product, className = "" }) {
@@ -7,7 +8,12 @@ export default function AddToCalendarButton({ product, className = "" }) {
   return (
     <button
       type="button"
-      onClick={(e) => { e.preventDefault(); e.stopPropagation(); downloadAuctionIcs(product); }}
+      onClick={(e) => {
+        e.preventDefault(); e.stopPropagation();
+        downloadAuctionIcs(product);
+        // מדידת מעורבות: הוספת מכרז ליומן
+        try { base44.analytics.track({ eventName: "auction_added_to_calendar" }); } catch {}
+      }}
       aria-label={`הוספת "${product.title}" ליומן`}
       className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold border bg-white transition-all hover:bg-[#d68d4d14] ${className}`}
       style={{ borderColor: "#d68d4d", color: "#d68d4d" }}

@@ -7,6 +7,7 @@ import BarterCard from "@/components/barter/BarterCard";
 import BarterUploadModal from "@/components/barter/BarterUploadModal";
 import { CATEGORIES } from "@/lib/productMeta";
 import MobileSelect from "@/components/MobileSelect";
+import { setPageMeta } from "@/lib/seo";
 
 const CONDITIONS = ["חדש", "משומש", "תקין", "מקולקל"];
 const EMPTY_STYLE = {};
@@ -22,6 +23,14 @@ export default function Barter() {
   const [showUpload, setShowUpload] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
+
+  useEffect(() => {
+    setPageMeta({
+      title: "החלפות וברטר — החלפת פריטים ישירה בין אספנים | bidli",
+      description: "מפרסמים פריט, מציינים מה מחפשים בתמורה ומקבלים הצעות החלפה מאספנים אחרים. ברטר ישיר ללא עמלות, עם אפשרות לתוספת כספית.",
+      keywords: ["ברטר", "החלפת פריטים", "החלפות אספנות", "סחר חליפין", "bidli"],
+    });
+  }, []);
 
   const load = () => {
     base44.entities.BarterItem.filter({ status: "active" }, "-created_date", 200)

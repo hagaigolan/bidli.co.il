@@ -82,6 +82,8 @@ export default function Register() {
           ...(nickname.trim() ? { nickname: nickname.trim() } : {}),
         });
       } catch {}
+      // מדידת המרה: הרשמה שהושלמה (אימות מייל עבר) — ללא נתונים מזהים
+      try { await base44.analytics.track({ eventName: "signup_completed" }); } catch {}
       window.location.href = postRegisterUrl;
     } catch (err) {
       setError(err.message || "קוד האימות שגוי, נסה שנית");

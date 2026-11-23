@@ -62,6 +62,8 @@ export default function ProfileEditModal({ onClose, onSaved }) {
         } catch {}
       }
       setSaved(true);
+      // מדידת המרה: פרופיל הושלם (שם וטלפון נשמרו)
+      try { base44.analytics.track({ eventName: "profile_completed" }); } catch {}
       setTimeout(() => { onSaved?.(); onClose(); }, 1200);
     } catch {
       setError("שמירת הפרופיל נכשלה, נסה שנית");

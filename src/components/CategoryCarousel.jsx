@@ -66,7 +66,7 @@ function CarouselStrip({ category, items, accent }) {
             style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
             <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
               {p.image_url
-                ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ? <img src={p.image_url} alt={p.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
             </div>
             <div className="p-2.5" dir="rtl">

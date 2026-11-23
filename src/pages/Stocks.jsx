@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { MapPin, Clock, TrendingUp, Plus } from "lucide-react";
+import { setPageMeta } from "@/lib/seo";
 
 function CountdownBadge({ endsAt }) {
   const calc = () => {
@@ -37,6 +38,14 @@ function CountdownBadge({ endsAt }) {
 export default function Stocks() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setPageMeta({
+      title: "מלאי זמין למכירה מיידית | bidli",
+      description: "פריטים במלאי הזמינים לרכישה מיידית במחיר קבוע — ללא מכרז. אמנות, תכשיטים, אספנות ועוד, ישירות מהמוכרים.",
+      keywords: ["מלאי זמין", "קנייה מיידית", "מחיר קבוע", "bidli"],
+    });
+  }, []);
 
   useEffect(() => {
     base44.entities.Product.filter({ status: "active" }, "-created_date", 50)

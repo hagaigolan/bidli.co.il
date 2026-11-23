@@ -8,6 +8,7 @@ import LoginRequiredModal from "@/components/LoginRequiredModal";
 import MobileSelect from "@/components/MobileSelect";
 import useNow from "@/lib/useNow";
 import { BUSINESS_TYPES, dealStatus, savingsPercent, RESCUE_FEE_RATE } from "@/lib/lastMinute";
+import { setPageMeta } from "@/lib/seo";
 
 const PLANS = [
   {
@@ -42,7 +43,11 @@ export default function LastMinute() {
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    document.title = "ברגע האחרון — מכרזים הפוכים על חלונות שהתפנו | bidli";
+    setPageMeta({
+      title: "ברגע האחרון — מכרזים הפוכים על חלונות שהתפנו | bidli",
+      description: "חלונות פנויים של עסקים — מספרות, קליניקות, אולפנים וסטודיואים — נמכרים במכרז הפוך יורד: המחיר מתחיל מהמחיר הרגיל ויורד עד שנמצא קונה. הנחה אמיתית על שירות בזמן קרוב.",
+      keywords: ["מכרז הפוך", "חלונות פנויים", "הנחות שירותים", "ברגע האחרון", "bidli"],
+    });
     const load = () => {
       base44.entities.LastMinuteDeal.filter({}, { sort: "-created_date", limit: 100 })
         .then(res => setDeals(res?.items || []))

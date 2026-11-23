@@ -71,7 +71,7 @@ export default function DealsEndingSoon({ products }) {
               style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
               <div className="relative aspect-square bg-gray-50 overflow-hidden">
                 {p.image_url
-                  ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ? <img src={p.image_url} alt={p.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
                 {i % 5 === 0 && (
                   <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"

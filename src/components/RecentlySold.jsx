@@ -42,7 +42,7 @@ export default function RecentlySold() {
               style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
               <div className="relative overflow-hidden aspect-[4/3] bg-gray-50">
                 {p.image_url
-                  ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95" />
+                  ? <img src={p.image_url} alt={p.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95" />
                   : <div className="w-full h-full flex items-center justify-center text-4xl">🏺</div>}
                 <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-black text-white"
                   style={{ background: "linear-gradient(135deg, #00a35c, #00e676)", boxShadow: "0 0 10px #00a35c55" }}>

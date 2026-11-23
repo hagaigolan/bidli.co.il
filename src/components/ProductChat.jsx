@@ -46,7 +46,11 @@ export default function ProductChat({ product, inline = false }) {
       asker_name: askerName,
       asker_contact: askerContact,
     })
-      .then(() => setMessages(m => [...m, { from: "bot", text: "📩 השאלה נשלחה למוכר במייל — הוא יענה בהקדם." }]))
+      .then(() => {
+        setMessages(m => [...m, { from: "bot", text: "📩 השאלה נשלחה למוכר במייל — הוא יענה בהקדם." }]);
+        // מדידת מעורבות: שאלה שנשלחה למוכר
+        try { base44.analytics.track({ eventName: "question_asked", properties: { category: product.category || "" } }); } catch {}
+      })
       .catch(() => setMessages(m => [...m, { from: "bot", text: "⚠️ שליחת השאלה למוכר נכשלה — נסה שוב בעוד רגע." }]));
   };
 

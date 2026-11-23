@@ -6,6 +6,7 @@ import LiveCardStats from "@/components/LiveCardStats";
 import { visualSearch } from "@/functions/visualSearch";
 import { addRecentSearch, getRecentSearches } from "@/lib/searchHistory";
 import { searchProducts } from "@/lib/smartSearch";
+import { setPageMeta } from "@/lib/seo";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -89,6 +90,15 @@ export default function Search() {
   const [visualError, setVisualError] = useState("");
   const visualInputRef = useRef(null);
   const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
+
+  // עמוד תוצאות חיפוש — לא לאינדוקס, כדי שמנועי חיפוש לא יסרקו עמודים ריקים או כפולים
+  useEffect(() => {
+    setPageMeta({
+      title: "חיפוש מכרזים | bidli",
+      description: "חיפוש מכרזים פעילים לפי מילה חופשית, קטגוריה, מחיר ומיקום — כולל חיפוש לפי תמונה.",
+      noindex: true,
+    });
+  }, []);
 
   const saveRecent = (term) => {
     setRecentSearches(addRecentSearch(term));

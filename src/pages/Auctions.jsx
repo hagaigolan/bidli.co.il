@@ -17,6 +17,7 @@ import { AUCTIONS_SORT_OPTIONS, sortProducts } from "@/lib/auctionSort";
 import { resolveCenter, withinRadius } from "@/lib/distance";
 import { MAKER_KEYS, MODEL_KEYS } from "@/lib/categoryAttributes";
 import AuctionsFaq, { AUCTIONS_FAQS } from "@/components/seo/AuctionsFaq";
+import { isLiveAuction } from "@/lib/countdown";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -49,6 +50,7 @@ function CountdownBadge({ endsAt, small }) {
 
 function AuctionCard({ product }) {
   const ended = new Date(product.ends_at) < new Date();
+  const isLive = isLiveAuction(product);
   return (
     <div className="relative">
       <CompareButton productId={product.id} />
@@ -85,7 +87,7 @@ function AuctionCard({ product }) {
         )}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-400">מחיר נוכחי</p>
+            <p className="text-xs text-gray-400">{isLive ? "מחיר נוכחי" : "מחיר אחרון"}</p>
             <p className="font-black text-base text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
           </div>
           <span className="text-xs text-gray-400">{product.bid_count || 0} הצעות</span>

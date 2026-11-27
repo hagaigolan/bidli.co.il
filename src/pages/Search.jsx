@@ -7,6 +7,7 @@ import { visualSearch } from "@/functions/visualSearch";
 import { addRecentSearch, getRecentSearches } from "@/lib/searchHistory";
 import { searchProducts } from "@/lib/smartSearch";
 import { setPageMeta } from "@/lib/seo";
+import { isLiveAuction } from "@/lib/countdown";
 
 function useCountdown(endsAt) {
   const calcLeft = () => {
@@ -38,6 +39,7 @@ function CountdownBadge({ endsAt }) {
 
 function ResultCard({ product }) {
   const ended = new Date(product.ends_at) < new Date();
+  const isLive = isLiveAuction(product);
   return (
     <Link to={`/auction/${product.id}`} className="block bg-white border border-gray-100 rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300 card-neon"
       style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
@@ -65,7 +67,7 @@ function ResultCard({ product }) {
         )}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-400">מחיר נוכחי</p>
+            <p className="text-xs text-gray-400">{isLive ? "מחיר נוכחי" : "מחיר אחרון"}</p>
             <p className="font-black text-base text-gray-900">₪{(product.current_price || product.starting_price || 0).toLocaleString()}</p>
           </div>
           <span className="text-xs text-gray-400">{product.bid_count || 0} הצעות</span>

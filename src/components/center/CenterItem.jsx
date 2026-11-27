@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
-import { formatTimeLeft } from "@/lib/countdown";
+import { formatTimeLeft, isLiveAuction } from "@/lib/countdown";
 
 const TONES = {
   leading: { label: "אתה מוביל", bg: "#ecfdf5", color: "#047857", border: "#a7f3d0" },
@@ -13,6 +13,7 @@ export default function CenterItem({ product, tone, myAmount, now }) {
   const t = TONES[tone] || TONES.watch;
   const msLeft = new Date(product.ends_at).getTime() - now;
   const urgent = msLeft > 0 && msLeft < 60 * 60 * 1000;
+  const isLive = isLiveAuction(product, now);
 
   return (
     <Link
@@ -49,7 +50,7 @@ export default function CenterItem({ product, tone, myAmount, now }) {
         </div>
         <p className="text-sm font-bold text-gray-800 truncate">{product.title}</p>
         <p className="text-xs text-gray-500 mt-0.5">
-          מחיר נוכחי <span className="font-bold text-gray-800">₪{Number(product.current_price || product.starting_price || 0).toLocaleString()}</span>
+          {isLive ? "מחיר נוכחי" : "מחיר אחרון"} <span className="font-bold text-gray-800">₪{Number(product.current_price || product.starting_price || 0).toLocaleString()}</span>
           {myAmount ? <span className="text-gray-400"> · ההצעה שלך ₪{Number(myAmount).toLocaleString()}</span> : null}
         </p>
       </div>

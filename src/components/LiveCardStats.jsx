@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Eye } from "lucide-react";
+import { isLiveAuction } from "@/lib/countdown";
 
 // נתוני פעילות חיים על כרטיס מכרז — צופים (מיוצב לפי מזהה הפריט) + מספר הצעות אמיתי
 export function useViewers(id) {
@@ -15,11 +16,17 @@ export default function LiveCardStats({ product }) {
   const viewers = useViewers(product?.id);
   if (!product) return null;
   const bids = product.bid_count || 0;
+  // מכרז שהסתיים — מציגים רק את מספר ההצעות (עובדה), בלי שורת "צופים כרגע"
+  const isLive = isLiveAuction(product);
   return (
     <div className="flex items-center gap-1.5 mt-1.5 text-xs text-gray-400">
-      <Eye className="h-3 w-3" aria-hidden="true" />
-      <span className="font-medium">{viewers} צופים כרגע</span>
-      <span>·</span>
+      {isLive && (
+        <>
+          <Eye className="h-3 w-3" aria-hidden="true" />
+          <span className="font-medium">{viewers} צופים כרגע</span>
+          <span>·</span>
+        </>
+      )}
       <span className="font-bold" style={bids > 0 ? { color: "#e5893d" } : undefined}>{bids} הצעות</span>
     </div>
   );

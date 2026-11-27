@@ -5,6 +5,7 @@ import { CheckCircle, Pencil, RotateCcw, Truck, Megaphone } from "lucide-react";
 import ProductEditModal from "@/components/ProductEditModal";
 import PromoteAuctionModal from "@/components/PromoteAuctionModal";
 import { parseDbDate } from "@/lib/time";
+import { isLiveAuction } from "@/lib/countdown";
 
 const SOLD_STATES = ["paid", "delivered", "released"];
 
@@ -29,6 +30,7 @@ export default function SaleRow({ product, onReload }) {
 
   const endsAt = parseDbDate(product.ends_at);
   const ended = endsAt ? endsAt.getTime() <= Date.now() : true;
+  const isLive = isLiveAuction(product);
   const cfg = getSaleStatus(product, ended);
 
   const isSold = SOLD_STATES.includes(product.status);
@@ -86,7 +88,7 @@ export default function SaleRow({ product, onReload }) {
             {product.title}
           </p>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-gray-400">{product.highest_bidder ? "מחיר זכייה:" : "מחיר נוכחי:"}</span>
+            <span className="text-xs text-gray-400">{product.highest_bidder ? "מחיר זכייה:" : isLive ? "מחיר נוכחי:" : "מחיר אחרון:"}</span>
             <span className="text-sm font-black text-gray-900">
               ₪{(product.current_price || product.starting_price || 0).toLocaleString()}
             </span>

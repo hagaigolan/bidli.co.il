@@ -17,7 +17,7 @@ function upsertMeta(attr, key, content) {
 }
 
 export function setRobotsMeta(noindex) {
-  upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
+  upsertMeta("name", "robots", noindex ? "noindex, follow" : "index, follow");
 }
 
 function removeMeta(attr, key) {

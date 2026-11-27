@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import { republishNudgeEmail } from '../../shared/republishEmails.ts';
+import { isOwnerEmail } from '../../shared/gmailSender.ts';
 
 // תזכורת "פרסם שוב" — נשלחת אוטומטית למוכרים אמיתיים שמכרזם הסתיים ללא מכירה,
 // 5 ימים לאחר מועד הסיום. הכפתור במייל פותח את טופס הפרסום עם כל הפריט,
@@ -75,6 +76,7 @@ export default async function (req: Request): Promise<Response> {
       !p.highest_bidder &&                              // הסתיים ללא מכירה
       !p.republish_mail_at &&                           // טרם נשלחה תזכורת
       p.seller_email &&                                 // יש כתובת לשליחה
+      !isOwnerEmail(p.seller_email) &&                  // לא שולחים לבעל האתר — הצפת תיבה
       !String(p.seller_user_id || '').startsWith(FICTIONAL_PREFIX) // מוכר אמיתי בלבד
     );
 

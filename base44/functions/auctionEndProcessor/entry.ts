@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import { buyerSaleEmail, sellerSaleEmail } from '../../shared/saleEmails.ts';
 import { createAppNotification } from '../../shared/appNotifications.ts';
+import { isOwnerEmail } from '../../shared/gmailSender.ts';
 
 // Called by scheduled automation every 5 minutes
 // Finds auctions that just ended and transitions them to awaiting_payment
@@ -86,7 +87,8 @@ Deno.serve(async (req) => {
       }
 
       // Send designed email to the seller — sale notification + need to enter payout card
-      if (product.seller_email) {
+      // (לא נשלח לבעל האתר עצמו — מכרזיו הרבים היו מציפים את תיבת המייל שלו)
+      if (product.seller_email && !isOwnerEmail(product.seller_email)) {
         try {
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: product.seller_email,

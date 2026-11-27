@@ -5,6 +5,11 @@ import libmime from "npm:libmime@1";
 
 const ADMIN_EMAIL = "hagaigol1@gmail.com";
 
+// כתובת בעל האתר — לא שולחים לו מיילים תפעוליים על מכרזים (הצפת תיבה)
+function isOwnerEmail(email) {
+  return String(email || "").trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
 function utf8Base64(str) {
   const bytes = new TextEncoder().encode(str);
   let bin = "";
@@ -71,4 +76,4 @@ export async function sendGmail(accessToken, { to, subject, html, text }) {
   return { to: recipient, subject, ok: true };
 }
 
-export { ADMIN_EMAIL };
+export { ADMIN_EMAIL, isOwnerEmail };

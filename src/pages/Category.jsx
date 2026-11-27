@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { Search, Filter, X, ArrowLeft } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 import LiveCardStats from "@/components/LiveCardStats";
 import CategoryHero from "@/components/CategoryHero";
 import KeywordLinkBlock from "@/components/seo/KeywordLinkBlock";
@@ -7,8 +7,9 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { setPageMeta, setPageJsonLd } from "@/lib/seo";
 import { SUBCATEGORIES } from "@/lib/subcategories";
-import { categoryHeading } from "@/lib/categorySeo";
+import { categoryHeading, categoryIntro } from "@/lib/categorySeo";
 import RelatedArticle from "@/components/RelatedArticle";
+import GuidesLinksBlock from "@/components/seo/GuidesLinksBlock";
 
 const CATEGORIES = {
   "אמנות": { icon: "🎨", description: "ציורים, פסלים, הדפסים ועבודות אמנות מקוריות מאמנים ישראליים ובינלאומיים." },
@@ -120,7 +121,8 @@ export default function Category() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Hero */}
-      <CategoryHero name={decodedName} heading={heading} cat={{ ...cat, subcategories: SUBCATEGORIES[decodedName] || [] }} />
+      <CategoryHero name={decodedName} heading={heading}
+        cat={{ ...cat, intro: categoryIntro(decodedName, cat.description), subcategories: SUBCATEGORIES[decodedName] || [] }} />
 
       {/* קישורים פנימיים — חיזוק ביטויי מכרזים ומכירת מוצרים באינטרנט */}
       <div className="max-w-5xl mx-auto px-4 pt-5">
@@ -243,11 +245,8 @@ export default function Category() {
       {/* מאמר קשור — לפי קטגוריית העמוד (או מאמר כללי כשאין תואם) */}
       <div className="max-w-5xl mx-auto px-4 pb-10">
         <RelatedArticle category={decodedName} />
-        <Link to="/how-much-is-it-worth"
-          className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-gray-100 p-4 transition-all hover:border-[#e5893d55] hover:shadow-sm">
-          <span className="text-sm font-bold text-gray-900">כמה שווה פריט בקטגוריית {decodedName}? מדריך הערכת שווי</span>
-          <ArrowLeft className="h-4 w-4 flex-shrink-0" style={{ color: "#e5893d" }} aria-hidden="true" />
-        </Link>
+        {/* מדריכים שימושיים — שלושת מדריכי הליבה של האתר */}
+        <GuidesLinksBlock />
       </div>
     </div>
   );

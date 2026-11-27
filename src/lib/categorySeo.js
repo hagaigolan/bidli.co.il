@@ -12,3 +12,10 @@ export const CATEGORY_HEADINGS = {
 export function categoryHeading(name) {
   return CATEGORY_HEADINGS[name] || `מכרזי ${name}`;
 }
+
+// פסקת הפתיחה של עמוד הקטגוריה: המשפט הקיים + שני משפטים כלליים על מהלך המכרז.
+// ללא נתונים, מחירים או מספרים מומצאים — רק הסבר על 24 השעות, בדיקת הפריט וההצעה בזמן.
+export function categoryIntro(name, description) {
+  const extra = `כל מכרז בקטגוריית ${name} נסגר בתוך 24 שעות מרגע הפרסום, וכל המכרזים הפעילים מוצגים בהמשך העמוד עם מחיר נוכחי וזמן סיום. לפני שמציעים מחיר כדאי לקרוא את התיאור המלא ולהסתכל מקרוב בתמונות, ולהציע לפני שהמכרז נסגר.`;
+  return description ? `${description} ${extra}` : extra;
+}

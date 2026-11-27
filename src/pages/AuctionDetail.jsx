@@ -40,6 +40,7 @@ import { setPageMeta, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { getProductFaqs } from "@/lib/productFaq";
 import { recordRecentlyViewed } from "@/lib/recentlyViewed";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import GuidesLinksBlock from "@/components/seo/GuidesLinksBlock";
 import PromoteRequestButton from "@/components/PromoteRequestButton";
 import SellerTrustProfile from "@/components/SellerTrustProfile";
 import ReportAuctionButton from "@/components/ReportAuctionButton";
@@ -345,16 +346,27 @@ export default function AuctionDetail() {
       : startingPrice > 0
         ? `מחיר פתיחה: ₪${startingPrice.toLocaleString("he-IL")}`
         : "";
+    // מכרז שהסתיים: הכותרת והתיאור אומרים "הסתיים" (ולא "חי"), והעמוד מסומן noindex, follow.
+    // מכרז חי נשאר indexable — בלי שינוי בפורמט הכותרת.
+    const stateLabel = isActive ? "חי" : "שהסתיים";
+    const priceLabel = isActive ? "מחיר נוכחי" : "מחיר אחרון";
+    const descBase = `${priceLabel} ₪${price.toLocaleString("he-IL")}${product.location ? `, ${product.location}` : ""} · ${product.bid_count || 0} הצעות`;
+    const pageDescription = isActive
+      ? (cleanDesc
+        ? `${cleanDesc} מכרז חי ב-bidli — ${descBase} · הצע מחיר עכשיו לפני סגירת המכרז.`
+        : `${product.title} במכרז אונליין ב-bidli. ${descBase}.`)
+      : (cleanDesc
+        ? `${cleanDesc} מכרז ${product.category || "אונליין"} שהסתיים ב-bidli — ${descBase}.`
+        : `${product.title} — מכרז אונליין ב-bidli שהסתיים. ${descBase}.`);
     setPageMeta({
       ogTitle: product.title,
       ogDescription: [sharePriceLabel, "מכרז 24 שעות בבידלי", product.category].filter(Boolean).join(" | "),
       ogType: "product",
       product: price > 0 ? { price, currency: "ILS" } : undefined,
       url: canonicalUrl,
-      title: `${product.title} — מכרז ${product.category || "אונליין"} חי ב-bidli${product.location ? ` | ${product.location}` : ""}`,
-      description: cleanDesc
-        ? `${cleanDesc} מכרז חי ב-bidli — מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? `, ${product.location}` : ""} · ${product.bid_count || 0} הצעות${isActive ? " · הצע מחיר עכשיו לפני סגירת המכרז" : ""}.`
-        : `${product.title} במכרז אונליין ב-bidli. מחיר נוכחי ₪${price.toLocaleString("he-IL")}${product.location ? ` · ${product.location}` : ""} · ${product.bid_count || 0} הצעות.`,
+      noindex: !isActive,
+      title: `${product.title} — מכרז ${product.category || "אונליין"} ${stateLabel} ב-bidli${product.location ? ` | ${product.location}` : ""}`,
+      description: pageDescription,
       image: images[0] || DEFAULT_OG_IMAGE,
       keywords: [product.title, product.subcategory, product.location, ...catKw, "מכרז אונליין", "מכרזים בישראל"],
       jsonLd: [
@@ -1233,6 +1245,11 @@ export default function AuctionDetail() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* ── מדריכים שימושיים — קישורים פנימיים לעמודי הידע ── */}
+      <div className="max-w-5xl mx-auto px-4 pb-2">
+        <GuidesLinksBlock />
       </div>
 
       {/* ── RELATED PRODUCTS + ARTICLE ── */}

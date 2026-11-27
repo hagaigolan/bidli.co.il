@@ -31,7 +31,7 @@ export default function CategoryHero({ name, cat, heading }) {
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-black text-gray-900 mb-1.5">{heading || `מכרזי ${name}`}</h1>
-            <p className="text-gray-600 text-sm leading-relaxed max-w-xl">{cat.description}</p>
+            <p className="text-gray-600 text-sm leading-relaxed max-w-xl">{cat.intro || cat.description}</p>
           </div>
         </div>
 

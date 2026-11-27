@@ -14,6 +14,7 @@ export const STATIC_PAGES: SitemapEntry[] = [
   { path: "/what-is-bidli", lastmod: "2026-11-18", changefreq: "monthly", priority: "0.8" },
   { path: "/how-much-is-it-worth", lastmod: "2026-11-18", changefreq: "monthly", priority: "0.8" },
   { path: "/bidli-vs-yad2-ebay", lastmod: "2026-11-18", changefreq: "monthly", priority: "0.8" },
+  { path: "/מכרז-24-שעות", lastmod: "2026-11-28", changefreq: "monthly", priority: "0.8" },
   { path: "/articles", lastmod: "2026-11-18", changefreq: "daily", priority: "0.8" },
   { path: "/about", lastmod: "2026-11-18", changefreq: "monthly", priority: "0.6" },
   { path: "/valuation", lastmod: "2026-10-31", changefreq: "monthly", priority: "0.7" },

@@ -53,6 +53,7 @@ const LastMinuteDetail = lazy(() => import('./pages/LastMinuteDetail'));
 const WhatIsBidli = lazy(() => import('./pages/WhatIsBidli'));
 const HowMuchIsItWorth = lazy(() => import('./pages/HowMuchIsItWorth'));
 const BidliVsYad2Ebay = lazy(() => import('./pages/BidliVsYad2Ebay'));
+const Auction24Hours = lazy(() => import('./pages/Auction24Hours'));
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -118,6 +119,7 @@ const AuthenticatedApp = () => {
           <Route path="/what-is-bidli" element={<WhatIsBidli />} />
           <Route path="/how-much-is-it-worth" element={<HowMuchIsItWorth />} />
           <Route path="/bidli-vs-yad2-ebay" element={<BidliVsYad2Ebay />} />
+          <Route path="/מכרז-24-שעות" element={<Auction24Hours />} />
           <Route path="/orders" element={<Navigate to="/my-orders" replace />} />
           <Route path="/my-sales" element={<MySales />} />
           <Route path="/favorites" element={<Favorites />} />

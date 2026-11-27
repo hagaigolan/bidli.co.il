@@ -571,6 +571,9 @@ export default function AuctionDetail() {
       (product.seller_email && authUser?.email &&
         product.seller_email.trim().toLowerCase() === authUser.email.trim().toLowerCase())));
   const ended = product && new Date(product.ends_at) <= new Date();
+  // מכרז חי — מסתיר רכיבי "חי" (פיד הצעות, לחץ הצעות, צופים) במכרז שהסתיים
+  const isActive = !!(product && product.status === "active" && new Date(product.ends_at) > new Date());
+  const priceLabel = isActive ? "מחיר נוכחי" : "מחיר אחרון";
   const cancelled = product?.status === "cancelled";
   // עריכה — המוכר עצמו, או אדמין על מכרזים פיקטיביים שפורסמו ע"י הסוכן "בידלי"
   const isAdmin = authUser?.role === "admin";
@@ -904,7 +907,7 @@ export default function AuctionDetail() {
                     </ImageSlider>
             {/* ── 3. BID FEED + LEADERBOARD ── */}
             <div className="mt-4 space-y-4">
-              <LiveBidFeed bids={bids} flashNew={flashNew} />
+              {isActive && <LiveBidFeed bids={bids} flashNew={flashNew} />}
               <BidLeaderboard bids={bids} />
             </div>
 
@@ -999,7 +1002,7 @@ export default function AuctionDetail() {
             </div>
 
             {/* ── LIVE BIDDING PRESSURE ── */}
-            <BuyerLiveBlock bidCount={product.bid_count} lastBidTime={lastBidTime} />
+            {isActive && <BuyerLiveBlock bidCount={product.bid_count} lastBidTime={lastBidTime} />}
 
             {/* ── 1. TIMER ── */}
             {!cancelled && <TimerBlock endsAt={product.ends_at} antiSnipeExtended={antiSnipeExtended} />}
@@ -1010,7 +1013,7 @@ export default function AuctionDetail() {
                 border: isLeading ? "1px solid #00c85333" : "1px solid #e5893d22" }}>
               <div className="flex items-end justify-between mb-1">
                 <div>
-                  <p className="text-xs text-gray-400">מחיר נוכחי</p>
+                  <p className="text-xs text-gray-400">{priceLabel}</p>
                   <p className="text-3xl font-black text-gray-900 transition-all duration-300">
                     ₪{(product.current_price || product.starting_price || 0).toLocaleString()}
                   </p>

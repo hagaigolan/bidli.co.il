@@ -12,9 +12,11 @@ function toIntl(phone) {
 }
 
 export default function ProductChat({ product, inline = false }) {
+  // מכרז שהסתיים אינו "צ'אט חי" — הצ'אט עצמו ממשיך לעבוד כרגיל
+  const isLive = !!product && product.status === "active" && new Date(product.ends_at) > new Date();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { from: "bot", text: "שלום! 👋 זה הצ'אט החי של bidli. שאל כל שאלה על הפריט — אענה מיד, וכל שאלה תישלח גם למוכר במייל כדי שתקבל תשובה מהירה." },
+    { from: "bot", text: `שלום! 👋 זה ${isLive ? "הצ'אט החי" : "הצ'אט"} של bidli. שאל כל שאלה על הפריט — אענה מיד, וכל שאלה תישלח גם למוכר במייל כדי שתקבל תשובה מהירה.` },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -93,7 +95,7 @@ export default function ProductChat({ product, inline = false }) {
             <MessageCircle className="h-4 w-4 text-white" />
             <div className="flex-1">
               <p className="text-sm font-bold text-white">שאלות על הפריט</p>
-              <p className="text-xs text-white/80">צ'אט חי · כל שאלה נשלחת למוכר במיידי</p>
+              <p className="text-xs text-white/80">{isLive ? "צ'אט חי · כל שאלה נשלחת למוכר במיידי" : "כל שאלה נשלחת למוכר במיידי"}</p>
             </div>
             {!inline && (
               <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">

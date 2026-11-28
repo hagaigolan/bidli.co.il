@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
-// שלושת מדריכי הליבה של האתר — קישורים פנימיים קבועים (עוגנים קבועים לקידום אורגני)
+// ארבעת מדריכי הליבה של האתר — קישורים פנימיים קבועים (עוגנים קבועים לקידום אורגני)
 export const CORE_GUIDES = [
   { to: "/what-is-bidli", label: "מה זה בידלי ואיך זה עובד" },
   { to: "/how-much-is-it-worth", label: "כמה שווה פריט?" },
   { to: "/bidli-vs-yad2-ebay", label: "בידלי מול יד2 מול eBay" },
+  { to: "/מכרז-24-שעות", label: "מכרז 24 שעות" },
 ];
 
 // בלוק "מדריכים שימושיים" — מוצג בעמודי קטגוריה ובעמוד המכרז
